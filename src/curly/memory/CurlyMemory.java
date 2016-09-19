@@ -20,7 +20,8 @@ public class CurlyMemory {
     //Lista de procesos suspendidos bloqueados
     private static Proceso procesos_suspendidos_bloqueados[];
     
-    
+    static int secuencia_id = 5;
+    static int tiempo_cpu=1;
     //Metodo principal
     public static void main(String[] args) {
         // TODO code application logic here
@@ -32,7 +33,40 @@ public class CurlyMemory {
         recursos[1] = new Recurso(2,"Raton");
         recursos[2] = new Recurso(3,"Teclado");
         recursos[3] = new Recurso(4,"CD-ROM");
+        
+        //Grupo de procesos predefinidos
+        procesos_listos = new Proceso[30];
+        
+        procesos_listos[0] = new Proceso(1, "Google chrome",0, 18, 0);
+        procesos_listos[1] = new Proceso(2, "Microsoft Word",0, 8, 0);
+        procesos_listos[2] = new Proceso(3, "Paint",0, 5, 0);
+        procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
+        procesos_listos[4] = new Proceso(5, "Avast",0, 9, 0);
+        
+        
+        
     }
+    
+    
+    public static void ComenzarFifo(){
+        for(int i=0;i<procesos_listos.length;i++){
+            if (procesos_listos[i]!=null){
+                procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
+                procesos_listos[i].setInstanteDeLlegada(tiempo_cpu);
+                        while(procesos_listos[i].getProgreso()==100){
+                            procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
+                            procesos_listos[i].actualizarProgreso();
+                            if (procesos_listos[i].getProgreso()==100){
+                                procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
+                                procesos_listos[i].setInstante_de_fin(tiempo_cpu);
+                                procesos_listos[i].calcularTiempoDeServicio();
+                            }
+                            tiempo_cpu++;
+                        }
+                        
+            }
+        }
+    } 
     
     
     public static String solicitarRecurso(Proceso p, int recurso){

@@ -32,6 +32,9 @@ public class CurlyMemory {
         recursos[1] = new Recurso(2,"Raton");
         recursos[2] = new Recurso(3,"Teclado");
         recursos[3] = new Recurso(4,"CD-ROM");
+        
+        
+        
     }
     
     

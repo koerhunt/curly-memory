@@ -112,11 +112,11 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_de_servicio = tiempo_de_servicio;
     }
 
-    public int getTiempo_requerido() {
+    public int getTiempoRequerido() {
         return tiempo_requerido;
     }
 
-    public void setTiempo_requerido(int tiempo_requerido) {
+    public void setTiempoRequerido(int tiempo_requerido) {
         this.tiempo_requerido = tiempo_requerido;
     }
 

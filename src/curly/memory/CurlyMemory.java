@@ -34,4 +34,38 @@ public class CurlyMemory {
         recursos[3] = new Recurso(4,"CD-ROM");
     }
     
+    
+    public static String solicitarRecurso(Proceso p, int recurso){
+        String respuesta = "solicitado";
+        //Buscamos el recurso que se esta solicitando en la lista de recursos
+        for(int i=0; i<recursos.length;i++){
+            //Obtenemos el identificador del recurso y lo comparamos con el solicitado
+            //cuando coincidan significa que abremos encontrado el recurso solicitado
+            if(recursos[i].getId()==recurso){
+                //Imprimimos Log
+                System.out.println("El proceso "+p.getPid()+" esta solicitando el recurso: "+recursos[i].getNombre());
+                //Revisamos si el recurso solicitado esta disponible
+                if (recursos[i].estaDisponible()){
+                    //Se cambia el estado del recurso a "en uso o asignado"
+                    recursos[i].setEstado(Recurso.ASIGNADO);
+                    //Imprimimos Log
+                    System.out.println("se asigno el recurso: "+recursos[i].getNombre()+" al proceso "+p.getPid());
+                    //asignamos el resultado a la parte logica
+                    respuesta= "asignado";
+                }else{
+                    //Imprimimos Log
+                    System.out.println("El recurso: "+recursos[i].getNombre()+" esta siendo utilizado");
+                    //Se le asigna al proceso el estado de bloqueado
+                    p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                    //Imprimimos Log
+                    System.out.println("El proceso "+p.getPid()+" se ha bloqueado");
+                    //asignamos el resultado a la parte logica
+                    respuesta = "denegado";
+                }
+            }
+        }
+        //Regresamos que es lo que sucedio
+        return respuesta;
+    }   
+    
 }

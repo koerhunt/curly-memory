@@ -66,6 +66,52 @@ public class CurlyMemory {
         }
     } 
     
+       
+    public static void ComenzarSJN(){        
+        Proceso proceso_mas_corto;
+        do{
+            proceso_mas_corto = ObtenerProcesoConMenorTiempoRequerido();
+            
+            if(proceso_mas_corto!=null){
+                proceso_mas_corto.setTiempoDeEspera(tiempo_cpu);
+                proceso_mas_corto.actualizarProgreso();
+                if (proceso_mas_corto.getProgreso()==100){
+                    proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
+                    proceso_mas_corto.setInstante_de_fin(tiempo_cpu);
+                    proceso_mas_corto.calcularTiempoDeServicio();
+                }
+                tiempo_cpu++;
+            }
+        }while(proceso_mas_corto!=null);
+    }
+    
+    public static Proceso ObtenerProcesoConMenorTiempoRequerido(){
+        int menor_tiempo = 0;
+        int posicion_menor_tiempo = -1;
+        Proceso p = null;
+        for(int i=0;i<procesos_listos.length;i++){
+            if(i==0){
+                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
+                  menor_tiempo=procesos_listos[i].getTiempoRequerido();
+                  posicion_menor_tiempo=i;
+                }                
+            }else{
+                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
+                    if(menor_tiempo>=procesos_listos[i].getTiempoRequerido()){
+                          menor_tiempo=procesos_listos[i].getTiempoRequerido();
+                          posicion_menor_tiempo=i;                
+                    }
+                }
+            }
+        }
+        
+        if(posicion_menor_tiempo>0){
+           p = procesos_listos[posicion_menor_tiempo];
+        }
+        
+        return p;
+    }
+    
     
     public static String solicitarRecurso(Proceso p, int recurso){
         String respuesta = "solicitado";

@@ -43,8 +43,6 @@ public class CurlyMemory {
         procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
         procesos_listos[4] = new Proceso(5, "Avast",0, 9, 0);
         
-        
-        
     }
     
     

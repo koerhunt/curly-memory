@@ -5,7 +5,7 @@
  */
 package curly.memory;
 
-public class Proceso {
+public class Proceso implements java.io.Serializable {
     
     //Atributos del proceso
     public static final int ESTADO_LISTO = 0;
@@ -172,7 +172,6 @@ public class Proceso {
     public void calcularTiempoDeServicio(){
         tiempo_de_servicio = tiempo_de_ejecucion + tiempo_de_espera;
     }
-    
     
     
     

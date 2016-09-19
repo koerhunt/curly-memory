@@ -5,6 +5,13 @@
  */
 package curly.memory;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import javax.swing.*;
+
 public class CurlyMemory {
     
     //Lista de recursos disponibles
@@ -42,6 +49,10 @@ public class CurlyMemory {
         procesos_listos[2] = new Proceso(3, "Paint",0, 5, 0);
         procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
         procesos_listos[4] = new Proceso(5, "Avast",0, 9, 0);
+        
+        
+        escribir(procesos_listos);
+        leer(procesos_listos);
         
     }
     
@@ -99,5 +110,49 @@ public class CurlyMemory {
         //Regresamos que es lo que sucedio
         return respuesta;
     }   
+ 
+    //Método para guardar procesos en archivos
+    public static  void escribir (Proceso lista[]){
+        try{
+          ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendido_listo.obj"));
+            for(int i=0 ; i<30; i=i+1){
+                if(lista[i]!=null) {
+                    salida.writeObject(lista[i]);
+                    salida.close();
+                }
+            }
+            salida.close();
+        }
+        catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo Guardar el Archivo");
+        }
+           
+        }
+    static int n=0;
+    //Método para leer archivos de procesos
+    public static void leer (Proceso lista[]){
+        //for (int x=0; x<30; x++) {
+        try{
+        boolean seguir=true;
+        ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("proceso.obj"));
+        do{
+                           
+                Proceso obj1 = (Proceso)entrada.readObject();
+                if(obj1==null){
+                seguir=false;
+                }            
+              
+        }while(seguir);
+        entrada.close();
+        }
+        catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "No se pudo Leer el Archivo");
+            }
+            catch (ClassNotFoundException exc){
+                
+            }
+    }
+    
+    
     
 }

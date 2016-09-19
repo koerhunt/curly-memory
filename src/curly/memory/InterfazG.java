@@ -5,6 +5,8 @@
  */
 package curly.memory;
 
+import javax.swing.*;
+
 /**
  *
  * @author HDEZ. OCHOA D. SEBASTIAN
@@ -35,7 +37,7 @@ public class InterfazG extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        procesos = new javax.swing.JComboBox<>();
+        criterios = new javax.swing.JComboBox<>();
         jButton5 = new javax.swing.JButton();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabel2 = new javax.swing.JLabel();
@@ -49,6 +51,11 @@ public class InterfazG extends javax.swing.JFrame {
         jButton1.setText("Crear");
 
         jButton2.setText("Iniciar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -67,8 +74,18 @@ public class InterfazG extends javax.swing.JFrame {
         jLabel1.setText("TABLA DE PROCESOS");
 
         jButton4.setText("Salir");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
-        procesos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN", "RR" }));
+        criterios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN", "RR" }));
+        criterios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                criteriosActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Mostrar");
 
@@ -99,30 +116,30 @@ public class InterfazG extends javax.swing.JFrame {
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1)))
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addComponent(jLabel2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addComponent(jButton1)
+                                .addGap(57, 57, 57)
+                                .addComponent(criterios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton2)
+                                .addGap(50, 50, 50)
+                                .addComponent(jButton5)))
+                        .addGap(0, 142, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(371, 371, 371))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(166, 166, 166)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel2)))
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addGap(74, 74, 74)
-                        .addComponent(procesos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(80, 80, 80)
-                        .addComponent(jButton5)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(137, 137, 137)
+                .addComponent(jLabel3)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,14 +147,14 @@ public class InterfazG extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4)
                     .addComponent(jLabel4))
-                .addGap(28, 28, 28)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
                     .addComponent(jButton1)
-                    .addComponent(procesos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5))
+                    .addComponent(criterios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton5)
+                    .addComponent(jButton2))
                 .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -155,6 +172,28 @@ public class InterfazG extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String a=criterios.getSelectedItem().toString();
+        switch(a){
+            case "FIFO":
+            break;
+            case "RR":
+            break;
+            case "SJN":
+            break;
+        }
+               
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void criteriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_criteriosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_criteriosActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -192,6 +231,7 @@ public class InterfazG extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> criterios;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -205,6 +245,5 @@ public class InterfazG extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JComboBox<String> procesos;
     // End of variables declaration//GEN-END:variables
 }

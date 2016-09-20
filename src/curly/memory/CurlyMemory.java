@@ -56,70 +56,97 @@ public class CurlyMemory {
         
     }
     
-    
+    //Metodo para iniciar planificacion FIFO
     public static void ComenzarFifo(){
+        //Recorremos la lista de procesos
         for(int i=0;i<procesos_listos.length;i++){
+            //Verificamos que en la posiciin i se encuentre un objeto
             if (procesos_listos[i]!=null){
+                //Cambiamos el estado del proceso a ejecucion
                 procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
+                //Asignamos el instante de llegada al proceso
                 procesos_listos[i].setInstanteDeLlegada(tiempo_cpu);
-                        while(procesos_listos[i].getProgreso()==100){
-                            procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
-                            procesos_listos[i].actualizarProgreso();
-                            if (procesos_listos[i].getProgreso()==100){
-                                procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
-                                procesos_listos[i].setInstante_de_fin(tiempo_cpu);
-                                procesos_listos[i].calcularTiempoDeServicio();
-                            }
-                            tiempo_cpu++;
-                        }
-                        
+                //Mientras el proceso no haya terminado se estara trabajando en 'el
+                while(procesos_listos[i].getProgreso()==100){
+                    //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
+                    procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
+                    //Se actualiza el progreso del proceso
+                    procesos_listos[i].actualizarProgreso();
+                    //si el progreso esta terminado se actualiza su estado
+                    if (procesos_listos[i].getProgreso()==100){
+                        //se cambia el estado del proceso a terminado
+                        procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
+                        //se asigna el instante de fin
+                        procesos_listos[i].setInstante_de_fin(tiempo_cpu);
+                        //se calcula el tiempo de servicio del proceso
+                        procesos_listos[i].calcularTiempoDeServicio();
+                    }
+                    //Se aumenta una unidad de tiempo a el procesador
+                    tiempo_cpu++;
+                }       
             }
         }
     } 
     
-       
+    //Metodo para iniciar planificacion SJN   
     public static void ComenzarSJN(){        
+        //declaramos una variable para guradar el proceso mas corto
         Proceso proceso_mas_corto;
+        //Hacer:
         do{
+            //Obtenemos el proceso con menor requerimiento de tiempo de la lista de listos
             proceso_mas_corto = ObtenerProcesoConMenorTiempoRequerido();
-            
+            //Si el objeto 'proceso_mas_corto' no es nulo, significa que hay procesos que 
+            //aun no han sido terminados
             if(proceso_mas_corto!=null){
+                //Se asigna el tiempo de espera
                 proceso_mas_corto.setTiempoDeEspera(tiempo_cpu);
+                //Se actualiza el progreso del proceso
                 proceso_mas_corto.actualizarProgreso();
+                //si el progreso esta terminado se actualiza su estado
                 if (proceso_mas_corto.getProgreso()==100){
+                    //se cambia el estado del proceso
                     proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
+                    //se asigna el instante de fin
                     proceso_mas_corto.setInstante_de_fin(tiempo_cpu);
+                    //se calcula el tiempo de servicio
                     proceso_mas_corto.calcularTiempoDeServicio();
                 }
+                //Se aumenta una unidad de tiempo a el procesador
                 tiempo_cpu++;
             }
+        //Mientras el proceso mas corto sea diferente de nulo
         }while(proceso_mas_corto!=null);
     }
     
     public static Proceso ObtenerProcesoConMenorTiempoRequerido(){
+        //variable auxiliar para almacenar el tiempo a mejorar
         int menor_tiempo = 0;
+        //variable auxiliar para almacenar la posicion del proceso a retornar
         int posicion_menor_tiempo = -1;
+        //variable auxiliar proceso para almacenar el objeto a retornar
         Proceso p = null;
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto
         for(int i=0;i<procesos_listos.length;i++){
-            if(i==0){
-                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
-                  menor_tiempo=procesos_listos[i].getTiempoRequerido();
-                  posicion_menor_tiempo=i;
-                }                
-            }else{
-                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
-                    if(menor_tiempo>=procesos_listos[i].getTiempoRequerido()){
-                          menor_tiempo=procesos_listos[i].getTiempoRequerido();
-                          posicion_menor_tiempo=i;                
-                    }
+            //comparamos el estado del proceso actual
+            if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
+                //Comparamos si el tiempo requerido por el proceso es mayor o igual
+                //al registrado anteriormente o si aun no se a registrado algun tiempo
+                if((menor_tiempo>=procesos_listos[i].getTiempoRequerido())||menor_tiempo==0){
+                    //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
+                    menor_tiempo=procesos_listos[i].getTiempoRequerido();
+                    //Se guarda la posicion del proceso
+                    posicion_menor_tiempo=i;                
                 }
             }
         }
         
+        //Si la posicion es mayor a 0 significa que si se encontro un proceso
         if(posicion_menor_tiempo>0){
+           //se asigna a p el proceso que se encuentra en la posicion asignada
            p = procesos_listos[posicion_menor_tiempo];
         }
-        
+        //Se retorna el objeto proceso
         return p;
     }
     

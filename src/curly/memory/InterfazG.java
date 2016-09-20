@@ -98,6 +98,7 @@ public class InterfazG extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         boton_parar = new javax.swing.JButton();
+        boton_reiniciar = new javax.swing.JButton();
 
         jButton3.setText("jButton3");
 
@@ -197,6 +198,14 @@ public class InterfazG extends javax.swing.JFrame {
             }
         });
 
+        boton_reiniciar.setText("Reiniciar");
+        boton_reiniciar.setEnabled(false);
+        boton_reiniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boton_reiniciarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -233,7 +242,9 @@ public class InterfazG extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(boton_iniciar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(boton_parar)))
+                                .addComponent(boton_parar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(boton_reiniciar)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -254,7 +265,8 @@ public class InterfazG extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(criterios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(boton_iniciar)
-                    .addComponent(boton_parar))
+                    .addComponent(boton_parar)
+                    .addComponent(boton_reiniciar))
                 .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -281,6 +293,7 @@ public class InterfazG extends javax.swing.JFrame {
                 hilo_ejecutando.resume();
                 boton_iniciar.setEnabled(false);
                 boton_parar.setEnabled(true);
+                boton_reiniciar.setEnabled(false);
             }
         }else{
             String a=criterios.getSelectedItem().toString();
@@ -292,9 +305,14 @@ public class InterfazG extends javax.swing.JFrame {
                     boton_iniciar.setEnabled(false);
                     boton_parar.setEnabled(true);
                 break;
-                case "RR":
-                break;
                 case "SJN":
+                    //Se inicia la ejecucion del algoritmo FIFO
+                    hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
+                break;
+                case "RR":
                 break;
             }
         }
@@ -360,8 +378,23 @@ public class InterfazG extends javax.swing.JFrame {
             boton_iniciar.setText("reanudar");
             boton_iniciar.setEnabled(true);
             boton_parar.setEnabled(false);
+            boton_reiniciar.setEnabled(true);
         }
     }//GEN-LAST:event_boton_pararActionPerformed
+
+    private void boton_reiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_reiniciarActionPerformed
+        // TODO add your handling code here:
+        hilo_ejecutando.stop();
+        Simulador.inicializar();
+        barra.setValue(0);
+        btn_iniciar.setText("Iniciar");
+        btn_iniciar.setEnabled(true);
+        boton_parar.setEnabled(false);
+        boton_reiniciar.setEnabled(false);
+        hilo_ejecutando = null;
+        actualizarTablaRes(Simulador.procesos_listos);
+        
+    }//GEN-LAST:event_boton_reiniciarActionPerformed
     
     //Métodos
     public static void actulizarBarraDeProgreso(int porcentaje){
@@ -406,6 +439,7 @@ public class InterfazG extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton boton_iniciar;
     private javax.swing.JButton boton_parar;
+    private javax.swing.JButton boton_reiniciar;
     private javax.swing.JComboBox<String> criterios;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;

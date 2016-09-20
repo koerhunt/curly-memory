@@ -35,13 +35,14 @@ public class CurlyMemory {
         // TODO code application logic here
         
         //Pruebas
-        //inicializar();
-        //ComenzarFifo();
         inicializar();
-        ComenzarSJN();
+        ComenzarFifo();
+        //inicializar();
+        //ComenzarSJN();
         
         
     }
+    
     public static void inicializar(){
         
         //Inicializando recursos
@@ -55,11 +56,11 @@ public class CurlyMemory {
         //Inicializando gurpo de procesos predefinidos
         procesos_listos = new Proceso[30];
         
-        procesos_listos[0] = new Proceso(1, "Google chrome",0, 18, 0);
-        procesos_listos[1] = new Proceso(2, "Microsoft Word",0, 8, 0);
-        procesos_listos[2] = new Proceso(3, "Paint",0, 5, 0);
+        procesos_listos[0] = new Proceso(1, "Google chrome",0, 18, 3);
+        procesos_listos[1] = new Proceso(2, "Microsoft Word",0, 8, 3);
+        procesos_listos[2] = new Proceso(3, "Paint",0, 5, 1);
         procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
-        procesos_listos[4] = new Proceso(5, "Avast",0, 9, 0);
+        procesos_listos[4] = new Proceso(5, "Avast",0, 9, 4);
         
         //Inicializando secuencia del ID
         secuencia_id = 5;
@@ -83,7 +84,13 @@ public class CurlyMemory {
                 //Mientras el proceso no haya terminado se estara trabajando en 'el
                 //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
                 procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
-                while(procesos_listos[i].getProgreso()<100){
+                
+                if(procesos_listos[i].getRecurso()!=0){
+                    solicitarRecurso(procesos_listos[i]);
+                }
+                
+                if(procesos_listos[i].getEstado()==Proceso.ESTADO_EN_EJECUCION){
+                    while(procesos_listos[i].getProgreso()<100){
                     System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo de ejecucion de "+procesos_listos[i].getTiempo_de_ejecucion());
                     //Se actualiza el progreso del proceso
                     procesos_listos[i].actualizarProgreso();
@@ -99,10 +106,15 @@ public class CurlyMemory {
                         //se calcula el tiempo de servicio del proceso
                         procesos_listos[i].calcularTiempoDeServicio();
                         System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
+                        //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
+                        if(procesos_listos[i].getRecurso()!=0 && procesos_listos[i].tieneSuRecursoAsignado() ){
+                            liberarRecurso(procesos_listos[i]);
+                        }
                     }
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
-                }       
+                    } 
+                }      
             }
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
@@ -190,30 +202,32 @@ public class CurlyMemory {
     }
     
     //Metodo para solicitar un recurso
-    public static String solicitarRecurso(Proceso p, int recurso){
+    public static String solicitarRecurso(Proceso p){
         String respuesta = "solicitado";
+        int recurso = p.getRecurso();
         //Buscamos el recurso que se esta solicitando en la lista de recursos
         for(int i=0; i<recursos.length;i++){
             //Obtenemos el identificador del recurso y lo comparamos con el solicitado
             //cuando coincidan significa que abremos encontrado el recurso solicitado
             if(recursos[i].getId()==recurso){
                 //Imprimimos Log
-                System.out.println("El proceso "+p.getPid()+" esta solicitando el recurso: "+recursos[i].getNombre());
+                System.out.println("El proceso "+p.getNombre()+" esta solicitando el recurso: "+recursos[i].getNombre());
                 //Revisamos si el recurso solicitado esta disponible
                 if (recursos[i].estaDisponible()){
                     //Se cambia el estado del recurso a "en uso o asignado"
                     recursos[i].setEstado(Recurso.ASIGNADO);
                     //Imprimimos Log
-                    System.out.println("se asigno el recurso: "+recursos[i].getNombre()+" al proceso "+p.getPid());
+                    p.setRecurso_asignado(true);
+                    System.out.println("se asigno el recurso: "+recursos[i].getNombre()+" al proceso "+p.getNombre());
                     //asignamos el resultado a la parte logica
                     respuesta= "asignado";
                 }else{
                     //Imprimimos Log
-                    System.out.println("El recurso: "+recursos[i].getNombre()+" esta siendo utilizado");
+                    System.out.println("El recurso: "+recursos[i].getNombre()+" esta siendo utilizado por otro proceso");
                     //Se le asigna al proceso el estado de bloqueado
                     p.setEstado(Proceso.ESTADO_BLOQUEADO);
                     //Imprimimos Log
-                    System.out.println("El proceso "+p.getPid()+" se ha bloqueado");
+                    System.out.println("El proceso "+p.getNombre()+" se ha bloqueado");
                     //asignamos el resultado a la parte logica
                     respuesta = "denegado";
                 }
@@ -222,6 +236,20 @@ public class CurlyMemory {
         //Regresamos que es lo que sucedio
         return respuesta;
     }   
+    
+    public static void liberarRecurso(Proceso p){
+        int recurso = p.getRecurso();
+        Recurso r = null;
+        for(int i=0; i<recursos.length;i++){
+            if(recursos[i].getId()==recurso){
+                r = recursos[i];
+            }
+        }
+        p.setEstado(Recurso.LIBRE);
+        p.setRecurso_asignado(false);
+        
+        System.out.println("El proceso "+p.getNombre()+" ha liberado el recurso "+r.getNombre());
+    }
  
     //Método para guardar procesos en archivos
     public static  void escribir (Proceso lista[]){

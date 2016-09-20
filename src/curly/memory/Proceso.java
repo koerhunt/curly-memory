@@ -41,6 +41,8 @@ public class Proceso implements java.io.Serializable {
     //Si ponemos el arreglo de recursos tendria que implementarse una
     //tecnica de resolucion de interbloqueos
     //private int recursos_nececitados[];
+    
+    private boolean recurso_asignado;
 
     public Proceso() {
     }
@@ -53,7 +55,7 @@ public class Proceso implements java.io.Serializable {
         this.recurso = recurso;
         this.tiempo_de_ejecucion = 1;
         estado = ESTADO_LISTO;
-        
+        recurso_asignado = false;
     }
     
     //Grupos de Metodos Get y Set
@@ -160,6 +162,15 @@ public class Proceso implements java.io.Serializable {
     public void setTiempoDeEspera(int tiempo_de_espera) {
         this.tiempo_de_espera = tiempo_de_espera;
     }
+
+    public boolean isRecurso_asignado() {
+        return recurso_asignado;
+    }
+
+    public void setRecurso_asignado(boolean recurso_asignado) {
+        this.recurso_asignado = recurso_asignado;
+    }
+    
     
     
     
@@ -172,6 +183,11 @@ public class Proceso implements java.io.Serializable {
     //Metodo para calcular el tiempo de servicio
     public void calcularTiempoDeServicio(){
         tiempo_de_servicio = tiempo_de_ejecucion + tiempo_de_espera;
+    }
+    
+    //Metodo para saber si al proceso tiene asignado el recurso
+    public boolean tieneSuRecursoAsignado(){
+        return recurso_asignado;
     }
     
     

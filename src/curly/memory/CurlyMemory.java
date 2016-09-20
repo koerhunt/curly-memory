@@ -76,11 +76,13 @@ public class CurlyMemory {
         for(int i=0;i<procesos_listos.length;i++){
             //Verificamos que en la posiciin i se encuentre un objeto
             if (procesos_listos[i]!=null){
-                procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
-                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a ejecucion");
                 //Asignamos el instante de llegada al proceso
                 procesos_listos[i].setInstanteDeLlegada(tiempo_cpu);
-                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - llego en el momento "+tiempo_cpu);
+                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo te espera de "+tiempo_cpu);
+                
+                procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
+                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a ejecucion");
+                
                 //Mientras el proceso no haya terminado se estara trabajando en 'el
                 //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
                 procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
@@ -91,28 +93,28 @@ public class CurlyMemory {
                 
                 if(procesos_listos[i].getEstado()==Proceso.ESTADO_EN_EJECUCION){
                     while(procesos_listos[i].getProgreso()<100){
-                    System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo de ejecucion de "+procesos_listos[i].getTiempo_de_ejecucion());
-                    //Se actualiza el progreso del proceso
-                    procesos_listos[i].actualizarProgreso();
-                    System.out.println("El proceso lleva un progreso de "+procesos_listos[i].getProgreso()+"%");
-                    //si el progreso esta terminado se actualiza su estado
-                    if (procesos_listos[i].getProgreso()==100){
-                        //se cambia el estado del proceso a terminado
-                        procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
-                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a terminado");
-                        //se asigna el instante de fin
-                        procesos_listos[i].setInstante_de_fin(tiempo_cpu);
-                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - termino el en el momento "+tiempo_cpu);
-                        //se calcula el tiempo de servicio del proceso
-                        procesos_listos[i].calcularTiempoDeServicio();
-                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
-                        //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
-                        if(procesos_listos[i].getRecurso()!=0 && procesos_listos[i].tieneSuRecursoAsignado() ){
-                            liberarRecurso(procesos_listos[i]);
+                        //Se aumenta una unidad de tiempo a el procesador
+                        tiempo_cpu++;
+                        //Se actualiza el progreso del proceso
+                        procesos_listos[i].actualizarProgreso();
+                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo de ejecucion de "+procesos_listos[i].getTiempo_de_ejecucion());
+                        System.out.println("El proceso lleva un progreso de "+procesos_listos[i].getProgreso()+"%");
+                        //si el progreso esta terminado se actualiza su estado
+                        if (procesos_listos[i].getProgreso()==100){
+                            //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
+                            if(procesos_listos[i].getRecurso()!=0 && procesos_listos[i].tieneSuRecursoAsignado() ){
+                                liberarRecurso(procesos_listos[i]);
+                            }
+                            //se cambia el estado del proceso a terminado
+                            procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
+                            System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a terminado");
+                            //se asigna el instante de fin
+                            procesos_listos[i].setInstante_de_fin(tiempo_cpu);
+                            System.out.println("El proceso "+procesos_listos[i].getNombre()+" - termino el en el momento "+tiempo_cpu);
+                            //se calcula el tiempo de servicio del proceso
+                            procesos_listos[i].calcularTiempoDeServicio();
+                            System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
                         }
-                    }
-                    //Se aumenta una unidad de tiempo a el procesador
-                    tiempo_cpu++;
                     } 
                 }      
             }
@@ -140,14 +142,24 @@ public class CurlyMemory {
                 proceso_mas_corto.setEstado(Proceso.ESTADO_EN_EJECUCION);
                 System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a ejecucion");
                 
+                if(proceso_mas_corto.getRecurso()!=0){
+                    solicitarRecurso(proceso_mas_corto);
+                }
+                
                 while(proceso_mas_corto.getProgreso()<100){
-                    //Tiempo de ejecucion
-                    System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tiene un tiempo de ejecucion de "+proceso_mas_corto.getTiempo_de_ejecucion());
+                    //Se aumenta una unidad de tiempo a el procesador
+                    tiempo_cpu++;
                     //Se actualiza el progreso del proceso
                     proceso_mas_corto.actualizarProgreso();
+                    //Tiempo de ejecucion
+                    System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tiene un tiempo de ejecucion de "+proceso_mas_corto.getTiempo_de_ejecucion());
                     System.out.println("El proceso lleva un progreso de "+proceso_mas_corto.getProgreso()+"%");
                     //si el progreso esta terminado se actualiza su estado
                     if (proceso_mas_corto.getProgreso()==100){
+                        //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
+                        if(proceso_mas_corto.getRecurso()!=0 && proceso_mas_corto.tieneSuRecursoAsignado() ){
+                            liberarRecurso(proceso_mas_corto);
+                        }
                         //se cambia el estado del proceso
                         proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
                         System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a terminado");
@@ -158,8 +170,6 @@ public class CurlyMemory {
                         proceso_mas_corto.calcularTiempoDeServicio();
                         System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de servicio de "+proceso_mas_corto.getTiempo_de_servicio());
                     }
-                    //Se aumenta una unidad de tiempo a el procesador
-                    tiempo_cpu++;
                 }
             }
         //Mientras el proceso mas corto sea diferente de nulo
@@ -179,7 +189,7 @@ public class CurlyMemory {
         for(int i=0;i<procesos_listos.length;i++){
             if(procesos_listos[i]!=null){
                 //comparamos el estado del proceso actual
-                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
+                if(procesos_listos[i].getEstado() == Proceso.ESTADO_LISTO){
                     //Comparamos si el tiempo requerido por el proceso es mayor o igual
                     //al registrado anteriormente o si aun no se a registrado algun tiempo
                     if((menor_tiempo>=procesos_listos[i].getTiempoRequerido())||menor_tiempo==0){
@@ -231,6 +241,7 @@ public class CurlyMemory {
                     //asignamos el resultado a la parte logica
                     respuesta = "denegado";
                 }
+                break;
             }
         }
         //Regresamos que es lo que sucedio
@@ -243,6 +254,7 @@ public class CurlyMemory {
         for(int i=0; i<recursos.length;i++){
             if(recursos[i].getId()==recurso){
                 r = recursos[i];
+                break;
             }
         }
         p.setEstado(Recurso.LIBRE);

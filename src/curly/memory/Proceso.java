@@ -53,7 +53,7 @@ public class Proceso implements java.io.Serializable {
         this.prioridad = prioridad;
         this.tiempo_requerido = tiempo_requerido;
         this.recurso = recurso;
-        this.tiempo_de_ejecucion = 1;
+        this.tiempo_de_ejecucion = 0;
         estado = ESTADO_LISTO;
         recurso_asignado = false;
     }

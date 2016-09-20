@@ -5,6 +5,9 @@
  */
 package curly.memory;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author HDEZ. OCHOA D. SEBASTIAN
@@ -18,7 +21,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
     }
     
      //Metodo para iniciar planificacion FIFO
-    public static void ComenzarFifo(){
+    public  void ComenzarFifo(){
         System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA FIFO *-*-*-*-*-*-*-*-*-*-*-*");
         //Recorremos la lista de procesos
         for(int i=0;i<procesos_listos.length;i++){
@@ -62,9 +65,17 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                             //se calcula el tiempo de servicio del proceso
                             procesos_listos[i].calcularTiempoDeServicio();
                             System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
+                       }
+                        try {
+                            InterfazG.actualizarTablaRes(procesos_listos);
+                            InterfazG.actulizarBarraDeProgreso(procesos_listos[i].getProgreso());
+                            java.lang.Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } 
-                }      
+                }
+                InterfazG.actualizarTablaRes(procesos_listos);
             }
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");

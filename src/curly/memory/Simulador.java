@@ -33,7 +33,7 @@ public class Simulador {
     
     static int secuencia_id = 5;
     static int tiempo_cpu=0;
-    static int tiempo_ejecucion=0;
+    
     //Metodo principal
     public static void main(String[] args) {       
         inicializar();
@@ -63,12 +63,20 @@ public class Simulador {
         procesos_suspendidos_bloqueados = new Proceso[30];
         
         //Inicializando secuencia del ID
-        secuencia_id = 5;
+        secuencia_id = 6;
         //Iniciando tiempo del cpu
         tiempo_cpu=0;
         
     }
     
+    public static String ObtenerNombreDelRecurso(int r){
+        if(r==0){
+         return "No requiere recurso";
+        }else{
+         int rec = r-1;
+         return recursos[rec].getNombre();
+        }
+    }
    
     //Metodo para iniciar planificacion SJN   
     public static void ComenzarSJN(){

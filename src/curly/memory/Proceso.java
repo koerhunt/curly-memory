@@ -191,5 +191,28 @@ public class Proceso implements java.io.Serializable {
     }
     
     
+    public static String NombreDeEstado(int e){
+        switch(e){
+            case ESTADO_LISTO:
+                return "Listo/creado";
+            case ESTADO_EN_EJECUCION:
+                return "Ejecucion";
+            case ESTADO_BLOQUEADO:
+                return "Bloqueado";
+            case ESTADO_SUSPENDIDO:
+                return "Suspendido";
+            case ESTADO_SUSPENDIDO_LISTO:
+                return "Suspendido Listo";
+            case ESTADO_SUSPENDIDO_BLOQUEADO:
+                return "Suspendido Bloqueado";
+            case ESTADO_TERMINADO:
+                return "Finalizado/Terminado";
+            default:
+                return "estado not found";
+        }
+     
+    }
+    
+    
     
 }

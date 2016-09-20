@@ -5,7 +5,7 @@
  */
 package curly.memory;
 
-public class Proceso {
+public class Proceso implements java.io.Serializable {
     
     //Atributos del proceso
     public static final int ESTADO_LISTO = 0;
@@ -14,10 +14,13 @@ public class Proceso {
     public static final int ESTADO_SUSPENDIDO = 3;
     public static final int ESTADO_SUSPENDIDO_LISTO = 4;
     public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 5;
+    public static final int ESTADO_TERMINADO = 6;
     
     //Identificador del proceso
     private int pid;
     
+    //nombre del proceso
+    private String nombre;
     //Estado del proceso
     private int estado;
     //Progreso (del 1 al 100)
@@ -30,6 +33,7 @@ public class Proceso {
     private int instante_de_fin;
     private int tiempo_de_ejecucion;
     private int tiempo_de_servicio;
+    private int tiempo_de_espera;
     
     //Requerimientos del proceso (tiempo y recurso(s))
     private int tiempo_requerido;    
@@ -37,7 +41,19 @@ public class Proceso {
     //Si ponemos el arreglo de recursos tendria que implementarse una
     //tecnica de resolucion de interbloqueos
     //private int recursos_nececitados[];
-    
+
+    public Proceso() {
+    }
+
+    public Proceso(int pid, String nombre, int prioridad, int tiempo_requerido, int recurso) {
+        this.pid = pid;
+        this.nombre = nombre;
+        this.prioridad = prioridad;
+        this.tiempo_requerido = tiempo_requerido;
+        this.recurso = recurso;
+        estado = ESTADO_LISTO;
+        
+    }
     
     //Grupos de Metodos Get y Set
     public int getPid() {
@@ -64,11 +80,11 @@ public class Proceso {
         this.progreso = progreso;
     }
 
-    public int getInstante_de_llegada() {
+    public int getInstanteDeLlegada() {
         return instante_de_llegada;
     }
 
-    public void setInstante_de_llegada(int instante_de_llegada) {
+    public void setInstanteDeLlegada(int instante_de_llegada) {
         this.instante_de_llegada = instante_de_llegada;
     }
 
@@ -96,11 +112,11 @@ public class Proceso {
         this.tiempo_de_servicio = tiempo_de_servicio;
     }
 
-    public int getTiempo_requerido() {
+    public int getTiempoRequerido() {
         return tiempo_requerido;
     }
 
-    public void setTiempo_requerido(int tiempo_requerido) {
+    public void setTiempoRequerido(int tiempo_requerido) {
         this.tiempo_requerido = tiempo_requerido;
     }
 
@@ -111,5 +127,52 @@ public class Proceso {
     public void setRecurso(int recurso) {
         this.recurso = recurso;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(int prioridad) {
+        this.prioridad = prioridad;
+    }
+
+    public int getInstante_de_llegada() {
+        return instante_de_llegada;
+    }
+
+    public void setInstante_de_llegada(int instante_de_llegada) {
+        this.instante_de_llegada = instante_de_llegada;
+    }
+
+    public int getTiempoDeEspera() {
+        return tiempo_de_espera;
+    }
+
+    public void setTiempoDeEspera(int tiempo_de_espera) {
+        this.tiempo_de_espera = tiempo_de_espera;
+    }
+    
+    
+    
+    //Metodo para actualizar progreso del proceso
+    public void actualizarProgreso(){
+        tiempo_de_ejecucion++;
+        progreso = (tiempo_de_ejecucion * 100)/tiempo_requerido;
+    }
+    
+    //Metodo para calcular el tiempo de servicio
+    public void calcularTiempoDeServicio(){
+        tiempo_de_servicio = tiempo_de_ejecucion + tiempo_de_espera;
+    }
+    
+    
     
 }

@@ -7,16 +7,19 @@ package curly.memory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author HDEZ. OCHOA D. SEBASTIAN
  */
 public class AlgirtmoFIFO extends Simulador implements Runnable{
-
+    
+    
+    //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
     @Override
     public void run() {
-        Simulador.inicializar();
+        //Comienza fifo
         ComenzarFifo();
     }
     
@@ -67,18 +70,24 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                             System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
                        }
                         try {
+                            //Actaualizamos la tabla de procesos
                             InterfazG.actualizarTablaRes(procesos_listos);
+                            //Actaualizamos la barra de progreso
                             InterfazG.actulizarBarraDeProgreso(procesos_listos[i].getProgreso());
-                            java.lang.Thread.sleep(1000);
+                            //Relentizamos (alargamos) el proceso un segundo
+                            java.lang.Thread.sleep(500);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } 
                 }
+                //Actaualizamos la tabla de procesos
                 InterfazG.actualizarTablaRes(procesos_listos);
             }
         }
+        InterfazG.algoritmoTerminado();
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+        JOptionPane.showMessageDialog(null,"Procedimiento por FIFO Terminado");
     } 
     
     

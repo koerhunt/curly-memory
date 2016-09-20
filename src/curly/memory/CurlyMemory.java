@@ -76,6 +76,7 @@ public class CurlyMemory {
         
         //Inicializando listas de procesos para los demas estados
         procesos_suspendidos_listos = new Proceso[30];
+        procesos_suspendidos_bloqueados = new Proceso[30];
         
         //Inicializando secuencia del ID
         secuencia_id = 5;
@@ -263,7 +264,7 @@ public class CurlyMemory {
         return respuesta;
     }   
     
-    //Metodo para liberar un recurso
+    //Metodo para liberar un recurso (listo)
     public static void liberarRecurso(Proceso p){
         int recurso = p.getRecurso();
         Recurso r = null;
@@ -279,7 +280,7 @@ public class CurlyMemory {
         System.out.println("El proceso "+p.getNombre()+" ha liberado el recurso "+r.getNombre());
     }
  
-    //Método para suspender un proceso
+    //Método para suspender un proceso (listo)
     public static void suspenderProcesoListo(Proceso p){
         introducirProcesoALista(p, procesos_suspendidos_listos);
         try{
@@ -328,4 +329,42 @@ public class CurlyMemory {
         }
         
     }
+    
+    
+    //Método para suspender un proceso (bloqueado)
+    public static void suspenderProcesoBloqueado(Proceso p){
+        introducirProcesoALista(p, procesos_suspendidos_bloqueados);
+        try{
+            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendidos_bloqueados.obj"));
+            for(int i = 0; i< procesos_suspendidos_bloqueados.length; i++){
+                if(procesos_suspendidos_bloqueados[i]!=null){
+                    salida.writeObject(procesos_suspendidos_bloqueados[i]);
+                }
+            }
+            salida.close();
+        } catch (IOException e) {
+            System.out.println("No se pudo Guardar el proceso en memoria secundaria");
+        }   
+    }
+    
+    
+    //Metodo para restaurar un proceso (bloqueado)
+    public static void restaurarProcesosSuspendidosBloqueados(){
+        try {
+            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("procesos_suspendidos_bloqueados.obj"));
+            Proceso p = null;
+            do{
+                p = (Proceso)entrada.readObject();
+                System.out.println(p.getNombre());
+            }while(p!=null);
+            entrada.close();
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "No se encontraron procesos suspendidos");
+        } catch (IOException ex) {
+            System.out.println("No se pudo leer el proceso en memoria secundaria");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("No se encontro la clase perteneciente al tipo de archivo");
+        }
+    }
+    
 }

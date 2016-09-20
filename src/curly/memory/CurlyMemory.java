@@ -28,12 +28,23 @@ public class CurlyMemory {
     private static Proceso procesos_suspendidos_bloqueados[];
     
     static int secuencia_id = 5;
-    static int tiempo_cpu=1;
+    static int tiempo_cpu=0;
+    static int tiempo_ejecucion=0;
     //Metodo principal
     public static void main(String[] args) {
         // TODO code application logic here
         
-        //Inicializamos la lista de recursos
+        //Pruebas
+        //inicializar();
+        //ComenzarFifo();
+        inicializar();
+        ComenzarSJN();
+        
+        
+    }
+    public static void inicializar(){
+        
+        //Inicializando recursos
         recursos = new Recurso[4];
         //Creamos los recursos que estaran disponibles para los procesos
         recursos[0] = new Recurso(1,"Impresora");
@@ -41,7 +52,7 @@ public class CurlyMemory {
         recursos[2] = new Recurso(3,"Teclado");
         recursos[3] = new Recurso(4,"CD-ROM");
         
-        //Grupo de procesos predefinidos
+        //Inicializando gurpo de procesos predefinidos
         procesos_listos = new Proceso[30];
         
         procesos_listos[0] = new Proceso(1, "Google chrome",0, 18, 0);
@@ -50,46 +61,56 @@ public class CurlyMemory {
         procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
         procesos_listos[4] = new Proceso(5, "Avast",0, 9, 0);
         
-        
-        escribir(procesos_listos);
-        leer(procesos_listos);
+        //Inicializando secuencia del ID
+        secuencia_id = 5;
+        //Iniciando tiempo del cpu
+        tiempo_cpu=0;
         
     }
     
     //Metodo para iniciar planificacion FIFO
     public static void ComenzarFifo(){
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA FIFO *-*-*-*-*-*-*-*-*-*-*-*");
         //Recorremos la lista de procesos
         for(int i=0;i<procesos_listos.length;i++){
             //Verificamos que en la posiciin i se encuentre un objeto
             if (procesos_listos[i]!=null){
-                //Cambiamos el estado del proceso a ejecucion
                 procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
+                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a ejecucion");
                 //Asignamos el instante de llegada al proceso
                 procesos_listos[i].setInstanteDeLlegada(tiempo_cpu);
+                System.out.println("El proceso "+procesos_listos[i].getNombre()+" - llego en el momento "+tiempo_cpu);
                 //Mientras el proceso no haya terminado se estara trabajando en 'el
-                while(procesos_listos[i].getProgreso()==100){
-                    //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
-                    procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
+                //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
+                procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
+                while(procesos_listos[i].getProgreso()<100){
+                    System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo de ejecucion de "+procesos_listos[i].getTiempo_de_ejecucion());
                     //Se actualiza el progreso del proceso
                     procesos_listos[i].actualizarProgreso();
+                    System.out.println("El proceso lleva un progreso de "+procesos_listos[i].getProgreso()+"%");
                     //si el progreso esta terminado se actualiza su estado
                     if (procesos_listos[i].getProgreso()==100){
                         //se cambia el estado del proceso a terminado
                         procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
+                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a terminado");
                         //se asigna el instante de fin
                         procesos_listos[i].setInstante_de_fin(tiempo_cpu);
+                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - termino el en el momento "+tiempo_cpu);
                         //se calcula el tiempo de servicio del proceso
                         procesos_listos[i].calcularTiempoDeServicio();
+                        System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tuvo un tiempo de servicio de "+procesos_listos[i].getTiempo_de_servicio());
                     }
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
                 }       
             }
         }
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
     } 
     
     //Metodo para iniciar planificacion SJN   
-    public static void ComenzarSJN(){        
+    public static void ComenzarSJN(){
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA SJN *-*-*-*-*-*-*-*-*-*-*-*");
         //declaramos una variable para guradar el proceso mas corto
         Proceso proceso_mas_corto;
         //Hacer:
@@ -99,26 +120,42 @@ public class CurlyMemory {
             //Si el objeto 'proceso_mas_corto' no es nulo, significa que hay procesos que 
             //aun no han sido terminados
             if(proceso_mas_corto!=null){
+                System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
                 //Se asigna el tiempo de espera
                 proceso_mas_corto.setTiempoDeEspera(tiempo_cpu);
-                //Se actualiza el progreso del proceso
-                proceso_mas_corto.actualizarProgreso();
-                //si el progreso esta terminado se actualiza su estado
-                if (proceso_mas_corto.getProgreso()==100){
-                    //se cambia el estado del proceso
-                    proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
-                    //se asigna el instante de fin
-                    proceso_mas_corto.setInstante_de_fin(tiempo_cpu);
-                    //se calcula el tiempo de servicio
-                    proceso_mas_corto.calcularTiempoDeServicio();
+                System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de espera de "+tiempo_cpu);
+                //Se cambia el estado del proceso
+                proceso_mas_corto.setEstado(Proceso.ESTADO_EN_EJECUCION);
+                System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a ejecucion");
+                
+                while(proceso_mas_corto.getProgreso()<100){
+                    //Tiempo de ejecucion
+                    System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tiene un tiempo de ejecucion de "+proceso_mas_corto.getTiempo_de_ejecucion());
+                    //Se actualiza el progreso del proceso
+                    proceso_mas_corto.actualizarProgreso();
+                    System.out.println("El proceso lleva un progreso de "+proceso_mas_corto.getProgreso()+"%");
+                    //si el progreso esta terminado se actualiza su estado
+                    if (proceso_mas_corto.getProgreso()==100){
+                        //se cambia el estado del proceso
+                        proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
+                        System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a terminado");
+                        //se asigna el instante de fin
+                        proceso_mas_corto.setInstante_de_fin(tiempo_cpu);
+                        System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - termino el en el momento "+tiempo_cpu);
+                        //se calcula el tiempo de servicio
+                        proceso_mas_corto.calcularTiempoDeServicio();
+                        System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de servicio de "+proceso_mas_corto.getTiempo_de_servicio());
+                    }
+                    //Se aumenta una unidad de tiempo a el procesador
+                    tiempo_cpu++;
                 }
-                //Se aumenta una unidad de tiempo a el procesador
-                tiempo_cpu++;
             }
         //Mientras el proceso mas corto sea diferente de nulo
         }while(proceso_mas_corto!=null);
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
     }
     
+    //Metodo para obtener el proceso con menor tiempo requerido
     public static Proceso ObtenerProcesoConMenorTiempoRequerido(){
         //variable auxiliar para almacenar el tiempo a mejorar
         int menor_tiempo = 0;
@@ -128,15 +165,17 @@ public class CurlyMemory {
         Proceso p = null;
         //Hacemos una busqueda secuencial tomando el tiempo del primer objeto
         for(int i=0;i<procesos_listos.length;i++){
-            //comparamos el estado del proceso actual
-            if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
-                //Comparamos si el tiempo requerido por el proceso es mayor o igual
-                //al registrado anteriormente o si aun no se a registrado algun tiempo
-                if((menor_tiempo>=procesos_listos[i].getTiempoRequerido())||menor_tiempo==0){
-                    //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
-                    menor_tiempo=procesos_listos[i].getTiempoRequerido();
-                    //Se guarda la posicion del proceso
-                    posicion_menor_tiempo=i;                
+            if(procesos_listos[i]!=null){
+                //comparamos el estado del proceso actual
+                if(procesos_listos[i].getEstado() != Proceso.ESTADO_TERMINADO){
+                    //Comparamos si el tiempo requerido por el proceso es mayor o igual
+                    //al registrado anteriormente o si aun no se a registrado algun tiempo
+                    if((menor_tiempo>=procesos_listos[i].getTiempoRequerido())||menor_tiempo==0){
+                        //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
+                        menor_tiempo=procesos_listos[i].getTiempoRequerido();
+                        //Se guarda la posicion del proceso
+                        posicion_menor_tiempo=i;                
+                    }
                 }
             }
         }
@@ -150,7 +189,7 @@ public class CurlyMemory {
         return p;
     }
     
-    
+    //Metodo para solicitar un recurso
     public static String solicitarRecurso(Proceso p, int recurso){
         String respuesta = "solicitado";
         //Buscamos el recurso que se esta solicitando en la lista de recursos

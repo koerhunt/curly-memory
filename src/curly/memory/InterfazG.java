@@ -24,6 +24,9 @@ public class InterfazG extends javax.swing.JFrame {
     //El modelo es el formato que se da a la tabla
     static TableModel model;
     static JProgressBar barra;
+    static JButton btn_iniciar;
+    
+    static Thread hilo_ejecutando;
    
     /**
     * Creates new form InterfazG
@@ -33,6 +36,7 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.inicializar();
         model = tablaRes.getModel();
         barra = jProgressBar1;
+        btn_iniciar = boton_iniciar;
         actualizarTablaRes(Simulador.procesos_listos);
         
     }
@@ -82,18 +86,18 @@ public class InterfazG extends javax.swing.JFrame {
 
         jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        boton_iniciar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaRes = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         criterios = new javax.swing.JComboBox<>();
-        jButton5 = new javax.swing.JButton();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        boton_parar = new javax.swing.JButton();
 
         jButton3.setText("jButton3");
 
@@ -106,10 +110,10 @@ public class InterfazG extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Iniciar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        boton_iniciar.setText("Iniciar");
+        boton_iniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                boton_iniciarActionPerformed(evt);
             }
         });
 
@@ -177,13 +181,6 @@ public class InterfazG extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setText("Mostrar");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Barra de Progreso");
 
@@ -191,6 +188,14 @@ public class InterfazG extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel4.setText("SIMULADOR DE ADMINISTRADOR DE PROCESOS");
+
+        boton_parar.setText("Parar");
+        boton_parar.setEnabled(false);
+        boton_parar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boton_pararActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -226,10 +231,10 @@ public class InterfazG extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addGap(50, 50, 50)
-                                .addComponent(jButton5)))
-                        .addGap(0, 142, Short.MAX_VALUE)))
+                                .addComponent(boton_iniciar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(boton_parar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(137, 137, 137)
@@ -248,8 +253,8 @@ public class InterfazG extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(criterios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton2))
+                    .addComponent(boton_iniciar)
+                    .addComponent(boton_parar))
                 .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -269,20 +274,31 @@ public class InterfazG extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     //cuando se hace clic en el boton de iniciar
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String a=criterios.getSelectedItem().toString();
-        switch(a){
-            case "FIFO":
-                //Se inicia la ejecucion del algoritmo FIFO
-             new Thread(new AlgirtmoFIFO()).start(); //Crea un nuevo hilo
-            break;
-            case "RR":
-            break;
-            case "SJN":
-            break;
+    private void boton_iniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_iniciarActionPerformed
+        
+        if(hilo_ejecutando!=null){
+            if(hilo_ejecutando.isAlive()){
+                hilo_ejecutando.resume();
+                boton_iniciar.setEnabled(false);
+                boton_parar.setEnabled(true);
+            }
+        }else{
+            String a=criterios.getSelectedItem().toString();
+            switch(a){
+                case "FIFO":
+                    //Se inicia la ejecucion del algoritmo FIFO
+                    hilo_ejecutando = new Thread(new AlgirtmoFIFO()); //Crea un nuevo hilo
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
+                break;
+                case "RR":
+                break;
+                case "SJN":
+                break;
+            }
         }
-               
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_boton_iniciarActionPerformed
 
     private void criteriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_criteriosActionPerformed
         // TODO add your handling code here:
@@ -292,10 +308,6 @@ public class InterfazG extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -340,6 +352,16 @@ public class InterfazG extends javax.swing.JFrame {
             actualizarTablaRes(Simulador.procesos_listos);
             
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void boton_pararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_pararActionPerformed
+        // TODO add your handling code here:
+        if(hilo_ejecutando.isAlive()){
+            hilo_ejecutando.suspend();
+            boton_iniciar.setText("reanudar");
+            boton_iniciar.setEnabled(true);
+            boton_parar.setEnabled(false);
+        }
+    }//GEN-LAST:event_boton_pararActionPerformed
     
     //Métodos
     public static void actulizarBarraDeProgreso(int porcentaje){
@@ -377,16 +399,17 @@ public class InterfazG extends javax.swing.JFrame {
     public static void algoritmoTerminado(){
         Simulador.inicializar();
         barra.setValue(0);
+        btn_iniciar.setText("Iniciar");
     }
     
     //Variables para la interfaz grafica
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton boton_iniciar;
+    private javax.swing.JButton boton_parar;
     private javax.swing.JComboBox<String> criterios;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

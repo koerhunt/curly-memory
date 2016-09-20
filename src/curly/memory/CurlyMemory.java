@@ -6,10 +6,13 @@
 package curly.memory;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 public class CurlyMemory {
@@ -34,11 +37,20 @@ public class CurlyMemory {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        //Pruebas
-        inicializar();
-        ComenzarFifo();
+        //Pruebas de planificaciones
+        //inicializar();
+        //ComenzarFifo();
         //inicializar();
         //ComenzarSJN();
+        
+        //Hasta ahorita se manejan los estados listo, en ejecucion y bloqueado(aunque no se da el caso)
+        
+        
+        //para desarrollar los estados suspendidos hay que escribir y leer archivos
+        inicializar();
+        suspenderProcesoListo(procesos_listos[0]);
+        suspenderProcesoListo(procesos_listos[1]);
+        restaurarProcesosSuspendidosListos();
         
         
     }
@@ -61,6 +73,9 @@ public class CurlyMemory {
         procesos_listos[2] = new Proceso(3, "Paint",0, 5, 1);
         procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
         procesos_listos[4] = new Proceso(5, "Avast",0, 9, 4);
+        
+        //Inicializando listas de procesos para los demas estados
+        procesos_suspendidos_listos = new Proceso[30];
         
         //Inicializando secuencia del ID
         secuencia_id = 5;
@@ -248,6 +263,7 @@ public class CurlyMemory {
         return respuesta;
     }   
     
+    //Metodo para liberar un recurso
     public static void liberarRecurso(Proceso p){
         int recurso = p.getRecurso();
         Recurso r = null;
@@ -263,48 +279,53 @@ public class CurlyMemory {
         System.out.println("El proceso "+p.getNombre()+" ha liberado el recurso "+r.getNombre());
     }
  
-    //Método para guardar procesos en archivos
-    public static  void escribir (Proceso lista[]){
+    //Método para suspender un proceso
+    public static void suspenderProcesoListo(Proceso p){
+        introducirProcesoALista(p, procesos_suspendidos_listos);
         try{
-          ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendido_listo.obj"));
-            for(int i=0 ; i<30; i=i+1){
-                if(lista[i]!=null) {
-                    salida.writeObject(lista[i]);
-                    salida.close();
+            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendidos_listos.obj"));
+            for(int i = 0; i< procesos_suspendidos_listos.length; i++){
+                if(procesos_suspendidos_listos[i]!=null){
+                    salida.writeObject(procesos_suspendidos_listos[i]);
                 }
             }
             salida.close();
-        }
-        catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "No se pudo Guardar el Archivo");
-        }
-           
-        }
-    static int n=0;
-    //Método para leer archivos de procesos
-    public static void leer (Proceso lista[]){
-        //for (int x=0; x<30; x++) {
-        try{
-        boolean seguir=true;
-        ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("proceso.obj"));
-        do{
-                           
-                Proceso obj1 = (Proceso)entrada.readObject();
-                if(obj1==null){
-                seguir=false;
-                }            
-              
-        }while(seguir);
-        entrada.close();
-        }
-        catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "No se pudo Leer el Archivo");
-            }
-            catch (ClassNotFoundException exc){
-                
-            }
+        } catch (IOException e) {
+            System.out.println("No se pudo Guardar el proceso en memoria secundaria");
+        }   
     }
     
+    //Metodo para restaurar un proceso
+    public static void restaurarProcesosSuspendidosListos(){
+        try {
+            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("procesos_suspendidos_listos.obj"));
+            Proceso p = null;
+            do{
+                p = (Proceso)entrada.readObject();
+                System.out.println(p.getNombre());
+            }while(p!=null);
+            entrada.close();
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "No se encontraron procesos suspendidos");
+        } catch (IOException ex) {
+            System.out.println("No se pudo leer el proceso en memoria secundaria");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("No se encontro la clase perteneciente al tipo de archivo");
+        }
+    }
     
-    
+    //Metodo para meter un proceso a alguna lista que almacene procesos
+    public static void introducirProcesoALista(Proceso p, Proceso lista[]){
+        //Recorremos la lista
+        for(int i =0; i<lista.length;i++){
+            //Si encontramos una posicion vacia
+            if(lista[i]==null){
+                //guardamos el proceso en esa posicion
+                lista[i] = p;
+                //rompemos el ciclo
+                break;
+            }
+        }
+        
+    }
 }

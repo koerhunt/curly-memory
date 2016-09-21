@@ -7,7 +7,6 @@ package curly.memory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +18,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
     //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
     @Override
     public void run() {
-        //Comienza fifo
+        //Comienza a trabajar el algoritmo fifo
         ComenzarFifo();
     }
     
@@ -73,10 +72,11 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                         try {
                             //Actaualizamos la tabla de procesos
                             InterfazG.actualizarTablaRes(procesos_listos);
-                            //Actaualizamos la barra de progreso
+                            //Actaualizamos la etiqueta de que proceso se esta atentiendo
                             InterfazG.actualizarLabelEjecutando(String.valueOf(procesos_listos[i].getPid()));
+                            //Actaualizamos la barra de progreso
                             InterfazG.actulizarBarraDeProgreso(procesos_listos[i].getProgreso());
-                            //Relentizamos (alargamos) el proceso un segundo
+                            //Relentizamos (alargamos) el proceso 700 milisegundos
                             java.lang.Thread.sleep(700);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);

@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.JOptionPane;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,7 +37,8 @@ public class Simulador {
     static int tiempo_cpu=0;
     
     //Metodo principal
-    public static void main(String[] args) {       
+    public static void main(String[] args) {
+        //Se crean los recursos, se prepara la memoria para la lista de listos
         inicializar();
     }
     
@@ -70,17 +68,21 @@ public class Simulador {
         
     }
     
+    //Metodo para crear los 5 procesos por defecto conforme la ejecucion del programa avanza
     public static void crearProcesosPorDefecto(){
         t = new Thread(new CrearProcesos());        
         t.start();
     }
     
+    //Metodo que regresa el nombre del recurso 'r'
     public static String ObtenerNombreDelRecurso(int r){
+        //si r es igual a 0 el proceso no requiere nungun recurso
         if(r==0){
          return "No requiere recurso";
         }else{
-         int rec = r-1;
-         return recursos[rec].getNombre();
+          int rec = r-1;
+          //regresa el nombre del recurso
+          return recursos[rec].getNombre();
         }
     }
     

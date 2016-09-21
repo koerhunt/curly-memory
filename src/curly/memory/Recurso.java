@@ -6,7 +6,8 @@
 package curly.memory;
 
 public class Recurso {
-    
+  
+  //Estados en los que puede estar un proceso
     public static final int ASIGNADO = 0;
     public static final int LIBRE =1;
     

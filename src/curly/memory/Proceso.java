@@ -197,7 +197,7 @@ public class Proceso implements java.io.Serializable {
     }
             
     
-    
+    //Este metodo devuelve el nombre del estado correspondiente a un numero entero
     public static String NombreDeEstado(int e){
         switch(e){
             case ESTADO_LISTO:

@@ -8,7 +8,6 @@ package curly.memory;
 import static curly.memory.Simulador.procesos_listos;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 public class AlgoritmoSJN  extends Simulador implements Runnable {
     
@@ -16,6 +15,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
     
     @Override
     public void run() {
+        //comienza a trabajar el algoritmo SJN
         ComenzarSJN();
     }    
     
@@ -72,9 +72,9 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                     try {
                         //Actaualizamos la tabla de procesos
                         InterfazG.actualizarTablaRes(procesos_listos);
+                        //Actaualizamos la etiqueta de que proceso se esta atentiendo
+                        InterfazG.actualizarLabelEjecutando(String.valueOf(proceso_mas_corto.getPid()));
                         //Actaualizamos la barra de progreso
-                        //Actaualizamos la barra de progreso
-                            InterfazG.actualizarLabelEjecutando(String.valueOf(proceso_mas_corto.getPid()));
                         InterfazG.actulizarBarraDeProgreso(proceso_mas_corto.getProgreso());
                         //Relentizamos (alargamos) el proceso un segundo
                         java.lang.Thread.sleep(1000);

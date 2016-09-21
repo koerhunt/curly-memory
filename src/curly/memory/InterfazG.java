@@ -11,8 +11,6 @@
 package curly.memory;
 
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
@@ -22,8 +20,8 @@ import javax.swing.table.TableModel;
  */
 public class InterfazG extends javax.swing.JFrame {
     
-    //Variables para ubicar el modelo de la tabla y la barra de progreso
-    //El modelo es el formato que se da a la tabla
+    //Variables que permiten a las clases de Simulador, FIFO, SJN, etc.. puedan acceder y modificar
+    //la interfaz grafica
     static TableModel model;
     static JProgressBar barra;
     static JButton btn_iniciar;
@@ -31,56 +29,34 @@ public class InterfazG extends javax.swing.JFrame {
     static JTable tabla;
     static JLabel ej_etiqueta;
     
+    //Se declara una variable que contendra al algoritmo (FIFO, SJN) que se esta ejecutando
     static Thread hilo_ejecutando;
    
     /**
     * Creates new form InterfazG
     */
     public InterfazG() {
+        //Se cargan los componentes de la interfaz grafica
         initComponents();
+        //Se prepara la lista de procesos y el ambiente de simulacion
         Simulador.inicializar();
-        model = tablaRes.getModel();
-        barra = jProgressBar1;
-        btn_iniciar = boton_iniciar;
-        btn_parar = boton_parar;
-        tabla = tablaRes;
-        ej_etiqueta=ejecutando_label;
+        
+        //Se hace referencia a los objetos de la interfaz grafica
+        model = tablaRes.getModel(); // el modelo se utiliza para meter la informacion a la tabla
+        barra = jProgressBar1; //es la barra de progreso
+        btn_iniciar = boton_iniciar; //el boton de iniciar
+        btn_parar = boton_parar;//el boton de parar
+        tabla = tablaRes;//la tabla
+        ej_etiqueta=ejecutando_label;//la etiqueta que indica que proceso se esta ejecutando
+        //Metodo que actualiza las columnas y filas de la tabla
         actualizarTablaRes(Simulador.procesos_listos);
         
     }
     
-    
+    //Metodo principal
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InterfazG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InterfazG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InterfazG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InterfazG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        
+        //Crea y muestra la interfaz grafica
         new InterfazG().setVisible(true);
-        /* Create and display the form */
-        //java.awt.EventQueue.invokeLater(new Runnable() {
-          //  public void run() {
-                //new InterfazG().setVisible(true);
-         //   }
-        //});
     }
 
     /**
@@ -336,23 +312,26 @@ public class InterfazG extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_boton_iniciarActionPerformed
 
+    //metodo que java creo, no se esta utilizando
     private void criteriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_criteriosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_criteriosActionPerformed
-
+    
+    //Boton de salir
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        //sale del programa
         System.exit(0);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        //Cuando se da click al boton de crear proceso
         //Pregunta si desea crar otro programa:
             //opciones disponibles a seleccionar
             String x1="MANUAL";
             //Objeto de opciones
             Object[] options = {x1, "ALEATORIO"};
-            //obtener que desea hacer el usuario
+            //obtener que desea hacer el usuario si crear un proceso de manera aleatorea
+            //o que 'el introdusca algunos campos
             int r = JOptionPane.showOptionDialog(null,"¿Desea crear un proceso...?\n",
             " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,x1);
             
@@ -389,37 +368,51 @@ public class InterfazG extends javax.swing.JFrame {
             
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    //Boton que para el programa (cuando se da clic)
     private void boton_pararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_pararActionPerformed
         // TODO add your handling code here:
         if(hilo_ejecutando.isAlive()){
+            //se suspende la ejecucion
             hilo_ejecutando.suspend();
-            boton_iniciar.setText("reanudar");
-            boton_iniciar.setEnabled(true);
-            boton_parar.setEnabled(false);
-            boton_reiniciar.setEnabled(true);
+            //se cambian los estados de la interfaz grafica
+            boton_iniciar.setText("reanudar"); //se cambia el texto del boton iniciar
+            boton_iniciar.setEnabled(true); // se habilita el boton iniciar
+            boton_parar.setEnabled(false); //se deshabilita el boton de parar
+            boton_reiniciar.setEnabled(true); //se habilita el boton de reiniciar
+            //se suspende el creador de procesos
             Simulador.t.suspend();
         }
     }//GEN-LAST:event_boton_pararActionPerformed
-
+    
+    //El boton re reiniciar (cuando se da clic)
     private void boton_reiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_reiniciarActionPerformed
-        // TODO add your handling code here:
+        //se detiene la ejecucion del proceso (FIFO,SJN,etc..)
         hilo_ejecutando.stop();
+        //se interrumpe al creador de procesos
         Simulador.t.interrupt();
+        //Se vacia la lista de procesos listos
         Simulador.procesos_listos = null;
+        //Se prepara la lista de procesos y el ambiente de simulacion
         Simulador.inicializar();
+        //se pone el porcentaje de la barra de progreso en 
         barra.setValue(0);
-        btn_iniciar.setText("Iniciar");
-        btn_iniciar.setEnabled(true);
-        boton_parar.setEnabled(false);
-        boton_reiniciar.setEnabled(false);
-        hilo_ejecutando = null;
+        btn_iniciar.setText("Iniciar"); //se cambia el texto del boton iniciar a iniciar
+        btn_iniciar.setEnabled(true); //se habilita el boton de iniciar
+        boton_parar.setEnabled(false); //se deshabilita el boton de parar
+        boton_reiniciar.setEnabled(false); //se deshabilita el boton de reiniciar
+        hilo_ejecutando = null; //se pone nulo el hilo que estaba ejecutando el algoritmo
+        //Actualiza la tabla con la lista de procesos
         actualizarTablaRes(Simulador.procesos_listos);
+        //Se cambia el texto de la etiqueta que muestra que proceso se esta ejecutando
         ejecutando_label.setText("Esperando a iniciar planificacion");
         
-        //Vacia la tabla
+        //se vacia cada renglon y columna de la tabla
         try {
+            //i hasta 30 por los renglones que son
             for(int i=0; i<30;i++){
+                //menor que 9 porque son 8 columnas
                 for(int j=0; j<9;j++){
+                    //se rellena la celda con un espacio en blanco
                     model.setValueAt("", i, j);
                 }
             }
@@ -472,6 +465,7 @@ public class InterfazG extends javax.swing.JFrame {
     }
     
     //Al terminar el algoritmo se reinicializa la lista de procesos y la barra vuelve a cero
+    //se realiza lo mismo que el metodo se llama al hacer click sobre el boton 'terminar'
     public static void algoritmoTerminado(){  
         JOptionPane.showMessageDialog(null,"Procedimiento terminado");
         ej_etiqueta.setText("Esperando a iniciar planificacion");

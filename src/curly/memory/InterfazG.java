@@ -25,6 +25,7 @@ public class InterfazG extends javax.swing.JFrame {
     static TableModel model;
     static JProgressBar barra;
     static JButton btn_iniciar;
+    static JButton btn_parar;
     static JTable tabla;
     
     static Thread hilo_ejecutando;
@@ -38,6 +39,7 @@ public class InterfazG extends javax.swing.JFrame {
         model = tablaRes.getModel();
         barra = jProgressBar1;
         btn_iniciar = boton_iniciar;
+        btn_parar = boton_parar;
         tabla = tablaRes;
         actualizarTablaRes(Simulador.procesos_listos);
         
@@ -439,6 +441,8 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.inicializar();
         barra.setValue(0);
         btn_iniciar.setText("Iniciar");
+        btn_iniciar.setEnabled(true);
+        btn_parar.setEnabled(false);
     }
     
     //Variables para la interfaz grafica

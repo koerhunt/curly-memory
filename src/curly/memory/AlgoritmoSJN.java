@@ -79,7 +79,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //Relentizamos (alargamos) el proceso un segundo
                         java.lang.Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

@@ -5,7 +5,6 @@
  */
 package curly.memory;
 
-import static curly.memory.AlgoritmoSJN.ObtenerProcesoConMenorTiempoRequerido;
 import static curly.memory.Simulador.procesos_listos;
 import static curly.memory.Simulador.tiempo_cpu;
 import java.util.logging.Level;
@@ -83,7 +82,7 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
                         //Relentizamos (alargamos) el proceso un segundo
                         java.lang.Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -123,12 +122,12 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
         
         //Si la posicion es mayor a 0 significa que si se encontro un proceso
         //if(posicion_menor_tiempo>0){
-           //se asigna a p el proceso que se encuentra en la posicion asignada
-            try {
-               p = procesos_listos[posicion_mayor_prioridad];
-            } catch (Exception e) {
-               p = null;
-            }
+        //se asigna a p el proceso que se encuentra en la posicion asignada
+         try {
+            p = procesos_listos[posicion_mayor_prioridad];
+         } catch (Exception e) {
+            p = null;
+         }
         //}
         //Se retorna el objeto proceso
         return p;

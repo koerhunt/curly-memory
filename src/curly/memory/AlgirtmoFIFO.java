@@ -75,7 +75,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                             //Actaualizamos la barra de progreso
                             InterfazG.actulizarBarraDeProgreso(procesos_listos[i].getProgreso());
                             //Relentizamos (alargamos) el proceso un segundo
-                            java.lang.Thread.sleep(500);
+                            java.lang.Thread.sleep(700);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                         }

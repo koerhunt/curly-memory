@@ -71,7 +71,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //Actaualizamos la barra de progreso
                         InterfazG.actulizarBarraDeProgreso(proceso_mas_corto.getProgreso());
                         //Relentizamos (alargamos) el proceso un segundo
-                        java.lang.Thread.sleep(500);
+                        java.lang.Thread.sleep(700);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -80,10 +80,10 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         //Actaualizamos la tabla de procesos
         InterfazG.actualizarTablaRes(procesos_listos);
         //Mientras el proceso mas corto sea diferente de nulo
-        }while(proceso_mas_corto!=null);
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
-        InterfazG.algoritmoTerminado();
-        JOptionPane.showMessageDialog(null,"Procedimiento por FIFO Terminado");
+        }while(true);
+        //System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
+        //InterfazG.algoritmoTerminado();
+        //JOptionPane.showMessageDialog(null,"Procedimiento por SJN Terminado");
     }
     
     //Metodo para obtener el proceso con menor tiempo requerido
@@ -94,7 +94,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         int posicion_menor_tiempo = -1;
         //variable auxiliar proceso para almacenar el objeto a retornar
         Proceso p = null;
-        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
         for(int i=0;i<procesos_listos.length;i++){
             if(procesos_listos[i]!=null){
                 //comparamos el estado del proceso actual
@@ -105,17 +105,17 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
                         menor_tiempo=procesos_listos[i].getTiempoRequerido();
                         //Se guarda la posicion del proceso
-                        posicion_menor_tiempo=i;                
+                        posicion_menor_tiempo=i;
                     }
                 }
             }
         }
         
         //Si la posicion es mayor a 0 significa que si se encontro un proceso
-        if(posicion_menor_tiempo>0){
+        //if(posicion_menor_tiempo>0){
            //se asigna a p el proceso que se encuentra en la posicion asignada
            p = procesos_listos[posicion_menor_tiempo];
-        }
+        //}
         //Se retorna el objeto proceso
         return p;
     }

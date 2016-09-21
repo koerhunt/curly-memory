@@ -306,6 +306,16 @@ public class InterfazG extends javax.swing.JFrame {
                     boton_iniciar.setEnabled(false);
                     boton_parar.setEnabled(true);
                 break;
+                case "RR":
+                break;
+		case "HRN":
+		  //Se inicia la ejecucion del algoritmo HRN
+		  Simulador.crearProcesosPorDefecto();
+		  hilo_ejecutando = new Thread(new AlgoritmoHRN());
+		  hilo_ejecutando.start();
+		  boton_iniciar.setEnabled(false);
+		  boton_parar.setEnabled(true);
+		break;
             }
         }
     }//GEN-LAST:event_boton_iniciarActionPerformed

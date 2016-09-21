@@ -237,6 +237,19 @@ public class Simulador {
         }
     }
     
+    //Metodo para obtener el proceso con menor tiempo requerido
+    public static void CalcularPrioridadDeTodosLosProcesos(){
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
+        for(int i=0;i<procesos_listos.length;i++){
+            if(procesos_listos[i]!=null){
+                //comparamos el estado del proceso actual
+                if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO){
+                    procesos_listos[i].calcularPrioridad();
+                }
+            }
+        }
+    }
+    
      //Metodo para obtener el proceso con menor tiempo requerido
     public static void ActualizarTiempoDeServicioDeTodosLosProcesos(){
         //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}

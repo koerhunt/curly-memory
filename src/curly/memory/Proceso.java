@@ -26,7 +26,7 @@ public class Proceso implements java.io.Serializable {
     //Progreso (del 1 al 100)
     private int progreso;
     //Prioridad del proceso
-    private int prioridad;
+    private double prioridad;
     
     //Tiempos para estadistica
     private int instante_de_llegada;
@@ -140,7 +140,7 @@ public class Proceso implements java.io.Serializable {
         this.nombre = nombre;
     }
 
-    public int getPrioridad() {
+    public double getPrioridad() {
         return prioridad;
     }
 
@@ -172,9 +172,6 @@ public class Proceso implements java.io.Serializable {
         this.recurso_asignado = recurso_asignado;
     }
     
-    
-    
-    
     //Metodo para actualizar progreso del proceso
     public void actualizarProgreso(){
         tiempo_de_ejecucion++;
@@ -184,6 +181,21 @@ public class Proceso implements java.io.Serializable {
     //Metodo para calcular el tiempo de servicio
     public void calcularTiempoDeServicio(){
         tiempo_de_servicio = tiempo_de_ejecucion + tiempo_de_espera;
+    }
+    
+    //Metodo para calcular el indice de respuesta
+    public double calcularPrioridad() {
+        //P=(w+t)/t
+        //Donde: P=prioridad, w=tiempo de espera en listos, t=tiempo de ejecución.
+        try{
+            // P=(w+t)/t
+            //Donde: P=prioridad, w=tiempo de espera en listos, t=tiempo de ejecución.
+            this.prioridad = (tiempo_de_espera+tiempo_de_servicio)/(tiempo_de_servicio);
+        }catch(Exception e){
+            this.prioridad =0;
+        }
+        
+        return prioridad;
     }
     
     //Metodo para saber si al proceso tiene asignado el recurso

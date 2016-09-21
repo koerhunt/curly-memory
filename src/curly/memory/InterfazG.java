@@ -159,7 +159,7 @@ public class InterfazG extends javax.swing.JFrame {
             }
         });
 
-        criterios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN", "RR" }));
+        criterios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN" }));
         criterios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 criteriosActionPerformed(evt);
@@ -305,8 +305,6 @@ public class InterfazG extends javax.swing.JFrame {
                     hilo_ejecutando.start();
                     boton_iniciar.setEnabled(false);
                     boton_parar.setEnabled(true);
-                break;
-                case "RR":
                 break;
             }
         }

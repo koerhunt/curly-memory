@@ -22,15 +22,6 @@ public class Simulador {
     public static Recurso recursos[];
     //Lista de procesos listos
     public static Proceso procesos_listos[];
-    //Lista de procesos bloqueados
-    public static Proceso procesos_bloqueados[];
-    //Lista de procesos suspendidos
-    public static Proceso procesos_suspendidos[];
-    //Lista de procesos suspendidos listos
-    public static Proceso procesos_suspendidos_listos[];
-    //Lista de procesos suspendidos bloqueados
-    public static Proceso procesos_suspendidos_bloqueados[];
-    //Hilo que crea los procesos por defecto
     public static Thread t;
     
     static int secuencia_id = 5;
@@ -54,12 +45,6 @@ public class Simulador {
         
         //Inicializando gurpo de procesos predefinidos
         procesos_listos = new Proceso[30];
-                        
-        //t = new Thread(new CrearProcesos());        
-        
-        //Inicializando listas de procesos para los demas estados
-        procesos_suspendidos_listos = new Proceso[30];
-        procesos_suspendidos_bloqueados = new Proceso[30];
         
         //Inicializando secuencia del ID
         secuencia_id = 1;
@@ -138,41 +123,6 @@ public class Simulador {
         
         System.out.println("El proceso "+p.getNombre()+" ha liberado el recurso "+r.getNombre());
     }
- 
-    //Método para suspender un proceso (listo)
-    public static void suspenderProcesoListo(Proceso p){
-        introducirProcesoALista(p, procesos_suspendidos_listos);
-        try{
-            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendidos_listos.obj"));
-            for(int i = 0; i< procesos_suspendidos_listos.length; i++){
-                if(procesos_suspendidos_listos[i]!=null){
-                    salida.writeObject(procesos_suspendidos_listos[i]);
-                }
-            }
-            salida.close();
-        } catch (IOException e) {
-            System.out.println("No se pudo Guardar el proceso en memoria secundaria");
-        }   
-    }
-    
-    //Metodo para restaurar un proceso
-    public static void restaurarProcesosSuspendidosListos(){
-        try {
-            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("procesos_suspendidos_listos.obj"));
-            Proceso p = null;
-            do{
-                p = (Proceso)entrada.readObject();
-                System.out.println(p.getNombre());
-            }while(p!=null);
-            entrada.close();
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "No se encontraron procesos suspendidos");
-        } catch (IOException ex) {
-            System.out.println("No se pudo leer el proceso en memoria secundaria");
-        } catch (ClassNotFoundException ex) {
-            System.out.println("No se encontro la clase perteneciente al tipo de archivo");
-        }
-    }
     
     //Metodo para meter un proceso a alguna lista que almacene procesos
     public static void introducirProcesoALista(Proceso p, Proceso lista[]){
@@ -185,41 +135,6 @@ public class Simulador {
                 //rompemos el ciclo
                 break;
             }
-        }
-    }
-    
-    //Método para suspender un proceso (bloqueado)
-    public static void suspenderProcesoBloqueado(Proceso p){
-        introducirProcesoALista(p, procesos_suspendidos_bloqueados);
-        try{
-            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("procesos_suspendidos_bloqueados.obj"));
-            for(int i = 0; i< procesos_suspendidos_bloqueados.length; i++){
-                if(procesos_suspendidos_bloqueados[i]!=null){
-                    salida.writeObject(procesos_suspendidos_bloqueados[i]);
-                }
-            }
-            salida.close();
-        } catch (IOException e) {
-            System.out.println("No se pudo Guardar el proceso en memoria secundaria");
-        }   
-    }
-    
-    //Metodo para restaurar un proceso (bloqueado)
-    public static void restaurarProcesosSuspendidosBloqueados(){
-        try {
-            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("procesos_suspendidos_bloqueados.obj"));
-            Proceso p = null;
-            do{
-                p = (Proceso)entrada.readObject();
-                System.out.println(p.getNombre());
-            }while(p!=null);
-            entrada.close();
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "No se encontraron procesos suspendidos");
-        } catch (IOException ex) {
-            System.out.println("No se pudo leer el proceso en memoria secundaria");
-        } catch (ClassNotFoundException ex) {
-            System.out.println("No se encontro la clase perteneciente al tipo de archivo");
         }
     }
     

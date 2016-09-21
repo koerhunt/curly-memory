@@ -25,6 +25,7 @@ public class InterfazG extends javax.swing.JFrame {
     static TableModel model;
     static JProgressBar barra;
     static JButton btn_iniciar;
+    static JTable tabla;
     
     static Thread hilo_ejecutando;
    
@@ -37,6 +38,7 @@ public class InterfazG extends javax.swing.JFrame {
         model = tablaRes.getModel();
         barra = jProgressBar1;
         btn_iniciar = boton_iniciar;
+        tabla = tablaRes;
         actualizarTablaRes(Simulador.procesos_listos);
         
     }
@@ -409,6 +411,10 @@ public class InterfazG extends javax.swing.JFrame {
          //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
          //model es un auxiliar para meter la informacion a la tabla
          if(ListaP[x]!=null){
+            if(ListaP[x].getEstado()==Proceso.ESTADO_EN_EJECUCION){
+                tabla.setRowSelectionInterval(x, x);
+            }else{
+            }
             //x indica el renglon
             //el numero que le sigue indica la columna
             model.setValueAt(ListaP[x].getPid(), x, 0);

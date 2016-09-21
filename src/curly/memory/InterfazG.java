@@ -295,6 +295,7 @@ public class InterfazG extends javax.swing.JFrame {
         if(hilo_ejecutando!=null){
             if(hilo_ejecutando.isAlive()){
                 hilo_ejecutando.resume();
+                Simulador.t.resume();
                 boton_iniciar.setEnabled(false);
                 boton_parar.setEnabled(true);
                 boton_reiniciar.setEnabled(false);
@@ -304,13 +305,16 @@ public class InterfazG extends javax.swing.JFrame {
             switch(a){
                 case "FIFO":
                     //Se inicia la ejecucion del algoritmo FIFO
+                    Simulador.crearProcesosPorDefecto();
                     hilo_ejecutando = new Thread(new AlgirtmoFIFO()); //Crea un nuevo hilo
                     hilo_ejecutando.start();
                     boton_iniciar.setEnabled(false);
                     boton_parar.setEnabled(true);
+                    
                 break;
                 case "SJN":
                     //Se inicia la ejecucion del algoritmo FIFO
+                    Simulador.crearProcesosPorDefecto();
                     hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
                     hilo_ejecutando.start();
                     boton_iniciar.setEnabled(false);
@@ -383,12 +387,15 @@ public class InterfazG extends javax.swing.JFrame {
             boton_iniciar.setEnabled(true);
             boton_parar.setEnabled(false);
             boton_reiniciar.setEnabled(true);
+            Simulador.t.suspend();
         }
     }//GEN-LAST:event_boton_pararActionPerformed
 
     private void boton_reiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_reiniciarActionPerformed
         // TODO add your handling code here:
         hilo_ejecutando.stop();
+        Simulador.t.interrupt();
+        Simulador.procesos_listos = null;
         Simulador.inicializar();
         barra.setValue(0);
         btn_iniciar.setText("Iniciar");
@@ -397,6 +404,15 @@ public class InterfazG extends javax.swing.JFrame {
         boton_reiniciar.setEnabled(false);
         hilo_ejecutando = null;
         actualizarTablaRes(Simulador.procesos_listos);
+        
+        try {
+            for(int i=0; i<30;i++){
+                for(int j=0; j<7;j++){
+                    model.setValueAt("", i, j);
+                }
+            }
+        } catch (Exception e) {
+        }
         
     }//GEN-LAST:event_boton_reiniciarActionPerformed
     

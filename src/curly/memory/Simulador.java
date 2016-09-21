@@ -33,6 +33,8 @@ public class Simulador {
     public static Proceso procesos_suspendidos_listos[];
     //Lista de procesos suspendidos bloqueados
     public static Proceso procesos_suspendidos_bloqueados[];
+    //Hilo que crea los procesos por defecto
+    public static Thread t;
     
     static int secuencia_id = 5;
     static int tiempo_cpu=0;
@@ -54,22 +56,22 @@ public class Simulador {
         
         //Inicializando gurpo de procesos predefinidos
         procesos_listos = new Proceso[30];
-        
-        procesos_listos[0] = new Proceso(1, "Google chrome",0, 18, 3);
-        procesos_listos[1] = new Proceso(2, "Microsoft Word",0, 8, 3);
-        procesos_listos[2] = new Proceso(3, "Paint",0, 5, 1);
-        procesos_listos[3] = new Proceso(4, "Spotify",0, 15, 0);
-        procesos_listos[4] = new Proceso(5, "Avast",0, 9, 4);
+                        
+        t = new Thread(new CrearProcesos());        
         
         //Inicializando listas de procesos para los demas estados
         procesos_suspendidos_listos = new Proceso[30];
         procesos_suspendidos_bloqueados = new Proceso[30];
         
         //Inicializando secuencia del ID
-        secuencia_id = 6;
+        secuencia_id = 1;
         //Iniciando tiempo del cpu
         tiempo_cpu=0;
         
+    }
+    
+    public static void crearProcesosPorDefecto(){
+        t.start();
     }
     
     public static String ObtenerNombreDelRecurso(int r){
@@ -181,9 +183,7 @@ public class Simulador {
                 break;
             }
         }
-        
     }
-    
     
     //Método para suspender un proceso (bloqueado)
     public static void suspenderProcesoBloqueado(Proceso p){
@@ -200,7 +200,6 @@ public class Simulador {
             System.out.println("No se pudo Guardar el proceso en memoria secundaria");
         }   
     }
-    
     
     //Metodo para restaurar un proceso (bloqueado)
     public static void restaurarProcesosSuspendidosBloqueados(){

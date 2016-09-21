@@ -87,9 +87,8 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                 InterfazG.actualizarTablaRes(procesos_listos);
             }
         }
-        InterfazG.algoritmoTerminado();
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
-        JOptionPane.showMessageDialog(null,"Procedimiento por FIFO Terminado");
+        InterfazG.algoritmoTerminado();
     } 
     
     

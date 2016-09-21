@@ -57,7 +57,7 @@ public class Simulador {
         //Inicializando gurpo de procesos predefinidos
         procesos_listos = new Proceso[30];
                         
-        t = new Thread(new CrearProcesos());        
+        //t = new Thread(new CrearProcesos());        
         
         //Inicializando listas de procesos para los demas estados
         procesos_suspendidos_listos = new Proceso[30];
@@ -71,6 +71,7 @@ public class Simulador {
     }
     
     public static void crearProcesosPorDefecto(){
+        t = new Thread(new CrearProcesos());        
         t.start();
     }
     

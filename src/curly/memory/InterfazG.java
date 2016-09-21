@@ -11,6 +11,8 @@
 package curly.memory;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
@@ -301,6 +303,15 @@ public class InterfazG extends javax.swing.JFrame {
             }
         }else{
             String a=criterios.getSelectedItem().toString();
+            //Vacia la tabla
+            try {
+                for(int i=0; i<30;i++){
+                    for(int j=0; j<9;j++){
+                        model.setValueAt("", i, j);
+                    }
+                }
+            } catch (Exception e) {
+            }
             switch(a){
                 case "FIFO":
                     //Se inicia la ejecucion del algoritmo FIFO
@@ -461,12 +472,15 @@ public class InterfazG extends javax.swing.JFrame {
     }
     
     //Al terminar el algoritmo se reinicializa la lista de procesos y la barra vuelve a cero
-    public static void algoritmoTerminado(){
+    public static void algoritmoTerminado(){  
+        JOptionPane.showMessageDialog(null,"Procedimiento terminado");
+        ej_etiqueta.setText("Esperando a iniciar planificacion");
+        Simulador.procesos_listos = null;
         Simulador.inicializar();
-        barra.setValue(0);
         btn_iniciar.setText("Iniciar");
         btn_iniciar.setEnabled(true);
         btn_parar.setEnabled(false);
+        hilo_ejecutando = null;
     }
     
     //Variables para la interfaz grafica

@@ -86,10 +86,9 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         //Actaualizamos la tabla de procesos
         InterfazG.actualizarTablaRes(procesos_listos);
         //Mientras el proceso mas corto sea diferente de nulo
-        }while(procesos_atentidos<5 && proceso_mas_corto!=null);
+        }while(procesos_atentidos<5 || proceso_mas_corto!=null);
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
         InterfazG.algoritmoTerminado();
-        JOptionPane.showMessageDialog(null,"Procedimiento por SJN Terminado");
     }
     
     //Metodo para obtener el proceso con menor tiempo requerido
@@ -123,6 +122,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
             try {
                p = procesos_listos[posicion_menor_tiempo];
             } catch (Exception e) {
+               p = null;
             }
         //}
         //Se retorna el objeto proceso

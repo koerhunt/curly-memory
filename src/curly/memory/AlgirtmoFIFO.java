@@ -39,7 +39,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                 
                 //Mientras el proceso no haya terminado se estara trabajando en 'el
                 //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
-                procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
+                //procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
                 
                 if(procesos_listos[i].getRecurso()!=0){
                     solicitarRecurso(procesos_listos[i]);
@@ -49,6 +49,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                     while(procesos_listos[i].getProgreso()<100){
                         //Se aumenta una unidad de tiempo a el procesador
                         tiempo_cpu++;
+                        ActualizarTiempoDeEsperaDeTodosLosProcesos(procesos_listos[i]);
                         //Se actualiza el progreso del proceso
                         procesos_listos[i].actualizarProgreso();
                         System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo de ejecucion de "+procesos_listos[i].getTiempo_de_ejecucion());

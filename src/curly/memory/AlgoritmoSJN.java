@@ -11,7 +11,9 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class AlgoritmoSJN  extends Simulador implements Runnable {
-
+    
+    private static int procesos_atentidos = 0;
+    
     @Override
     public void run() {
         ComenzarSJN();
@@ -31,8 +33,8 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
             if(proceso_mas_corto!=null){
                 System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
                 //Se asigna el tiempo de espera
-                proceso_mas_corto.setTiempoDeEspera(tiempo_cpu);
-                System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de espera de "+tiempo_cpu);
+                //proceso_mas_corto.setTiempoDeEspera(tiempo_cpu);
+                //System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de espera de "+tiempo_cpu);
                 //Se cambia el estado del proceso
                 proceso_mas_corto.setEstado(Proceso.ESTADO_EN_EJECUCION);
                 System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a ejecucion");
@@ -44,6 +46,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                 while(proceso_mas_corto.getProgreso()<100){
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
+                    ActualizarTiempoDeEsperaDeTodosLosProcesos(proceso_mas_corto);
                     //Se actualiza el progreso del proceso
                     proceso_mas_corto.actualizarProgreso();
                     //Tiempo de ejecucion
@@ -64,6 +67,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //se calcula el tiempo de servicio
                         proceso_mas_corto.calcularTiempoDeServicio();
                         System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - tuvo un tiempo de servicio de "+proceso_mas_corto.getTiempo_de_servicio());
+                        procesos_atentidos++;
                     }
                     try {
                         //Actaualizamos la tabla de procesos
@@ -71,7 +75,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //Actaualizamos la barra de progreso
                         InterfazG.actulizarBarraDeProgreso(proceso_mas_corto.getProgreso());
                         //Relentizamos (alargamos) el proceso un segundo
-                        java.lang.Thread.sleep(700);
+                        java.lang.Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -80,10 +84,10 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         //Actaualizamos la tabla de procesos
         InterfazG.actualizarTablaRes(procesos_listos);
         //Mientras el proceso mas corto sea diferente de nulo
-        }while(true);
-        //System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
-        //InterfazG.algoritmoTerminado();
-        //JOptionPane.showMessageDialog(null,"Procedimiento por SJN Terminado");
+        }while(procesos_atentidos<5 && proceso_mas_corto!=null);
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
+        InterfazG.algoritmoTerminado();
+        JOptionPane.showMessageDialog(null,"Procedimiento por SJN Terminado");
     }
     
     //Metodo para obtener el proceso con menor tiempo requerido
@@ -114,13 +118,13 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         //Si la posicion es mayor a 0 significa que si se encontro un proceso
         //if(posicion_menor_tiempo>0){
            //se asigna a p el proceso que se encuentra en la posicion asignada
-           p = procesos_listos[posicion_menor_tiempo];
+            try {
+               p = procesos_listos[posicion_menor_tiempo];
+            } catch (Exception e) {
+            }
         //}
         //Se retorna el objeto proceso
         return p;
-    }
-    
-    
-    
+    }    
     
 }

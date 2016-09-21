@@ -54,6 +54,7 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_requerido = tiempo_requerido;
         this.recurso = recurso;
         this.tiempo_de_ejecucion = 0;
+        this.tiempo_de_espera = 0;
         estado = ESTADO_LISTO;
         recurso_asignado = false;
     }
@@ -189,6 +190,12 @@ public class Proceso implements java.io.Serializable {
     public boolean tieneSuRecursoAsignado(){
         return recurso_asignado;
     }
+    
+    //Metodo aumenta en uno el tiempo de espera
+    public void aumentarTiempoDeEspera(){
+        tiempo_de_espera++;
+    }
+            
     
     
     public static String NombreDeEstado(int e){

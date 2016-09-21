@@ -124,43 +124,43 @@ public class InterfazG extends javax.swing.JFrame {
 
         tablaRes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Estado", "Tiempo Requerido", "Tiempo En Ejecucionl", "Recursos", "Recurso en uso?"
+                "Id", "Nombre", "Estado", "Tiempo Requerido", "Tiempo En Ejecucionl", "Tiempo En Espera", "Tiempo de servicio", "Recursos", "Recurso en uso?"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -278,12 +278,13 @@ public class InterfazG extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addGap(23, 23, 23)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -405,9 +406,10 @@ public class InterfazG extends javax.swing.JFrame {
         hilo_ejecutando = null;
         actualizarTablaRes(Simulador.procesos_listos);
         
+        //Vacia la tabla
         try {
             for(int i=0; i<30;i++){
-                for(int j=0; j<7;j++){
+                for(int j=0; j<9;j++){
                     model.setValueAt("", i, j);
                 }
             }
@@ -424,6 +426,7 @@ public class InterfazG extends javax.swing.JFrame {
     
     //Metodo que se utiliza para actualizar la tabla con las caracteristicas de los procesos
     public static void actualizarTablaRes(Proceso ListaP[]) {
+     Simulador.ActualizarTiempoDeServicioDeTodosLosProcesos();
      //Se recorre la lista de procesos
      for (int x=0; x<ListaP.length; x++) {
          //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
@@ -441,12 +444,14 @@ public class InterfazG extends javax.swing.JFrame {
             model.setValueAt(Proceso.NombreDeEstado(ListaP[x].getEstado()), x, 2);
             model.setValueAt(ListaP[x].getTiempoRequerido(), x, 3);
             model.setValueAt(ListaP[x].getTiempo_de_ejecucion(), x, 4);
+            model.setValueAt(ListaP[x].getTiempoDeEspera(), x, 5);
+            model.setValueAt(ListaP[x].getTiempo_de_servicio(), x, 6);
             //Se obitene el nombre del recurso que utiliza
-            model.setValueAt(Simulador.ObtenerNombreDelRecurso(ListaP[x].getRecurso()), x, 5);
+            model.setValueAt(Simulador.ObtenerNombreDelRecurso(ListaP[x].getRecurso()), x, 7);
             if(ListaP[x].tieneSuRecursoAsignado()){
-                model.setValueAt("Si", x, 6);
+                model.setValueAt("Si", x, 8);
             }else{
-                model.setValueAt("No", x, 6);
+                model.setValueAt("No", x, 8);
             }
          }
       } 

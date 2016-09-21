@@ -220,4 +220,29 @@ public class Simulador {
         }
     }
     
+    //Metodo para obtener el proceso con menor tiempo requerido
+    public static void ActualizarTiempoDeEsperaDeTodosLosProcesos(Proceso p){
+        
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
+        for(int i=0;i<procesos_listos.length;i++){
+            if(procesos_listos[i]!=null){
+                //comparamos el estado del proceso actual
+                if((p.getPid() != procesos_listos[i].getPid())&&(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO)){
+                    procesos_listos[i].aumentarTiempoDeEspera();
+                }
+            }
+        }
+    }
+    
+     //Metodo para obtener el proceso con menor tiempo requerido
+    public static void ActualizarTiempoDeServicioDeTodosLosProcesos(){
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
+        for(int i=0;i<procesos_listos.length;i++){
+            if(procesos_listos[i]!=null){
+                //comparamos el estado del proceso actual
+                procesos_listos[i].calcularTiempoDeServicio();
+            }
+        }
+    }
+    
 }

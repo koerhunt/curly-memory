@@ -292,7 +292,7 @@ public class InterfazG extends javax.swing.JFrame {
                 case "FIFO":
                     //Se inicia la ejecucion del algoritmo FIFO
                     Simulador.crearProcesosPorDefecto();
-                    hilo_ejecutando = new Thread(new AlgirtmoFIFO()); //Crea un nuevo hilo
+                    hilo_ejecutando = new Thread(new AlgoritmoFIFO()); //Crea un nuevo hilo
                     hilo_ejecutando.start();
                     boton_iniciar.setEnabled(false);
                     boton_parar.setEnabled(true);
@@ -307,6 +307,12 @@ public class InterfazG extends javax.swing.JFrame {
                     boton_parar.setEnabled(true);
                 break;
                 case "RR":
+                    //Se inicia la ejecucion del algoritmo RR
+                    Simulador.crearProcesosPorDefecto();
+                    hilo_ejecutando = new Thread(new AlgoritmoRR()); //Crea un nuevo hilo
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
                 break;
 		case "HRN":
 		  //Se inicia la ejecucion del algoritmo HRN

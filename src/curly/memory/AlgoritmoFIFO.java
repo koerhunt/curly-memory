@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author HDEZ. OCHOA D. SEBASTIAN
  */
-public class AlgirtmoFIFO extends Simulador implements Runnable{
+public class AlgoritmoFIFO extends Simulador implements Runnable{
     
     
     //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
@@ -79,7 +79,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                             //Relentizamos (alargamos) el proceso 700 milisegundos
                             java.lang.Thread.sleep(700);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(AlgirtmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } 
                 }

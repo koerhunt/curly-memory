@@ -8,8 +8,8 @@ package curly.memory;
 public class Recurso {
   
   //Estados en los que puede estar un proceso
-    public static final int ASIGNADO = 0;
-    public static final int LIBRE =1;
+    public static final int ASIGNADO = 1;
+    public static final int LIBRE =0;
     
   //Identificador del recurso
     private int id;

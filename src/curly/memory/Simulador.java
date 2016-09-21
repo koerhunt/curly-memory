@@ -25,7 +25,10 @@ public class Simulador {
     public static Thread t;
     
     static int secuencia_id = 5;
+    //tiempo transcurrido en el cpu
     static int tiempo_cpu=0;
+    //cuantum para RR
+    static int quantum;
     
     //Metodo principal
     public static void main(String[] args) {
@@ -50,6 +53,8 @@ public class Simulador {
         secuencia_id = 1;
         //Iniciando tiempo del cpu
         tiempo_cpu=0;
+        //Definiendo el valor del cuantum
+        quantum=3;
         
     }
     
@@ -95,7 +100,9 @@ public class Simulador {
                     //Imprimimos Log
                     System.out.println("El recurso: "+recursos[i].getNombre()+" esta siendo utilizado por otro proceso");
                     //Se le asigna al proceso el estado de bloqueado
-                    p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                    //p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                    //No se le asigno su recurso
+                    p.setRecurso_asignado(false);
                     //Imprimimos Log
                     System.out.println("El proceso "+p.getNombre()+" se ha bloqueado");
                     //asignamos el resultado a la parte logica
@@ -113,14 +120,17 @@ public class Simulador {
         int recurso = p.getRecurso();
         Recurso r = null;
         for(int i=0; i<recursos.length;i++){
-            if(recursos[i].getId()==recurso){
-                r = recursos[i];
-                break;
+            if(recursos[i]!=null){
+                if(recursos[i].getId()==recurso){
+                    r = recursos[i];
+                    break;
+                }
             }
         }
-        p.setEstado(Recurso.LIBRE);
-        p.setRecurso_asignado(false);
-        
+        if(r!=null){
+            r.setEstado(Recurso.LIBRE);
+            p.setRecurso_asignado(false);
+        }
         System.out.println("El proceso "+p.getNombre()+" ha liberado el recurso "+r.getNombre());
     }
     

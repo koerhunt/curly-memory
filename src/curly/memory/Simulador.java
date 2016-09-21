@@ -38,6 +38,7 @@ public class Simulador {
     
     static int secuencia_id = 5;
     static int tiempo_cpu=0;
+    static int quantum;
     
     //Metodo principal
     public static void main(String[] args) {       
@@ -67,6 +68,8 @@ public class Simulador {
         secuencia_id = 1;
         //Iniciando tiempo del cpu
         tiempo_cpu=0;
+        //Iniciando el cuanto
+        quantum=3;
         
     }
     

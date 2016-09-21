@@ -73,6 +73,8 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                         //Actaualizamos la tabla de procesos
                         InterfazG.actualizarTablaRes(procesos_listos);
                         //Actaualizamos la barra de progreso
+                        //Actaualizamos la barra de progreso
+                            InterfazG.actualizarLabelEjecutando(String.valueOf(proceso_mas_corto.getPid()));
                         InterfazG.actulizarBarraDeProgreso(proceso_mas_corto.getProgreso());
                         //Relentizamos (alargamos) el proceso un segundo
                         java.lang.Thread.sleep(1000);

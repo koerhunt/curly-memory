@@ -74,6 +74,7 @@ public class AlgirtmoFIFO extends Simulador implements Runnable{
                             //Actaualizamos la tabla de procesos
                             InterfazG.actualizarTablaRes(procesos_listos);
                             //Actaualizamos la barra de progreso
+                            InterfazG.actualizarLabelEjecutando(String.valueOf(procesos_listos[i].getPid()));
                             InterfazG.actulizarBarraDeProgreso(procesos_listos[i].getProgreso());
                             //Relentizamos (alargamos) el proceso un segundo
                             java.lang.Thread.sleep(700);

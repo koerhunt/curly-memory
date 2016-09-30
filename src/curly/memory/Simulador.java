@@ -13,6 +13,10 @@ package curly.memory;
 public class Simulador {
     //Lista de procesos listos
     public static Proceso procesos_listos[];
+    
+    //Lista de procesos listos
+    public static Proceso procesos_bloqueados[];
+    
     public static Thread t;
     
     static int secuencia_id = 5;

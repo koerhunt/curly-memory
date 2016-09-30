@@ -40,7 +40,7 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                 //Por ser FIFO el tiempo de espera sera igual al tiempo del cpu
                 //procesos_listos[i].setTiempoDeEspera(tiempo_cpu);
                 
-                if(procesos_listos[i].getRecurso()!=0){
+                if(procesos_listos[i].requiereEntradaSalida()){
                     solicitarRecurso(procesos_listos[i]);
                 }
                 
@@ -55,10 +55,6 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                         System.out.println("El proceso lleva un progreso de "+procesos_listos[i].getProgreso()+"%");
                         //si el progreso esta terminado se actualiza su estado
                         if (procesos_listos[i].getProgreso()==100){
-                            //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
-                            if(procesos_listos[i].getRecurso()!=0 && procesos_listos[i].tieneSuRecursoAsignado() ){
-                                liberarRecurso(procesos_listos[i]);
-                            }
                             //se cambia el estado del proceso a terminado
                             procesos_listos[i].setEstado(Proceso.ESTADO_TERMINADO);
                             System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a terminado");

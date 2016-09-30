@@ -18,7 +18,6 @@ public class Proceso implements java.io.Serializable {
     
     //Identificador del proceso
     private int pid;
-    
     //nombre del proceso
     private String nombre;
     //Estado del proceso
@@ -37,26 +36,19 @@ public class Proceso implements java.io.Serializable {
     
     //Requerimientos del proceso (tiempo y recurso(s))
     private int tiempo_requerido;    
-    private int recurso;
-    //Si ponemos el arreglo de recursos tendria que implementarse una
-    //tecnica de resolucion de interbloqueos
-    //private int recursos_nececitados[];
-    
-    private boolean recurso_asignado;
+    private boolean recurso;
 
     public Proceso() {
     }
 
-    public Proceso(int pid, String nombre, int prioridad, int tiempo_requerido, int recurso) {
+    public Proceso(int pid, String nombre, int tiempo_requerido, boolean recurso) {
         this.pid = pid;
         this.nombre = nombre;
-        this.prioridad = prioridad;
         this.tiempo_requerido = tiempo_requerido;
         this.recurso = recurso;
         this.tiempo_de_ejecucion = 0;
         this.tiempo_de_espera = 0;
         estado = ESTADO_LISTO;
-        recurso_asignado = false;
     }
     
     //Grupos de Metodos Get y Set
@@ -124,14 +116,6 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_requerido = tiempo_requerido;
     }
 
-    public int getRecurso() {
-        return recurso;
-    }
-
-    public void setRecurso(int recurso) {
-        this.recurso = recurso;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -163,14 +147,6 @@ public class Proceso implements java.io.Serializable {
     public void setTiempoDeEspera(int tiempo_de_espera) {
         this.tiempo_de_espera = tiempo_de_espera;
     }
-
-    public boolean isRecurso_asignado() {
-        return recurso_asignado;
-    }
-
-    public void setRecurso_asignado(boolean recurso_asignado) {
-        this.recurso_asignado = recurso_asignado;
-    }
     
     //Metodo para actualizar progreso del proceso
     public void actualizarProgreso(){
@@ -198,16 +174,24 @@ public class Proceso implements java.io.Serializable {
         return prioridad;
     }
     
-    //Metodo para saber si al proceso tiene asignado el recurso
-    public boolean tieneSuRecursoAsignado(){
-        return recurso_asignado;
-    }
-    
     //Metodo aumenta en uno el tiempo de espera
     public void aumentarTiempoDeEspera(){
         tiempo_de_espera++;
     }
-            
+    
+    public boolean requiereEntradaSalida() {
+        return recurso;
+    }
+
+    public boolean requiereRecurso() {
+        return recurso;
+    }
+
+    public void setRecurso(boolean recurso) {
+        this.recurso = recurso;
+    }
+    
+    
     
     //Este metodo devuelve el nombre del estado correspondiente a un numero entero
     public static String NombreDeEstado(int e){

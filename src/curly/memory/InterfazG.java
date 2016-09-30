@@ -104,43 +104,43 @@ public class InterfazG extends javax.swing.JFrame {
 
         tablaRes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Estado", "T - Requerido", "T - De Ejecucion", "T - De Espera", "T - De Servicio", "Recursos", "Recurso en uso?", "Prioridad"
+                "Id", "Nombre", "Estado", "T - Requerido", "T - De Ejecucion", "T - De Espera", "T - De Servicio", "Requiere E/S ?", "Prioridad"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -359,7 +359,7 @@ public class InterfazG extends javax.swing.JFrame {
                 p.setNombre(JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n")); // se asigna un nombre al proceso
                 p.setTiempoRequerido(Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n"))); //se asigna el tiempo que el proceso requiere
                 //Se genera un numero aleatorio para el recurso a utilizar
-                int i = rd.nextInt((Simulador.recursos.length-1)-0)+1;
+                boolean i = rd.nextBoolean();
                 //Se asigna que el recurso untilizara que recurso
                 p.setRecurso(i);
                 //Se introduce el proceso a la lista de procesos creados/listos
@@ -367,12 +367,11 @@ public class InterfazG extends javax.swing.JFrame {
             }
             else {
                 //Si es aleatorio
-                //Se obtiene un numero aleatorio para el recurso
-                int i = rd.nextInt((Simulador.recursos.length-1)-0)+1;
+                boolean i = rd.nextBoolean();
                 //Se obtiene un numero para el tiempo que el recurso necesita (numero del 2 al 3)
                 int j = rd.nextInt(13-2)+1;
                 //Se crea el proceso con el id que sigue
-                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, 0, j, i);
+                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, j, i);
                 //Se incrementa el id
                 Simulador.secuencia_id++;
                 //se introduce el proceso a la lista
@@ -420,21 +419,24 @@ public class InterfazG extends javax.swing.JFrame {
         //Se cambia el texto de la etiqueta que muestra que proceso se esta ejecutando
         ejecutando_label.setText("Esperando a iniciar planificacion");
         
+        limpiarTabla();
+        
+    }//GEN-LAST:event_boton_reiniciarActionPerformed
+    
+    public void limpiarTabla(){
         //se vacia cada renglon y columna de la tabla
         try {
             //i hasta 30 por los renglones que son
             for(int i=0; i<30;i++){
                 //menor que 9 porque son 8 columnas
-                for(int j=0; j<10;j++){
+                for(int j=0; j<9;j++){
                     //se rellena la celda con un espacio en blanco
                     model.setValueAt("", i, j);
                 }
             }
         } catch (Exception e) {
         }
-        
-    }//GEN-LAST:event_boton_reiniciarActionPerformed
-    
+    }
     //Métodos
     public static void actulizarBarraDeProgreso(int porcentaje){
         //Se actualiza el progreso de la barra
@@ -467,15 +469,13 @@ public class InterfazG extends javax.swing.JFrame {
             model.setValueAt(ListaP[x].getTiempo_de_ejecucion(), x, 4);
             model.setValueAt(ListaP[x].getTiempoDeEspera(), x, 5);
             model.setValueAt(ListaP[x].getTiempo_de_servicio(), x, 6);
-            //Se obitene el nombre del recurso que utiliza
-            model.setValueAt(Simulador.ObtenerNombreDelRecurso(ListaP[x].getRecurso()), x, 7);
-            if(ListaP[x].tieneSuRecursoAsignado()){
-                model.setValueAt("Si", x, 8);
+            if(ListaP[x].requiereEntradaSalida()){
+                model.setValueAt("Si", x, 7);
             }else{
-                model.setValueAt("No", x, 8);
+                model.setValueAt("No", x, 7);
             }
             //saca la prioridad del proceso
-            model.setValueAt(ListaP[x].getPrioridad(), x, 9);
+            model.setValueAt(ListaP[x].getPrioridad(), x, 8);
          }
       } 
     }

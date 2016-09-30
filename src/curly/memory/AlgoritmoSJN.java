@@ -39,7 +39,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                 proceso_mas_corto.setEstado(Proceso.ESTADO_EN_EJECUCION);
                 System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a ejecucion");
                 
-                if(proceso_mas_corto.getRecurso()!=0){
+                if(proceso_mas_corto.requiereEntradaSalida()){
                     solicitarRecurso(proceso_mas_corto);
                 }
                 
@@ -54,10 +54,6 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                     System.out.println("El proceso lleva un progreso de "+proceso_mas_corto.getProgreso()+"%");
                     //si el progreso esta terminado se actualiza su estado
                     if (proceso_mas_corto.getProgreso()==100){
-                        //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
-                        if(proceso_mas_corto.getRecurso()!=0 && proceso_mas_corto.tieneSuRecursoAsignado() ){
-                            liberarRecurso(proceso_mas_corto);
-                        }
                         //se cambia el estado del proceso
                         proceso_mas_corto.setEstado(Proceso.ESTADO_TERMINADO);
                         System.out.println("El proceso "+proceso_mas_corto.getNombre()+" - Cambio estado a terminado");

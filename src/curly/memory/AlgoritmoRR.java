@@ -44,13 +44,11 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                             procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
                             System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a ejecucion");
                             
-                            if(procesos_listos[i].getRecurso()!=0){
-                                if(!procesos_listos[i].tieneSuRecursoAsignado()){
-                                   solicitarRecurso(procesos_listos[i]); 
-                                }
+                            if(procesos_listos[i].requiereEntradaSalida()){
+                                solicitarRecurso(procesos_listos[i]);
                             }
                             
-                            if(procesos_listos[i].tieneSuRecursoAsignado()||procesos_listos[i].getRecurso()==0){
+                            if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||!procesos_listos[i].requiereEntradaSalida()){
                                 //El proceso puede entrar a trabajar
                                 procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
                                 actualizarProgresoDelProceso(procesos_listos[i]);
@@ -68,7 +66,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                         }else{
                             if(procesos_listos[i].getEstado()!=Proceso.ESTADO_TERMINADO){
                                 //-----------------------------------------------
-                                if(procesos_listos[i].tieneSuRecursoAsignado()||procesos_listos[i].getRecurso()==0){
+                                if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||!procesos_listos[i].requiereEntradaSalida()){
                                     //El proceso continuar su trabajo
                                     procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
                                     actualizarProgresoDelProceso(procesos_listos[i]);
@@ -78,12 +76,10 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                                         contador = 99;
                                 }else{
                                     //Esta en ejecucion o bloqueado y lo esta solicitando
-                                    if(procesos_listos[i].getRecurso()!=0){
-                                        if(!procesos_listos[i].tieneSuRecursoAsignado()){
-                                           solicitarRecurso(procesos_listos[i]); 
-                                        }
+                                    if(procesos_listos[i].requiereEntradaSalida()){
+                                        solicitarRecurso(procesos_listos[i]);
                                     }
-                                    if(procesos_listos[i].tieneSuRecursoAsignado()||procesos_listos[i].getRecurso()==0){
+                                    if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||procesos_listos[i].requiereEntradaSalida()){
                                         //El proceso puede entrar a trabajar
                                         procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
                                         actualizarProgresoDelProceso(procesos_listos[i]);
@@ -131,10 +127,6 @@ public class AlgoritmoRR extends Simulador implements Runnable {
             System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
             //si el progreso esta terminado se actualiza su estado
             if (p.getProgreso()==100){
-                //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
-                if(p.getRecurso()!=0 && p.tieneSuRecursoAsignado() ){
-                    liberarRecurso(p);
-                }
                 //se cambia el estado del proceso a terminado
                 p.setEstado(Proceso.ESTADO_TERMINADO);
                 System.out.println("El proceso "+p.getNombre()+" - Cambio estado a terminado");
@@ -181,9 +173,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
             if(procesos_listos[i]!=null){
                 //Si el proceso tiene estado de listo aun no ha terminado
                 if(procesos_listos[i].getEstado()==Proceso.ESTADO_BLOQUEADO){
-                    if(recursos[procesos_listos[i].getRecurso()-1].estaDisponible()){
-                        procesos_listos[i].setEstado(Proceso.ESTADO_LISTO);
-                    }
+                    procesos_listos[i].setEstado(Proceso.ESTADO_LISTO);
                 }
             }
         }

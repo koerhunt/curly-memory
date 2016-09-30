@@ -41,7 +41,7 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
                 proceso_con_mayor_prioridad.setEstado(Proceso.ESTADO_EN_EJECUCION);
                 System.out.println("El proceso "+proceso_con_mayor_prioridad.getNombre()+" - Cambio estado a ejecucion");
                 
-                if(proceso_con_mayor_prioridad.getRecurso()!=0){
+                if(proceso_con_mayor_prioridad.requiereEntradaSalida()){
                     solicitarRecurso(proceso_con_mayor_prioridad);
                 }
                 
@@ -57,10 +57,6 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
                     System.out.println("El proceso lleva un progreso de "+proceso_con_mayor_prioridad.getProgreso()+"%");
                     //si el progreso esta terminado se actualiza su estado
                     if (proceso_con_mayor_prioridad.getProgreso()==100){
-                        //Se libera el recurso que estba utilizando en caso de que haya requerido alguno
-                        if(proceso_con_mayor_prioridad.getRecurso()!=0 && proceso_con_mayor_prioridad.tieneSuRecursoAsignado() ){
-                            liberarRecurso(proceso_con_mayor_prioridad);
-                        }
                         //se cambia el estado del proceso
                         proceso_con_mayor_prioridad.setEstado(Proceso.ESTADO_TERMINADO);
                         System.out.println("El proceso "+proceso_con_mayor_prioridad.getNombre()+" - Cambio estado a terminado");

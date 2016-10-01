@@ -200,4 +200,42 @@ public class ListaProcesos {
         //Se retorna el objeto proceso
         return p;
     }  
+    
+    //Metodo para obtener el proceso con mayor prioridad
+    public Proceso extraerProcesoConMayorPrioridad(){
+        //variable auxiliar para almacenar el tiempo a mejorar
+        double prioridad = 0;
+        //variable auxiliar para almacenar la posicion del proceso a retornar
+        int posicion_mayor_prioridad = -1;
+        //variable auxiliar proceso para almacenar el objeto a retornar
+        Proceso p = null;
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
+        for(int i=(data.length-1);i>=0;i--){
+            if(data[i]!=null){
+                //comparamos el estado del proceso actual
+                if(data[i].getEstado() == Proceso.ESTADO_LISTO){
+                    //Comparamos si el tiempo requerido por el proceso es mayor o igual
+                    //al registrado anteriormente o si aun no se a registrado algun tiempo
+                    if((prioridad<=data[i].getPrioridad())||prioridad==0){
+                        //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
+                        prioridad=data[i].getPrioridad();
+                        //Se guarda la posicion del proceso
+                        posicion_mayor_prioridad=i;
+                    }
+                }
+            }
+        }
+        
+        //Si la posicion es mayor a 0 significa que si se encontro un proceso
+        //if(posicion_menor_tiempo>0){
+        //se asigna a p el proceso que se encuentra en la posicion asignada
+         try {
+            p = data[posicion_mayor_prioridad];
+         } catch (Exception e) {
+            p = null;
+         }
+        //}
+        //Se retorna el objeto proceso
+        return p;
+    }   
 }

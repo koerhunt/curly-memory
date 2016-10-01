@@ -486,11 +486,11 @@ public class InterfazG extends javax.swing.JFrame {
                 break;
 		case "HRN":
 		  //Se inicia la ejecucion del algoritmo HRN
-//		  Simulador.crearProcesosPorDefecto();
-//		  hilo_ejecutando = new Thread(new AlgoritmoHRN());
-//		  hilo_ejecutando.start();
-//		  boton_iniciar.setEnabled(false);
-//		  boton_parar.setEnabled(true);
+                    Simulador.crearProcesosPorDefecto();
+                    hilo_ejecutando = new Thread(new AlgoritmoHRN());
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
 		break;
             }
         }
@@ -512,27 +512,39 @@ public class InterfazG extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Cuando se da click al boton de crear proceso
         //Pregunta si desea crar otro programa:
-            //opciones disponibles a seleccionar
-            String x1="MANUAL";
             //Objeto de opciones
-            Object[] options = {x1, "ALEATORIO"};
+            Object[] options = {"MANUAL", "ALEATORIO"};
+            Object[] si_no = {"SI", "NO"};
             //obtener que desea hacer el usuario si crear un proceso de manera aleatorea
             //o que 'el introdusca algunos campos
             int r = JOptionPane.showOptionDialog(null,"¿Desea crear un proceso...?\n",
-            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,x1);
-            
+            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,"ALEATORIO");
             //creamos un objeto random para obtener numeros aleatorios
             Random rd = new Random();
+            //Variables booleanas para supencion y recursos
+            boolean recurso, suspencion;
+            int prioridad =0 ,tiempo_requerido=1;
+            
+            
             if (r==JOptionPane.YES_OPTION){
                 //Si es manual
-                String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n"); // se asigna un nombre al proceso
-                int tr = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n")); //se asigna el tiempo que el proceso requiere
-                //Se genera un numero aleatorio para saber si utilizara recurso
-                boolean i = rd.nextBoolean();
-                //Se genera un numero aleatorio para saber si se bloqueara
-                boolean j = rd.nextBoolean();
+                String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n");
+                tiempo_requerido = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n"));
+                //Requiere E/S ?
+                 r = JOptionPane.showOptionDialog(null,"El proceso utilizara algun recurso?",
+            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,si_no,"NO");
+                 recurso = (r==JOptionPane.YES_OPTION);
+                 
+                //Se suspendera el proceso??
+                 r = JOptionPane.showOptionDialog(null,"El proceso se suspendera en la ejecucion?",
+            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,si_no,"NO");
+                suspencion = (r==JOptionPane.YES_OPTION);
                 
-                Proceso p = new Proceso(Simulador.secuencia_id, nombre, tr, i,j);
+                 //La prioridad del proceso
+                 prioridad = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea la prioridad del Proceso\n"));                 
+                
+                Proceso p = new Proceso(Simulador.secuencia_id, nombre, tiempo_requerido,recurso,suspencion);
+                p.setPrioridad(prioridad);
                 
                 Simulador.secuencia_id++; //se incrementa el contador de id
                 
@@ -541,13 +553,16 @@ public class InterfazG extends javax.swing.JFrame {
             }
             else {
                 //Si es aleatorio
-                boolean i = rd.nextBoolean();
-                //
-                boolean k = rd.nextBoolean();
-                //Se obtiene un numero para el tiempo que el recurso necesita (numero del 2 al 3)
-                int j = rd.nextInt(13-2)+1;
+                
+                //Valores aleatorios para recurso, suspencion, prioridad
+                recurso = rd.nextBoolean();
+                suspencion = rd.nextBoolean();
+                tiempo_requerido = rd.nextInt(13-2)+1;
+                prioridad = rd.nextInt(5-0)+1;
+                
                 //Se crea el proceso con el id que sigue
-                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, j, i,k);
+                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, tiempo_requerido, recurso,suspencion);
+                p.setPrioridad(prioridad);
                 //Se incrementa el id
                 Simulador.secuencia_id++;
                 //se introduce el proceso a la lista
@@ -600,6 +615,7 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.procesos_bloqueados.limpiarJlist(jlist_bloqueados);
         Simulador.suspendidos_bloqueados.limpiarJlist(jlist_susp_bloqueados);
         Simulador.suspendidos_listos.limpiarJlist(g_lista_susp_listos);
+        Simulador.proceso_en_ejecucion.limpiarJlist(jlist_ejecucion);
         
         limpiarTabla();
         Simulador.actualizarDatos();

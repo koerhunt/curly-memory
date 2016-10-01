@@ -5,9 +5,6 @@
  */
 package curly.memory;
 
-import static curly.memory.Simulador.procesos_bloqueados;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -83,9 +80,9 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                     actualizarInterface(p,false);
                 }
                 
-                if(p.getProgreso()<100&&p.requiereEntradaSalida()){
+                if(p.getProgreso()<100&&(p.requiereEntradaSalida() || p.entraraASuspencion())){
                     actualizarInterface(p,true);
-                }   
+                }
             }
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
@@ -93,10 +90,37 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
     }
     
     
-    public void actualizarInterface(Proceso p,boolean bloquear){
+    public void actualizarInterface(Proceso p,boolean bloquear_o_suspender){
         try {
-            if(bloquear){
-                p.setEstado(Proceso.ESTADO_BLOQUEADO);
+            if(bloquear_o_suspender){
+                int j;
+                
+                if(p.requiereEntradaSalida()&&p.entraraASuspencion()){
+                    j = rd.nextInt(2-0)+1;   
+                    switch(j){
+                       case 0:
+                           p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                           break;
+                       case 1:
+                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
+                           break;
+                       case 2:
+                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
+                           break;
+                   }
+                }else if(p.entraraASuspencion()){
+                    j = rd.nextInt(1-0)+1;
+                    switch(j){
+                       case 0:
+                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
+                           break;
+                       case 1:
+                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
+                           break;
+                   }
+                }else{
+                    p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                }
             }
             //Actualizar Ambiente grafico
             InterfazG.actualizarAmbienteGrafico();
@@ -107,11 +131,10 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
             //Actaualizamos la barra de progreso
             InterfazG.actulizarBarraDeProgreso(p.getProgreso());
             //Relentizamos (alargamos) el proceso 700 milisegundos
-            if(!bloquear){
+            if(!bloquear_o_suspender){
                 java.lang.Thread.sleep(1000);
             }else{
-                new Thread(new CallBackDesbloquearProcesos()).start();
-                
+             //   new Thread(new CallBackDesbloquearProceso()).start();
             }   
         } catch (InterruptedException ex) {
             System.out.println("Ocurrio algo al intentar hacer esperar al hilo");

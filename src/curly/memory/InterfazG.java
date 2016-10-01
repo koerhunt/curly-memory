@@ -10,7 +10,6 @@
 //interfaz
 package curly.memory;
 
-import static curly.memory.Simulador.todos_los_procesos;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -543,10 +542,12 @@ public class InterfazG extends javax.swing.JFrame {
             else {
                 //Si es aleatorio
                 boolean i = rd.nextBoolean();
+                //
+                boolean k = rd.nextBoolean();
                 //Se obtiene un numero para el tiempo que el recurso necesita (numero del 2 al 3)
                 int j = rd.nextInt(13-2)+1;
                 //Se crea el proceso con el id que sigue
-                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, j, i);
+                Proceso p = new Proceso(Simulador.secuencia_id, "Proceso "+ Simulador.secuencia_id, j, i,k);
                 //Se incrementa el id
                 Simulador.secuencia_id++;
                 //se introduce el proceso a la lista
@@ -607,6 +608,10 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.procesos_listos.imprimirEnJlist(jlist_listos);
         
         Simulador.procesos_bloqueados.imprimirEnJlist(jlist_bloqueados);
+        
+        Simulador.suspendidos_bloqueados.imprimirEnJlist(jlist_susp_bloqueados);
+        
+        Simulador.suspendidos_listos.imprimirEnJlist(jlist_susp_listos);
         
         Simulador.proceso_en_ejecucion.imprimirEnJlist(jlist_ejecucion);
     }

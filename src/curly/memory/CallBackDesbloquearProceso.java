@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author elias
  */
-public class CallBackDesbloquearProcesos extends Simulador implements Runnable{
+public class CallBackDesbloquearProceso extends Simulador implements Runnable{
 
     @Override
     public void run() {

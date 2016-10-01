@@ -5,7 +5,6 @@
  */
 package curly.memory;
 
-import static curly.memory.Simulador.todos_los_procesos;
 
 public class Proceso implements java.io.Serializable {
     
@@ -27,6 +26,8 @@ public class Proceso implements java.io.Serializable {
     private int progreso;
     //Prioridad del proceso
     private double prioridad;
+    //Variable para determinar si el proceso entrara a algun estado suspendido
+    private boolean suspender;
     
     //Tiempos para estadistica
     private int instante_de_llegada;
@@ -42,13 +43,14 @@ public class Proceso implements java.io.Serializable {
     public Proceso() {
     }
 
-    public Proceso(int pid, String nombre, int tiempo_requerido, boolean recurso) {
+    public Proceso(int pid, String nombre, int tiempo_requerido, boolean recurso,boolean suspender) {
         this.pid = pid;
         this.nombre = nombre;
         this.tiempo_requerido = tiempo_requerido;
         this.recurso = recurso;
         this.tiempo_de_ejecucion = 0;
         this.tiempo_de_espera = 0;
+        this.suspender = suspender;
         estado = ESTADO_LISTO;
         InterfazG.agregarProcesoAListos(this);
         Simulador.introducirProcesoALista(this);
@@ -79,10 +81,10 @@ public class Proceso implements java.io.Serializable {
                 Simulador.procesos_bloqueados.extraerProceso(this.pid);
                 break;
             case ESTADO_SUSPENDIDO_LISTO:
-                //pendiente
+                Simulador.suspendidos_listos.extraerProceso(this.pid);
                 break;
             case ESTADO_SUSPENDIDO_BLOQUEADO:
-                //pendiente
+                Simulador.suspendidos_bloqueados.extraerProceso(this.pid);
                 break;
         }
         switch(e){
@@ -94,12 +96,15 @@ public class Proceso implements java.io.Serializable {
                 break;
             case ESTADO_BLOQUEADO:
                 Simulador.procesos_bloqueados.agregarProceso(this);
+                new Thread(new CallBackDesbloquearProceso()).start();
                 break;
             case ESTADO_SUSPENDIDO_LISTO:
-                //pendiente
+                Simulador.suspendidos_listos.agregarProceso(this);
+                new Thread(new CallBackRestaurarProcesoListo()).start();
                 break;
             case ESTADO_SUSPENDIDO_BLOQUEADO:
-                //pendiente
+                Simulador.suspendidos_bloqueados.agregarProceso(this);
+                new Thread(new CallBackRestaurarProcesoBloqueado()).start();
                 break;
             case ESTADO_TERMINADO:
                 Simulador.procesos_terminados.agregarProceso(this);
@@ -187,6 +192,14 @@ public class Proceso implements java.io.Serializable {
 
     public void setTiempoDeEspera(int tiempo_de_espera) {
         this.tiempo_de_espera = tiempo_de_espera;
+    }
+
+    public boolean entraraASuspencion() {
+        return suspender;
+    }
+
+    public void setSuspender(boolean suspender) {
+        this.suspender = suspender;
     }
     
     //Metodo para actualizar progreso del proceso

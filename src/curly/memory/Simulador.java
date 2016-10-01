@@ -5,6 +5,8 @@
  */
 package curly.memory;
 
+import java.util.Random;
+
 
 /**
  *
@@ -19,6 +21,12 @@ public class Simulador {
     public static ListaProcesos procesos_bloqueados;
     
     //Lista de procesos listos
+    public static ListaProcesos suspendidos_listos;
+    
+    //Lista de procesos listos
+    public static ListaProcesos suspendidos_bloqueados;
+    
+    //Lista de procesos listos
     public static ListaProcesos proceso_en_ejecucion;
     
     //Lista de procesos terminados
@@ -27,6 +35,7 @@ public class Simulador {
     //Todos los procesos
     public static Proceso todos_los_procesos[];
     
+    //Hilo creador de procesos
     public static Thread t;
     
     static int secuencia_id = 5;
@@ -35,23 +44,28 @@ public class Simulador {
     //cuantum para RR
     static int quantum;
     
+    //creamos un objeto random para obtener numeros aleatorios
+    static Random rd;
+    
     //Metodo principal
     public static void main(String[] args) {
         //Se crean los recursos, se prepara la memoria para la lista de listos
         inicializar();
     }
     
-    public static void inicializar(){        
-        //Inicializando gurpo de procesos predefinidos
-        procesos_listos = new ListaProcesos(60);
+    public static void inicializar(){
+        //Inicializando una lista para hacer referencia a todos los procesos
+        todos_los_procesos = new Proceso[60];
         
+        //Inicializando grupo de listas para los diferentes estados de los procesos
+        procesos_listos = new ListaProcesos(60);
         procesos_bloqueados = new ListaProcesos(60);
         
+        suspendidos_listos = new ListaProcesos(60);
+        suspendidos_bloqueados = new ListaProcesos(60);
+        
         proceso_en_ejecucion = new ListaProcesos(1);
-        
         procesos_terminados = new ListaProcesos(60);
-        
-        todos_los_procesos = new Proceso[160];
         
         //Inicializando secuencia del ID
         secuencia_id = 1;
@@ -59,6 +73,9 @@ public class Simulador {
         tiempo_cpu=0;
         //Definiendo el valor del cuantum
         quantum=3;
+        
+        //Inicializamos objeto para crear numeros aleatorios
+        rd = new Random();
     }
     
     //Metodo para crear los 5 procesos por defecto conforme la ejecucion del programa avanza
@@ -73,7 +90,7 @@ public class Simulador {
         System.out.println("se asigno el recurso al proceso "+p.getNombre());
     }   
     
-    //Metodo para meter un proceso a alguna lista que almacene procesos
+    //Metodo para meter un proceso a la lista de todos los procesos
     public static void introducirProcesoALista(Proceso p){
         //Recorremos la lista
         for(int i =0; i<todos_los_procesos.length;i++){

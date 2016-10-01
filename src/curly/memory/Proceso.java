@@ -5,16 +5,17 @@
  */
 package curly.memory;
 
+import static curly.memory.Simulador.todos_los_procesos;
+
 public class Proceso implements java.io.Serializable {
     
     //Atributos del proceso
     public static final int ESTADO_LISTO = 0;
     public static final int ESTADO_EN_EJECUCION = 1;
     public static final int ESTADO_BLOQUEADO = 2;
-    public static final int ESTADO_SUSPENDIDO = 3;
-    public static final int ESTADO_SUSPENDIDO_LISTO = 4;
-    public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 5;
-    public static final int ESTADO_TERMINADO = 6;
+    public static final int ESTADO_SUSPENDIDO_LISTO = 3;
+    public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 4;
+    public static final int ESTADO_TERMINADO = 5;
     
     //Identificador del proceso
     private int pid;
@@ -49,6 +50,8 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_de_ejecucion = 0;
         this.tiempo_de_espera = 0;
         estado = ESTADO_LISTO;
+        InterfazG.agregarProcesoAListos(this);
+        Simulador.introducirProcesoALista(this);
     }
     
     //Grupos de Metodos Get y Set
@@ -64,8 +67,46 @@ public class Proceso implements java.io.Serializable {
         return estado;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
+    public void setEstado(int e){
+         switch(this.estado){
+            case ESTADO_LISTO:
+                Simulador.procesos_listos.extraerProceso(this.pid);
+                break;
+            case ESTADO_EN_EJECUCION:
+                Simulador.proceso_en_ejecucion.extraerProceso(this.pid);
+                break;
+            case ESTADO_BLOQUEADO:
+                Simulador.procesos_bloqueados.extraerProceso(this.pid);
+                break;
+            case ESTADO_SUSPENDIDO_LISTO:
+                //pendiente
+                break;
+            case ESTADO_SUSPENDIDO_BLOQUEADO:
+                //pendiente
+                break;
+        }
+        switch(e){
+            case ESTADO_LISTO:
+                Simulador.procesos_listos.agregarProceso(this);
+                break;
+            case ESTADO_EN_EJECUCION:
+                Simulador.proceso_en_ejecucion.agregarProceso(this);
+                break;
+            case ESTADO_BLOQUEADO:
+                Simulador.procesos_bloqueados.agregarProceso(this);
+                break;
+            case ESTADO_SUSPENDIDO_LISTO:
+                //pendiente
+                break;
+            case ESTADO_SUSPENDIDO_BLOQUEADO:
+                //pendiente
+                break;
+            case ESTADO_TERMINADO:
+                Simulador.procesos_terminados.agregarProceso(this);
+                break;
+        }
+        this.estado = e;
+     
     }
 
     public int getProgreso() {
@@ -202,8 +243,6 @@ public class Proceso implements java.io.Serializable {
                 return "Ejecucion";
             case ESTADO_BLOQUEADO:
                 return "Bloqueado";
-            case ESTADO_SUSPENDIDO:
-                return "Suspendido";
             case ESTADO_SUSPENDIDO_LISTO:
                 return "Suspendido Listo";
             case ESTADO_SUSPENDIDO_BLOQUEADO:

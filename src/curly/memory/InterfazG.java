@@ -10,6 +10,7 @@
 //interfaz
 package curly.memory;
 
+import static curly.memory.Simulador.todos_los_procesos;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -22,7 +23,15 @@ public class InterfazG extends javax.swing.JFrame {
     
     //Variables que permiten a las clases de Simulador, FIFO, SJN, etc.. puedan acceder y modificar
     //la interfaz grafica
-    static TableModel model;
+    static TableModel model_jtable;
+    
+    static JList jlist_listos;
+    static JList jlist_bloqueados;
+    static JList jlist_ejecucion;
+    
+    static JList jlist_susp_bloqueados;
+    static JList jlist_susp_listos;
+    
     static JProgressBar barra;
     static JButton btn_iniciar;
     static JButton btn_parar;
@@ -42,14 +51,22 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.inicializar();
         
         //Se hace referencia a los objetos de la interfaz grafica
-        model = tablaRes.getModel(); // el modelo se utiliza para meter la informacion a la tabla
+        model_jtable = tablaRes.getModel(); // el modelo se utiliza para meter la informacion a la tabla
         barra = jProgressBar1; //es la barra de progreso
         btn_iniciar = boton_iniciar; //el boton de iniciar
         btn_parar = boton_parar;//el boton de parar
         tabla = tablaRes;//la tabla
         ej_etiqueta=ejecutando_label;//la etiqueta que indica que proceso se esta ejecutando
+        
+        //Rescatando los modelos de las listas
+        jlist_listos = g_lista_listos;
+        jlist_bloqueados = g_lista_bloqueados;
+        jlist_susp_bloqueados = g_lista_susp_bloqueados;
+        jlist_susp_listos = g_lista_susp_listos;
+        jlist_ejecucion = g_lista_ejecucion;
+        
         //Metodo que actualiza las columnas y filas de la tabla
-        actualizarTablaRes(Simulador.procesos_listos);
+        actualizarTablaRes(Simulador.todos_los_procesos);
         
     }
     
@@ -83,6 +100,21 @@ public class InterfazG extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaRes = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        g_lista_listos = new javax.swing.JList<>();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        g_lista_susp_listos = new javax.swing.JList<>();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        g_lista_bloqueados = new javax.swing.JList<>();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        g_lista_ejecucion = new javax.swing.JList<>();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        g_lista_susp_bloqueados = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         jButton3.setText("jButton3");
 
@@ -258,19 +290,96 @@ public class InterfazG extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        g_lista_listos.setModel(new DefaultListModel());
+        jScrollPane2.setViewportView(g_lista_listos);
+
+        g_lista_susp_listos.setModel(new DefaultListModel());
+        jScrollPane7.setViewportView(g_lista_susp_listos);
+
+        g_lista_bloqueados.setModel(new DefaultListModel());
+        jScrollPane8.setViewportView(g_lista_bloqueados);
+
+        g_lista_ejecucion.setModel(new DefaultListModel());
+        jScrollPane9.setViewportView(g_lista_ejecucion);
+
+        g_lista_susp_bloqueados.setModel(new DefaultListModel());
+        jScrollPane10.setViewportView(g_lista_susp_bloqueados);
+
+        jLabel1.setText("Listos/Preparados");
+
+        jLabel2.setText("Suspendidos Listos");
+
+        jLabel5.setText("Bloqueados");
+
+        jLabel6.setText("Suspendidos Bloqueados");
+
+        jLabel7.setText("Ejecucion");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(62, 62, 62))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(60, 60, 60)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(37, 37, 37))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(230, 230, 230)
+                .addComponent(jLabel7)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -301,8 +410,8 @@ public class InterfazG extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,7 +458,7 @@ public class InterfazG extends javax.swing.JFrame {
             try {
                 for(int i=0; i<30;i++){
                     for(int j=0; j<10;j++){
-                        model.setValueAt("", i, j);
+                        model_jtable.setValueAt("", i, j);
                     }
                 }
             } catch (Exception e) {
@@ -366,27 +475,27 @@ public class InterfazG extends javax.swing.JFrame {
                 break;
                 case "SJN":
                     //Se inicia la ejecucion del algoritmo FIFO
-                    Simulador.crearProcesosPorDefecto();
-                    hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
-                    hilo_ejecutando.start();
-                    boton_iniciar.setEnabled(false);
-                    boton_parar.setEnabled(true);
+//                    Simulador.crearProcesosPorDefecto();
+//                    hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
+//                    hilo_ejecutando.start();
+//                    boton_iniciar.setEnabled(false);
+//                    boton_parar.setEnabled(true);
                 break;
                 case "RR":
                     //Se inicia la ejecucion del algoritmo RR
-                    Simulador.crearProcesosPorDefecto();
-                    hilo_ejecutando = new Thread(new AlgoritmoRR()); //Crea un nuevo hilo
-                    hilo_ejecutando.start();
-                    boton_iniciar.setEnabled(false);
-                    boton_parar.setEnabled(true);
+//                    Simulador.crearProcesosPorDefecto();
+//                    hilo_ejecutando = new Thread(new AlgoritmoRR()); //Crea un nuevo hilo
+//                    hilo_ejecutando.start();
+//                    boton_iniciar.setEnabled(false);
+//                    boton_parar.setEnabled(true);
                 break;
 		case "HRN":
 		  //Se inicia la ejecucion del algoritmo HRN
-		  Simulador.crearProcesosPorDefecto();
-		  hilo_ejecutando = new Thread(new AlgoritmoHRN());
-		  hilo_ejecutando.start();
-		  boton_iniciar.setEnabled(false);
-		  boton_parar.setEnabled(true);
+//		  Simulador.crearProcesosPorDefecto();
+//		  hilo_ejecutando = new Thread(new AlgoritmoHRN());
+//		  hilo_ejecutando.start();
+//		  boton_iniciar.setEnabled(false);
+//		  boton_parar.setEnabled(true);
 		break;
             }
         }
@@ -429,7 +538,7 @@ public class InterfazG extends javax.swing.JFrame {
                 //Se asigna que el recurso untilizara que recurso
                 p.setRecurso(i);
                 //Se introduce el proceso a la lista de procesos creados/listos
-                Simulador.introducirProcesoALista(p, Simulador.procesos_listos);
+                Simulador.procesos_listos.agregarProceso(p);
             }
             else {
                 //Si es aleatorio
@@ -441,9 +550,9 @@ public class InterfazG extends javax.swing.JFrame {
                 //Se incrementa el id
                 Simulador.secuencia_id++;
                 //se introduce el proceso a la lista
-                Simulador.introducirProcesoALista(p, Simulador.procesos_listos);
+                Simulador.procesos_listos.agregarProceso(p);
             }
-            actualizarTablaRes(Simulador.procesos_listos);
+            actualizarTablaRes(Simulador.todos_los_procesos);
             
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -481,13 +590,26 @@ public class InterfazG extends javax.swing.JFrame {
         boton_reiniciar.setEnabled(false); //se deshabilita el boton de reiniciar
         hilo_ejecutando = null; //se pone nulo el hilo que estaba ejecutando el algoritmo
         //Actualiza la tabla con la lista de procesos
-        actualizarTablaRes(Simulador.procesos_listos);
+        actualizarTablaRes(Simulador.todos_los_procesos);
         //Se cambia el texto de la etiqueta que muestra que proceso se esta ejecutando
         ejecutando_label.setText("Esperando a iniciar planificacion");
         
         limpiarTabla();
         
     }//GEN-LAST:event_boton_reiniciarActionPerformed
+    
+    public static void agregarProcesoAListos(Proceso p){
+        DefaultListModel tmp = (DefaultListModel)jlist_listos.getModel();
+        tmp.addElement(p.getPid());
+    }
+    
+    public static void actualizarAmbienteGrafico(){
+        Simulador.procesos_listos.imprimirEnJlist(jlist_listos);
+        
+        Simulador.procesos_bloqueados.imprimirEnJlist(jlist_bloqueados);
+        
+        Simulador.proceso_en_ejecucion.imprimirEnJlist(jlist_ejecucion);
+    }
     
     public void limpiarTabla(){
         //se vacia cada renglon y columna de la tabla
@@ -497,12 +619,14 @@ public class InterfazG extends javax.swing.JFrame {
                 //menor que 9 porque son 8 columnas
                 for(int j=0; j<9;j++){
                     //se rellena la celda con un espacio en blanco
-                    model.setValueAt("", i, j);
+                    model_jtable.setValueAt("", i, j);
                 }
             }
         } catch (Exception e) {
         }
     }
+    
+    
     //Métodos
     public static void actulizarBarraDeProgreso(int porcentaje){
         //Se actualiza el progreso de la barra
@@ -515,7 +639,9 @@ public class InterfazG extends javax.swing.JFrame {
     
     //Metodo que se utiliza para actualizar la tabla con las caracteristicas de los procesos
     public static void actualizarTablaRes(Proceso ListaP[]) {
-     Simulador.ActualizarTiempoDeServicioDeTodosLosProcesos();
+     
+    Simulador.actualizarDatos();
+        
      //Se recorre la lista de procesos
      for (int x=0; x<ListaP.length; x++) {
          //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
@@ -527,21 +653,21 @@ public class InterfazG extends javax.swing.JFrame {
             }
             //x indica el renglon
             //el numero que le sigue indica la columna
-            model.setValueAt(ListaP[x].getPid(), x, 0);
-            model.setValueAt(ListaP[x].getNombre(), x, 1);
+            model_jtable.setValueAt(ListaP[x].getPid(), x, 0);
+            model_jtable.setValueAt(ListaP[x].getNombre(), x, 1);
             //Se obitene el nombre del estado en el que se encuentra el proceso
-            model.setValueAt(Proceso.NombreDeEstado(ListaP[x].getEstado()), x, 2);
-            model.setValueAt(ListaP[x].getTiempoRequerido(), x, 3);
-            model.setValueAt((ListaP[x].getTiempo_de_ejecucion()*100/ListaP[x].getTiempoRequerido())+"%",x,4);
-            model.setValueAt(ListaP[x].getTiempoDeEspera(), x, 5);
-            model.setValueAt(ListaP[x].getTiempo_de_servicio(), x, 6);
+            model_jtable.setValueAt(Proceso.NombreDeEstado(ListaP[x].getEstado()), x, 2);
+            model_jtable.setValueAt(ListaP[x].getTiempoRequerido(), x, 3);
+            model_jtable.setValueAt((ListaP[x].getTiempo_de_ejecucion()*100/ListaP[x].getTiempoRequerido())+"%",x,4);
+            model_jtable.setValueAt(ListaP[x].getTiempoDeEspera(), x, 5);
+            model_jtable.setValueAt(ListaP[x].getTiempo_de_servicio(), x, 6);
             if(ListaP[x].requiereEntradaSalida()){
-                model.setValueAt("Si", x, 7);
+                model_jtable.setValueAt("Si", x, 7);
             }else{
-                model.setValueAt("No", x, 7);
+                model_jtable.setValueAt("No", x, 7);
             }
             //saca la prioridad del proceso
-            model.setValueAt(ListaP[x].getPrioridad(), x, 8);
+            model_jtable.setValueAt(ListaP[x].getPrioridad(), x, 8);
          }
       } 
     }
@@ -566,15 +692,30 @@ public class InterfazG extends javax.swing.JFrame {
     private javax.swing.JButton boton_reiniciar;
     private javax.swing.JComboBox<String> criterios;
     private javax.swing.JLabel ejecutando_label;
+    private javax.swing.JList<String> g_lista_bloqueados;
+    private javax.swing.JList<String> g_lista_ejecucion;
+    private javax.swing.JList<String> g_lista_listos;
+    private javax.swing.JList<String> g_lista_susp_bloqueados;
+    private javax.swing.JList<String> g_lista_susp_listos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTable tablaRes;
     // End of variables declaration//GEN-END:variables
 }

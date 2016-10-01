@@ -19,14 +19,14 @@ public class CrearProcesos extends Simulador implements Runnable{
     public void run() {
         try {
             //Crea un proceso y lo agrega a la lista de listos
-            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Google chrome",18,true,false));
+            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Google chrome",12,true,false));
             //Incrementa la secuencia del identificador del proceso
             Simulador.secuencia_id++;
             //Espera 1000 milisegundos
             java.lang.Thread.sleep(1000);
             
             //Para los demas procesos son iguales
-            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Microsoft Word",8,true,false));
+            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Microsoft Word",4,false,false));
             Simulador.secuencia_id++;
             java.lang.Thread.sleep(4000);
             
@@ -34,7 +34,7 @@ public class CrearProcesos extends Simulador implements Runnable{
             Simulador.secuencia_id++;
             java.lang.Thread.sleep(7000);
             
-            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Spotify",15,false,true));
+            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Spotify",6,false,true));
             Simulador.secuencia_id++;
             java.lang.Thread.sleep(1500);
             

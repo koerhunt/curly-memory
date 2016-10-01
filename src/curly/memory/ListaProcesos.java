@@ -43,6 +43,16 @@ public class ListaProcesos {
         return p;
     }
     
+    public Proceso verPrimerProceso(){
+        Proceso p = null;
+        for(int i =0; i<data.length;i++){
+            if(data[i]!=null){
+                p = data[i];
+            }
+        }
+        return p;
+    }
+    
     public Proceso extraerPrimerProceso(){
         Proceso p = null;
         for(int i =0; i<data.length;i++){

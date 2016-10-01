@@ -65,7 +65,7 @@ public class InterfazG extends javax.swing.JFrame {
         jlist_ejecucion = g_lista_ejecucion;
         
         //Metodo que actualiza las columnas y filas de la tabla
-        actualizarTablaRes(Simulador.todos_los_procesos);
+            actualizarTablaRes();
         
     }
     
@@ -141,11 +141,14 @@ public class InterfazG extends javax.swing.JFrame {
         });
 
         criterios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN", "RR", "HRN" }));
-        criterios.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                criteriosActionPerformed(evt);
-            }
-        });
+
+	 criterios.addActionListener(new java.awt.event.ActionListener() {
+	     public void actionPerformed(java.awt.event.ActionEvent evt) {
+	        criteriosActionPerformed(evt);
+	     }
+	 });
+
+
 
         ejecutando_label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         ejecutando_label.setText("Esperando a iniciar planificacion");
@@ -454,14 +457,7 @@ public class InterfazG extends javax.swing.JFrame {
         }else{
             String a=criterios.getSelectedItem().toString();
             //Vacia la tabla
-            try {
-                for(int i=0; i<30;i++){
-                    for(int j=0; j<10;j++){
-                        model_jtable.setValueAt("", i, j);
-                    }
-                }
-            } catch (Exception e) {
-            }
+            limpiarTabla();
             switch(a){
                 case "FIFO":
                     //Se inicia la ejecucion del algoritmo FIFO
@@ -502,15 +498,17 @@ public class InterfazG extends javax.swing.JFrame {
 
     //metodo que java creo, no se esta utilizando
     private void criteriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_criteriosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_criteriosActionPerformed
-    
+	// TODO add your handling code here:
+	}//GEN-LAST:event_criteriosActionPerformed
+
+
     //Boton de salir
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //sale del programa
         System.exit(0);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    //Metodo para crear proceso (desde el boton)
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Cuando se da click al boton de crear proceso
         //Pregunta si desea crar otro programa:
@@ -537,6 +535,9 @@ public class InterfazG extends javax.swing.JFrame {
                 //Se asigna que el recurso untilizara que recurso
                 p.setRecurso(i);
                 //Se introduce el proceso a la lista de procesos creados/listos
+                if(hilo_ejecutando==null){
+                    limpiarTabla();
+                }
                 Simulador.procesos_listos.agregarProceso(p);
             }
             else {
@@ -553,11 +554,11 @@ public class InterfazG extends javax.swing.JFrame {
                 //se introduce el proceso a la lista
                 Simulador.procesos_listos.agregarProceso(p);
             }
-            actualizarTablaRes(Simulador.todos_los_procesos);
+            actualizarTablaRes();
             
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    //Boton que para el programa (cuando se da clic)
+    //Boton que para parar el programa (cuando se da clic)
     private void boton_pararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_pararActionPerformed
         // TODO add your handling code here:
         if(hilo_ejecutando.isAlive()){
@@ -591,7 +592,7 @@ public class InterfazG extends javax.swing.JFrame {
         boton_reiniciar.setEnabled(false); //se deshabilita el boton de reiniciar
         hilo_ejecutando = null; //se pone nulo el hilo que estaba ejecutando el algoritmo
         //Actualiza la tabla con la lista de procesos
-        actualizarTablaRes(Simulador.todos_los_procesos);
+        actualizarTablaRes();
         //Se cambia el texto de la etiqueta que muestra que proceso se esta ejecutando
         ejecutando_label.setText("Esperando a iniciar planificacion");
         
@@ -599,12 +600,69 @@ public class InterfazG extends javax.swing.JFrame {
         
     }//GEN-LAST:event_boton_reiniciarActionPerformed
     
-    public static void agregarProcesoAListos(Proceso p){
-        DefaultListModel tmp = (DefaultListModel)jlist_listos.getModel();
-        tmp.addElement(p.getPid());
+    //Métodos para actualizar interface grafica
+    public static void actualizarAmbienteGrafico(){
+        actualizarLabelEjecutando();
+        actulizarBarraDeProgreso();
+        actualizarTablaRes();
+        actualizarInterfacePCB();
     }
     
-    public static void actualizarAmbienteGrafico(){
+    //Actualizar barra de progreso
+    public static void actulizarBarraDeProgreso(){
+        Proceso e = Simulador.proceso_en_ejecucion.verPrimerProceso();
+        if(e!=null){
+            //Se actualiza el progreso de la barra
+            barra.setValue(e.getProgreso());
+        }
+    }
+    
+    //actualiza la etiqueta junto a la barra de progreso
+    public static void actualizarLabelEjecutando(){
+        Proceso e = Simulador.proceso_en_ejecucion.verPrimerProceso();
+        if(e!=null){
+            ej_etiqueta.setText("Ejecutando Proceso con ID: "+e.getPid());
+        }
+    }
+    
+    //Metodo que se utiliza para actualizar la tabla con las caracteristicas de los procesos
+    public static void actualizarTablaRes() {
+     
+    Simulador.actualizarDatos();
+    
+    //Se recorre la lista de procesos
+     for (int x=0; x<Simulador.todos_los_procesos.length; x++) {
+         //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
+         //model es un auxiliar para meter la informacion a la tabla
+         if(Simulador.todos_los_procesos[x]!=null){
+            if(Simulador.todos_los_procesos[x].getEstado()==Proceso.ESTADO_EN_EJECUCION){
+                tabla.setRowSelectionInterval(x, x);
+            }else{
+            }
+            //x indica el renglon
+            //el numero que le sigue indica la columna
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getPid(), x, 0);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getNombre(), x, 1);
+            //Se obitene el nombre del estado en el que se encuentra el proceso
+            model_jtable.setValueAt(Proceso.NombreDeEstado(Simulador.todos_los_procesos[x].getEstado()), x, 2);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getTiempoRequerido(), x, 3);
+            model_jtable.setValueAt((Simulador.todos_los_procesos[x].getTiempo_de_ejecucion()*100/Simulador.todos_los_procesos[x].getTiempoRequerido())+"%",x,4);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getTiempoDeEspera(), x, 5);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getTiempo_de_servicio(), x, 6);
+            if(Simulador.todos_los_procesos[x].requiereEntradaSalida()){
+                model_jtable.setValueAt("Si", x, 7);
+            }else{
+                model_jtable.setValueAt("No", x, 7);
+            }
+            //saca la prioridad del proceso
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getPrioridad(), x, 8);
+         }
+      }
+     
+    }
+    
+    //Actualizar interface PCB
+    public static void actualizarInterfacePCB(){
         Simulador.procesos_listos.imprimirEnJlist(jlist_listos);
         
         Simulador.procesos_bloqueados.imprimirEnJlist(jlist_bloqueados);
@@ -614,8 +672,25 @@ public class InterfazG extends javax.swing.JFrame {
         Simulador.suspendidos_listos.imprimirEnJlist(jlist_susp_listos);
         
         Simulador.proceso_en_ejecucion.imprimirEnJlist(jlist_ejecucion);
+    }    
+    
+    //Al terminar el algoritmo se reinicializa la lista de procesos y la barra vuelve a cero
+    //se realiza lo mismo que el metodo se llama al hacer click sobre el boton 'terminar'
+    public static void algoritmoTerminado(){  
+        JOptionPane.showMessageDialog(null,"Procedimiento terminado");
+        ej_etiqueta.setText("Esperando a iniciar planificacion");
+        Simulador.procesos_listos = null;
+        Simulador.inicializar();
+        barra.setValue(100);
+        btn_iniciar.setText("Iniciar");
+        btn_iniciar.setEnabled(true);
+        btn_parar.setEnabled(false);
+        hilo_ejecutando = null;
     }
     
+    //Metodos auxiliares
+    
+    //Metodo para limpiar la tabla
     public void limpiarTabla(){
         //se vacia cada renglon y columna de la tabla
         try {
@@ -630,66 +705,6 @@ public class InterfazG extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }
-    
-    
-    //Métodos
-    public static void actulizarBarraDeProgreso(int porcentaje){
-        //Se actualiza el progreso de la barra
-        barra.setValue(porcentaje);
-    }
-    //actualiza la etiqueta junto a la barra de progreso
-    public static void actualizarLabelEjecutando(String contenido){
-        ej_etiqueta.setText("Ejecutando Proceso con ID: "+contenido);
-    }
-    
-    //Metodo que se utiliza para actualizar la tabla con las caracteristicas de los procesos
-    public static void actualizarTablaRes(Proceso ListaP[]) {
-     
-    Simulador.actualizarDatos();
-        
-     //Se recorre la lista de procesos
-     for (int x=0; x<ListaP.length; x++) {
-         //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
-         //model es un auxiliar para meter la informacion a la tabla
-         if(ListaP[x]!=null){
-            if(ListaP[x].getEstado()==Proceso.ESTADO_EN_EJECUCION){
-                tabla.setRowSelectionInterval(x, x);
-            }else{
-            }
-            //x indica el renglon
-            //el numero que le sigue indica la columna
-            model_jtable.setValueAt(ListaP[x].getPid(), x, 0);
-            model_jtable.setValueAt(ListaP[x].getNombre(), x, 1);
-            //Se obitene el nombre del estado en el que se encuentra el proceso
-            model_jtable.setValueAt(Proceso.NombreDeEstado(ListaP[x].getEstado()), x, 2);
-            model_jtable.setValueAt(ListaP[x].getTiempoRequerido(), x, 3);
-            model_jtable.setValueAt((ListaP[x].getTiempo_de_ejecucion()*100/ListaP[x].getTiempoRequerido())+"%",x,4);
-            model_jtable.setValueAt(ListaP[x].getTiempoDeEspera(), x, 5);
-            model_jtable.setValueAt(ListaP[x].getTiempo_de_servicio(), x, 6);
-            if(ListaP[x].requiereEntradaSalida()){
-                model_jtable.setValueAt("Si", x, 7);
-            }else{
-                model_jtable.setValueAt("No", x, 7);
-            }
-            //saca la prioridad del proceso
-            model_jtable.setValueAt(ListaP[x].getPrioridad(), x, 8);
-         }
-      } 
-    }
-    
-    //Al terminar el algoritmo se reinicializa la lista de procesos y la barra vuelve a cero
-    //se realiza lo mismo que el metodo se llama al hacer click sobre el boton 'terminar'
-    public static void algoritmoTerminado(){  
-        JOptionPane.showMessageDialog(null,"Procedimiento terminado");
-        ej_etiqueta.setText("Esperando a iniciar planificacion");
-        Simulador.procesos_listos = null;
-        Simulador.inicializar();
-        btn_iniciar.setText("Iniciar");
-        btn_iniciar.setEnabled(true);
-        btn_parar.setEnabled(false);
-        hilo_ejecutando = null;
-    }
-    
     //Variables para la interfaz grafica
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton boton_iniciar;

@@ -17,7 +17,7 @@ public class CallBackRestaurarProcesoListo extends Simulador implements Runnable
     @Override
     public void run() {
         try {
-            java.lang.Thread.sleep(3000);
+            java.lang.Thread.sleep(4000);
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
         }

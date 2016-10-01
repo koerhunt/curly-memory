@@ -5,6 +5,9 @@
  */
 package curly.memory;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -30,12 +33,14 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
         
         Proceso p;
         
-        while(procesos_atendidos<5||!Simulador.procesos_listos.estaVacia()||!Simulador.procesos_bloqueados.estaVacia()){
+        while(procesos_atendidos<5||!Simulador.procesos_listos.estaVacia()||!Simulador.procesos_bloqueados.estaVacia()
+                ||!Simulador.suspendidos_listos.estaVacia()||!Simulador.suspendidos_bloqueados.estaVacia()||!Simulador.proceso_en_ejecucion.estaVacia()){
+
             p = Simulador.procesos_listos.extraerPrimerProceso();
             if(p!=null){
                 //Checamos y hacemos cambios de estado
                 p.setEstado(Proceso.ESTADO_EN_EJECUCION);
-                System.out.println("El proceso "+p.getNombre()+" - Cambio estado a ejecucion");
+                actualizarInterface(p,false);
                  
                 //Si el progreso es igual a cero entonces el proceso acaba de llegar
                 if(p.getProgreso()==0){
@@ -67,7 +72,7 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                     if (p.getProgreso()>=100){
                         p.setEstado(Proceso.ESTADO_TERMINADO);
                         procesos_atendidos++;
-                        System.out.println("El proceso "+p.getNombre()+" - Cambio estado a terminado");
+
                         //se asigna el instante de fin
                         p.setInstante_de_fin(tiempo_cpu);
                         System.out.println("El proceso "+p.getNombre()+" - termino el en el momento "+tiempo_cpu);
@@ -83,63 +88,17 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                 if(p.getProgreso()<100&&(p.requiereEntradaSalida() || p.entraraASuspencion())){
                     actualizarInterface(p,true);
                 }
+            }else{
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                actualizarInterfaceSinEsperar();
             }
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
         InterfazG.algoritmoTerminado();
-    }
-    
-    
-    public void actualizarInterface(Proceso p,boolean bloquear_o_suspender){
-        try {
-            if(bloquear_o_suspender){
-                int j;
-                
-                if(p.requiereEntradaSalida()&&p.entraraASuspencion()){
-                    j = rd.nextInt(2-0)+1;   
-                    switch(j){
-                       case 0:
-                           p.setEstado(Proceso.ESTADO_BLOQUEADO);
-                           break;
-                       case 1:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
-                           break;
-                       case 2:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
-                           break;
-                   }
-                }else if(p.entraraASuspencion()){
-                    j = rd.nextInt(1-0)+1;
-                    switch(j){
-                       case 0:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
-                           break;
-                       case 1:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
-                           break;
-                   }
-                }else{
-                    p.setEstado(Proceso.ESTADO_BLOQUEADO);
-                }
-            }
-            //Actualizar Ambiente grafico
-            InterfazG.actualizarAmbienteGrafico();
-            //Actaualizamos la tabla de procesos
-            InterfazG.actualizarTablaRes(Simulador.todos_los_procesos);
-            //Actaualizamos la etiqueta de que proceso se esta atentiendo
-            InterfazG.actualizarLabelEjecutando(String.valueOf(p.getPid()));
-            //Actaualizamos la barra de progreso
-            InterfazG.actulizarBarraDeProgreso(p.getProgreso());
-            //Relentizamos (alargamos) el proceso 700 milisegundos
-            if(!bloquear_o_suspender){
-                java.lang.Thread.sleep(1000);
-            }else{
-             //   new Thread(new CallBackDesbloquearProceso()).start();
-            }   
-        } catch (InterruptedException ex) {
-            System.out.println("Ocurrio algo al intentar hacer esperar al hilo");
-        }  
-    }
-    
+    }    
     
 }

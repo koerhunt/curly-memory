@@ -52,7 +52,6 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_de_espera = 0;
         this.suspender = suspender;
         estado = ESTADO_LISTO;
-        InterfazG.agregarProcesoAListos(this);
         Simulador.introducirProcesoALista(this);
     }
     
@@ -70,6 +69,7 @@ public class Proceso implements java.io.Serializable {
     }
 
     public void setEstado(int e){
+        int estado_anterior = this.estado;
          switch(this.estado){
             case ESTADO_LISTO:
                 Simulador.procesos_listos.extraerProceso(this.pid);
@@ -111,7 +111,7 @@ public class Proceso implements java.io.Serializable {
                 break;
         }
         this.estado = e;
-     
+        System.out.println("El proceso "+this.nombre+" - Cambio de estado "+NombreDeEstado(estado_anterior)+" a -> "+NombreDeEstado(e));
     }
 
     public int getProgreso() {

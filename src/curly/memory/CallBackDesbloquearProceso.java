@@ -18,12 +18,15 @@ public class CallBackDesbloquearProceso extends Simulador implements Runnable{
     public void run() {
         try {
             java.lang.Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if(!procesos_bloqueados.estaVacia()){
+            Simulador.actualizarDatos();
+            if(!procesos_bloqueados.estaVacia()){
             procesos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
         }   
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e){
+            
+        }
     }
     
 }

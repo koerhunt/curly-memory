@@ -21,11 +21,15 @@ public class ListaProcesos {
     }
     
     public void agregarProceso(Proceso p){
-        for(int i =0; i<data.length;i++){
-            if(data[i]==null){
-                data[i] = p;
-                break;
+        try{
+            for(int i =0; i<data.length;i++){
+                if(data[i]==null){
+                    data[i] = p;
+                    break;
+                }
             }
+        }catch(Exception e){
+            
         }
     }
     
@@ -129,11 +133,23 @@ public class ListaProcesos {
         tmp = (DefaultListModel)jlist_listos.getModel();
         tmp.clear();
         
-        for(int i = 0; i < data.length; i++){
-            if(data[i]!=null){
-                tmp.addElement(data[i].getPid());
+        try{
+            for(int i = 0; i < data.length; i++){
+                if(data[i]!=null){
+                    tmp.addElement(data[i].getPid());
+                }
             }
+        }catch(Exception e){
+            
         }
+        
+    }
+    
+    public void limpiarJlist(JList jlist_listos) {
+        DefaultListModel tmp;
+        
+        tmp = (DefaultListModel)jlist_listos.getModel();
+        tmp.clear();
         
     }
     
@@ -146,4 +162,42 @@ public class ListaProcesos {
         }
         return vacia;
     }
+    
+    //Metodo para obtener el proceso con menor tiempo requerido
+    public Proceso extraerProcesoConMenorTiempoRequerido(){
+        //variable auxiliar para almacenar el tiempo a mejorar
+        int menor_tiempo = 0;
+        //variable auxiliar para almacenar la posicion del proceso a retornar
+        int posicion_menor_tiempo = -1;
+        //variable auxiliar proceso para almacenar el objeto a retornar
+        Proceso p = null;
+        //Hacemos una busqueda secuencial tomando el tiempo del primer objeto}
+        for(int i=0;i<data.length;i++){
+            if(data[i]!=null){
+                //comparamos el estado del proceso actual
+                if(data[i].getEstado() == Proceso.ESTADO_LISTO){
+                    //Comparamos si el tiempo requerido por el proceso es mayor o igual
+                    //al registrado anteriormente o si aun no se a registrado algun tiempo
+                    if((menor_tiempo>=data[i].getTiempoRequerido())||menor_tiempo==0){
+                        //Se asigna a menor_tiempo el tiempo del proceso que tiene menos requerimiento
+                        menor_tiempo=data[i].getTiempoRequerido();
+                        //Se guarda la posicion del proceso
+                        posicion_menor_tiempo=i;
+                    }
+                }
+            }
+        }
+        
+        //Si la posicion es mayor a 0 significa que si se encontro un proceso
+        //if(posicion_menor_tiempo>0){
+           //se asigna a p el proceso que se encuentra en la posicion asignada
+            try {
+               p = data[posicion_menor_tiempo];
+            } catch (Exception e) {
+               p = null;
+            }
+        //}
+        //Se retorna el objeto proceso
+        return p;
+    }  
 }

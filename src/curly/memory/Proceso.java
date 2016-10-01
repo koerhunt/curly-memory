@@ -111,6 +111,7 @@ public class Proceso implements java.io.Serializable {
                 break;
         }
         this.estado = e;
+        InterfazG.actualizarAmbienteGrafico();
         System.out.println("El proceso "+this.nombre+" - Cambio de estado "+NombreDeEstado(estado_anterior)+" a -> "+NombreDeEstado(e));
     }
 

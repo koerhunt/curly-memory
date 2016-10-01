@@ -35,12 +35,27 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
         
         while(procesos_atendidos<5||!Simulador.procesos_listos.estaVacia()||!Simulador.procesos_bloqueados.estaVacia()
                 ||!Simulador.suspendidos_listos.estaVacia()||!Simulador.suspendidos_bloqueados.estaVacia()||!Simulador.proceso_en_ejecucion.estaVacia()){
-
+            
+            try {
+                InterfazG.actualizarAmbienteGrafico();
+                Thread.sleep(velocidad);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             p = Simulador.procesos_listos.extraerPrimerProceso();
+            
             if(p!=null){
                 //Checamos y hacemos cambios de estado
                 p.setEstado(Proceso.ESTADO_EN_EJECUCION);
-                actualizarInterface(p,false);
+                
+                try {                    
+                    InterfazG.actualizarAmbienteGrafico();
+                    Thread.sleep(velocidad);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                  
                 //Si el progreso es igual a cero entonces el proceso acaba de llegar
                 if(p.getProgreso()==0){
@@ -79,25 +94,37 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                         //se calcula el tiempo de servicio del proceso
                         p.calcularTiempoDeServicio();
                         System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
-                        actualizarInterface(p,false);
                         break;
                     }
-                    actualizarInterface(p,false);
+                    
+                    try {                    
+                        InterfazG.actualizarAmbienteGrafico();
+                        Thread.sleep(velocidad);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 
                 if(p.getProgreso()<100&&(p.requiereEntradaSalida() || p.entraraASuspencion())){
                     actualizarInterface(p,true);
                 }
+                
             }else{
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(velocidad);
+                    Simulador.actualizarDatos();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                actualizarInterfaceSinEsperar();
             }
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+        try {
+            Thread.sleep(500);
+            InterfazG.actualizarAmbienteGrafico();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         InterfazG.algoritmoTerminado();
     }    
     

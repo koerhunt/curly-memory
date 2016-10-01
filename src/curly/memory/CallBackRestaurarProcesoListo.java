@@ -18,12 +18,14 @@ public class CallBackRestaurarProcesoListo extends Simulador implements Runnable
     public void run() {
         try {
             java.lang.Thread.sleep(4000);
+            Simulador.actualizarDatos();
+            if(!suspendidos_listos.estaVacia()){
+                suspendidos_listos.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e){
         }
-        if(!suspendidos_listos.estaVacia()){
-            suspendidos_listos.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
-        }   
     }
     
 }

@@ -19,7 +19,7 @@ public class CrearProcesos extends Simulador implements Runnable{
     public void run() {
         try {
             //Crea un proceso y lo agrega a la lista de listos
-            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Google chrome",12,true,false));
+            Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Google chrome",10,true,false));
             //Incrementa la secuencia del identificador del proceso
             Simulador.secuencia_id++;
             //Espera 1000 milisegundos

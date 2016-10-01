@@ -18,12 +18,15 @@ public class CallBackRestaurarProcesoBloqueado extends Simulador implements Runn
     public void run() {
         try {
             java.lang.Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if(!suspendidos_bloqueados.estaVacia()){
+            Simulador.actualizarDatos();
+            if(!suspendidos_bloqueados.estaVacia()){
             suspendidos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_BLOQUEADO);
         }   
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e){
+            
+        }
     }
     
 }

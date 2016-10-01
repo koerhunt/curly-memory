@@ -470,11 +470,11 @@ public class InterfazG extends javax.swing.JFrame {
                 break;
                 case "SJN":
                     //Se inicia la ejecucion del algoritmo FIFO
-//                    Simulador.crearProcesosPorDefecto();
-//                    hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
-//                    hilo_ejecutando.start();
-//                    boton_iniciar.setEnabled(false);
-//                    boton_parar.setEnabled(true);
+                    Simulador.crearProcesosPorDefecto();
+                    hilo_ejecutando = new Thread(new AlgoritmoSJN()); //Crea un nuevo hilo
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
                 break;
                 case "RR":
                     //Se inicia la ejecucion del algoritmo RR
@@ -525,19 +525,18 @@ public class InterfazG extends javax.swing.JFrame {
             Random rd = new Random();
             if (r==JOptionPane.YES_OPTION){
                 //Si es manual
-                Proceso p = new Proceso(); //se crea un proceso
-                p.setPid(Simulador.secuencia_id); //se obtiene el id que sigue para el proceso
-                Simulador.secuencia_id++; //se incrementa el contador de id
-                p.setNombre(JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n")); // se asigna un nombre al proceso
-                p.setTiempoRequerido(Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n"))); //se asigna el tiempo que el proceso requiere
-                //Se genera un numero aleatorio para el recurso a utilizar
+                String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n"); // se asigna un nombre al proceso
+                int tr = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n")); //se asigna el tiempo que el proceso requiere
+                //Se genera un numero aleatorio para saber si utilizara recurso
                 boolean i = rd.nextBoolean();
-                //Se asigna que el recurso untilizara que recurso
-                p.setRecurso(i);
+                //Se genera un numero aleatorio para saber si se bloqueara
+                boolean j = rd.nextBoolean();
+                
+                Proceso p = new Proceso(Simulador.secuencia_id, nombre, tr, i,j);
+                
+                Simulador.secuencia_id++; //se incrementa el contador de id
+                
                 //Se introduce el proceso a la lista de procesos creados/listos
-                if(hilo_ejecutando==null){
-                    limpiarTabla();
-                }
                 Simulador.procesos_listos.agregarProceso(p);
             }
             else {
@@ -554,7 +553,10 @@ public class InterfazG extends javax.swing.JFrame {
                 //se introduce el proceso a la lista
                 Simulador.procesos_listos.agregarProceso(p);
             }
-            actualizarTablaRes();
+            if(hilo_ejecutando==null){
+                limpiarTabla();
+            }
+            actualizarAmbienteGrafico();
             
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -591,12 +593,16 @@ public class InterfazG extends javax.swing.JFrame {
         boton_parar.setEnabled(false); //se deshabilita el boton de parar
         boton_reiniciar.setEnabled(false); //se deshabilita el boton de reiniciar
         hilo_ejecutando = null; //se pone nulo el hilo que estaba ejecutando el algoritmo
-        //Actualiza la tabla con la lista de procesos
-        actualizarTablaRes();
         //Se cambia el texto de la etiqueta que muestra que proceso se esta ejecutando
         ejecutando_label.setText("Esperando a iniciar planificacion");
         
+        Simulador.procesos_listos.limpiarJlist(jlist_listos);
+        Simulador.procesos_bloqueados.limpiarJlist(jlist_bloqueados);
+        Simulador.suspendidos_bloqueados.limpiarJlist(jlist_susp_bloqueados);
+        Simulador.suspendidos_listos.limpiarJlist(g_lista_susp_listos);
+        
         limpiarTabla();
+        Simulador.actualizarDatos();
         
     }//GEN-LAST:event_boton_reiniciarActionPerformed
     
@@ -614,6 +620,8 @@ public class InterfazG extends javax.swing.JFrame {
         if(e!=null){
             //Se actualiza el progreso de la barra
             barra.setValue(e.getProgreso());
+        }else{
+            barra.setValue(0);
         }
     }
     
@@ -622,13 +630,13 @@ public class InterfazG extends javax.swing.JFrame {
         Proceso e = Simulador.proceso_en_ejecucion.verPrimerProceso();
         if(e!=null){
             ej_etiqueta.setText("Ejecutando Proceso con ID: "+e.getPid());
+        }else{
+            ej_etiqueta.setText("seleccionando siguiente proceso...");
         }
     }
     
     //Metodo que se utiliza para actualizar la tabla con las caracteristicas de los procesos
     public static void actualizarTablaRes() {
-     
-    Simulador.actualizarDatos();
     
     //Se recorre la lista de procesos
      for (int x=0; x<Simulador.todos_los_procesos.length; x++) {
@@ -677,7 +685,6 @@ public class InterfazG extends javax.swing.JFrame {
     //Al terminar el algoritmo se reinicializa la lista de procesos y la barra vuelve a cero
     //se realiza lo mismo que el metodo se llama al hacer click sobre el boton 'terminar'
     public static void algoritmoTerminado(){  
-        JOptionPane.showMessageDialog(null,"Procedimiento terminado");
         ej_etiqueta.setText("Esperando a iniciar planificacion");
         Simulador.procesos_listos = null;
         Simulador.inicializar();
@@ -686,6 +693,7 @@ public class InterfazG extends javax.swing.JFrame {
         btn_iniciar.setEnabled(true);
         btn_parar.setEnabled(false);
         hilo_ejecutando = null;
+        JOptionPane.showMessageDialog(null,"Procedimiento terminado");
     }
     
     //Metodos auxiliares

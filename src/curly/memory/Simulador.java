@@ -44,6 +44,9 @@ public class Simulador {
     //cuantum para RR
     static int quantum;
     
+    //Velocidad del simulador en ms
+    static int velocidad = 1000;
+    
     //creamos un objeto random para obtener numeros aleatorios
     static Random rd;
     
@@ -117,50 +120,42 @@ public class Simulador {
     }
     
     public void actualizarInterface(Proceso p,boolean bloquear_o_suspender){
-        try {
-            if(bloquear_o_suspender){
-                int j;
-                
-                if(p.requiereEntradaSalida()&&p.entraraASuspencion()){
-                    j = rd.nextInt(2-0)+1;   
-                    switch(j){
-                       case 0:
-                           p.setEstado(Proceso.ESTADO_BLOQUEADO);
-                           break;
-                       case 1:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
-                           break;
-                       case 2:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
-                           break;
-                   }
-                }else if(p.entraraASuspencion()){
-                    j = rd.nextInt(1-0)+1;
-                    switch(j){
-                       case 0:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
-                           break;
-                       case 1:
-                           p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
-                           break;
-                   }
-                }else{
-                    p.setEstado(Proceso.ESTADO_BLOQUEADO);
-                }
+        if(bloquear_o_suspender){
+            int j;
+
+            if(p.requiereEntradaSalida()&&p.entraraASuspencion()){
+                j = rd.nextInt(2-0)+1;   
+                switch(j){
+                   case 0:
+                       p.setEstado(Proceso.ESTADO_BLOQUEADO);
+                       break;
+                   case 1:
+                       p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
+                       break;
+                   case 2:
+                       p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
+                       break;
+               }
+            }else if(p.entraraASuspencion()){
+                j = rd.nextInt(1-0)+1;
+                switch(j){
+                   case 0:
+                       p.setEstado(Proceso.ESTADO_SUSPENDIDO_LISTO);
+                       break;
+                   case 1:
+                       p.setEstado(Proceso.ESTADO_SUSPENDIDO_BLOQUEADO);
+                       break;
+               }
+            }else{
+                p.setEstado(Proceso.ESTADO_BLOQUEADO);
             }
-            //Relentizamos (alargamos) el proceso 700 milisegundos
-            java.lang.Thread.sleep(1000);
-            //Actualizar Ambiente grafico
-            InterfazG.actualizarAmbienteGrafico();
-        } catch (InterruptedException ex) {
-            System.out.println("Ocurrio algo al intentar hacer esperar al hilo");
         }
     }
     
     
     public void actualizarInterfaceSinEsperar(){
             //Actualizar Ambiente grafico
-            InterfazG.actualizarAmbienteGrafico();;
+            InterfazG.actualizarAmbienteGrafico();
     }
     
 }

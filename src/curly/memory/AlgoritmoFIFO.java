@@ -71,7 +71,7 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                     contador_progreso = 0;
                 }
                 
-                while(!p.requiereEntradaSalida()||contador_progreso<=2){
+                while(!p.requiereEntradaSalida()||contador_progreso<1){
                     
                     if(p.requiereEntradaSalida()){
                         contador_progreso++;

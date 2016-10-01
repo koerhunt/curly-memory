@@ -478,11 +478,11 @@ public class InterfazG extends javax.swing.JFrame {
                 break;
                 case "RR":
                     //Se inicia la ejecucion del algoritmo RR
-//                    Simulador.crearProcesosPorDefecto();
-//                    hilo_ejecutando = new Thread(new AlgoritmoRR()); //Crea un nuevo hilo
-//                    hilo_ejecutando.start();
-//                    boton_iniciar.setEnabled(false);
-//                    boton_parar.setEnabled(true);
+                    Simulador.crearProcesosPorDefecto();
+                    hilo_ejecutando = new Thread(new AlgoritmoRR()); //Crea un nuevo hilo
+                    hilo_ejecutando.start();
+                    boton_iniciar.setEnabled(false);
+                    boton_parar.setEnabled(true);
                 break;
 		case "HRN":
 		  //Se inicia la ejecucion del algoritmo HRN

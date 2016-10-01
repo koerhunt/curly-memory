@@ -79,6 +79,8 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                     
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
+                    Simulador.actualizarDatos();
+                    
                     p.actualizarProgreso();
                     
                     System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
@@ -111,8 +113,9 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                 
             }else{
                 try {
-                    Thread.sleep(velocidad);
+                    tiempo_cpu++;
                     Simulador.actualizarDatos();
+                    Thread.sleep(velocidad);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                 }

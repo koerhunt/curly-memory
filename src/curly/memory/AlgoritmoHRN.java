@@ -20,7 +20,7 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
     }
     
     public void ComenzarHRN(){
-         System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+         System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA HRN *-*-*-*-*-*-*-*-*-*-*-*");
         
         int procesos_atendidos = 0;
         int contador_progreso = 0;
@@ -74,6 +74,7 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
                     p.actualizarProgreso();
+                    Simulador.actualizarDatos();
                     
                     System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
                     System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
@@ -105,14 +106,15 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
                 
             }else{
                 try {
-                    Thread.sleep(velocidad);
+                    tiempo_cpu++;
                     Simulador.actualizarDatos();
+                    Thread.sleep(velocidad);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina HRN *-*-*-*-*-*-*-*-*-*-*-*");
         try {
             Thread.sleep(500);
             InterfazG.actualizarAmbienteGrafico();

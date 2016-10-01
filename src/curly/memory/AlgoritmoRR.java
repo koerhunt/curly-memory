@@ -25,158 +25,114 @@ public class AlgoritmoRR extends Simulador implements Runnable {
     
      //Metodo para iniciar planificacion RR
     public  void ComenzarRR(){
-        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA RR *-*-*-*-*-*-*-*-*-*-*-*");
-        int contador;
-        while(!terminoRR()){
-            
-            for(int i=0;i<procesos_listos.length;i++){
-                contador=1;
-                //Verificamos que en la posiciin i se encuentre un objeto
-                if (procesos_listos[i]!=null){
-                    while(contador<=quantum){
-                        //Si el proceso no tiene progreso ni tiempo de espera
-                        //es la primera vez que va a ser ejecutado
-                        if(procesos_listos[i].getProgreso()==0&&procesos_listos[i].getTiempoDeEspera()==0){
-                            //Asignamos el instante de llegada al proceso
-                            procesos_listos[i].setInstanteDeLlegada(tiempo_cpu);
-                            System.out.println("El proceso "+procesos_listos[i].getNombre()+" - tiene un tiempo te espera de "+tiempo_cpu);
-
-                            procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
-                            System.out.println("El proceso "+procesos_listos[i].getNombre()+" - Cambio estado a ejecucion");
-                            
-                            if(procesos_listos[i].requiereEntradaSalida()){
-                                solicitarRecurso(procesos_listos[i]);
-                            }
-                            
-                            if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||!procesos_listos[i].requiereEntradaSalida()){
-                                //El proceso puede entrar a trabajar
-                                procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
-                                actualizarProgresoDelProceso(procesos_listos[i]);
-                                contador++;
-                                if(procesos_listos[i].getEstado()==Proceso.ESTADO_TERMINADO)
-                                    //romper el ciclo del contador
-                                    contador = 99;
-                            }else{
-                                //Se bloquea l proceso
-                                bloquearProceso(procesos_listos[i]);
-                                //Para romper conducion y avance al siguiente proceso
-                                contador = 99;
-                            }
-                            
-                        }else{
-                            if(procesos_listos[i].getEstado()!=Proceso.ESTADO_TERMINADO){
-                                //-----------------------------------------------
-                                if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||!procesos_listos[i].requiereEntradaSalida()){
-                                    //El proceso continuar su trabajo
-                                    procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
-                                    actualizarProgresoDelProceso(procesos_listos[i]);
-                                    contador++;
-                                    if(procesos_listos[i].getEstado()==Proceso.ESTADO_TERMINADO)
-                                        //romper el ciclo del contador
-                                        contador = 99;
-                                }else{
-                                    //Esta en ejecucion o bloqueado y lo esta solicitando
-                                    if(procesos_listos[i].requiereEntradaSalida()){
-                                        solicitarRecurso(procesos_listos[i]);
-                                    }
-                                    if(procesos_listos[i].getEstado()==Proceso.ESTADO_LISTO||procesos_listos[i].requiereEntradaSalida()){
-                                        //El proceso puede entrar a trabajar
-                                        procesos_listos[i].setEstado(Proceso.ESTADO_EN_EJECUCION);
-                                        actualizarProgresoDelProceso(procesos_listos[i]);
-                                        contador++;
-                                        if(procesos_listos[i].getEstado()==Proceso.ESTADO_TERMINADO)
-                                            //romper el ciclo del contador
-                                            contador = 99;
-                                    }else{
-                                        //Se bloquea l proceso
-                                        bloquearProceso(procesos_listos[i]);
-                                        //Para romper conducion y avance al siguiente proceso
-                                        contador = 99;
-                                    }
-                                }
-                            }else{
-                                contador = 99;
-                            }
-                        }
-                    }
-                    if(contador>quantum){
-                        if(procesos_listos[i].getEstado()!=Proceso.ESTADO_LISTO&&procesos_listos[i].getEstado()!=Proceso.ESTADO_TERMINADO&&procesos_listos[i].getEstado()!=Proceso.ESTADO_BLOQUEADO){
-                            procesos_listos[i].setEstado(Proceso.ESTADO_LISTO);
-                        }
-                        continue;   
-                    }
-                }else{
-                    continue;
-                }
-            }
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
         
-        }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina RR *-*-*-*-*-*-*-*-*-*-*-*");
-        JOptionPane.showMessageDialog(null,"Procedimiento por RR Terminado");
-        InterfazG.algoritmoTerminado();
-    }
-    
-    public void actualizarProgresoDelProceso(Proceso p){
-        if(p.getProgreso()<100){
-            //Se aumenta una unidad de tiempo a el procesador
-            tiempo_cpu++;
-            ActualizarTiempoDeEsperaDeTodosLosProcesos(p);
-            //Se actualiza el progreso del proceso
-            p.actualizarProgreso();
-            System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
-            System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
-            //si el progreso esta terminado se actualiza su estado
-            if (p.getProgreso()==100){
-                //se cambia el estado del proceso a terminado
-                p.setEstado(Proceso.ESTADO_TERMINADO);
-                System.out.println("El proceso "+p.getNombre()+" - Cambio estado a terminado");
-                //se asigna el instante de fin
-                p.setInstante_de_fin(tiempo_cpu);
-                System.out.println("El proceso "+p.getNombre()+" - termino el en el momento "+tiempo_cpu);
-                //se calcula el tiempo de servicio del proceso
-                p.calcularTiempoDeServicio();
-                System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
-            }
+        int procesos_atendidos = 0;
+        int contador_progreso = 0;
+        
+        Proceso p;
+        
+        while(procesos_atendidos<5||!Simulador.procesos_listos.estaVacia()||!Simulador.procesos_bloqueados.estaVacia()
+                ||!Simulador.suspendidos_listos.estaVacia()||!Simulador.suspendidos_bloqueados.estaVacia()||!Simulador.proceso_en_ejecucion.estaVacia()){
+            
             try {
-                //Actaualizamos la tabla de procesos
-                InterfazG.actualizarTablaRes(procesos_listos);
-                //Actaualizamos la barra de progreso
-                InterfazG.actulizarBarraDeProgreso(p.getProgreso());
-                //Relentizamos (alargamos) el proceso un segundo
-                java.lang.Thread.sleep(1000);
+                InterfazG.actualizarAmbienteGrafico();
+                Thread.sleep(velocidad);
             } catch (InterruptedException ex) {
-                Logger.getLogger(AlgoritmoRR.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-    }
-    
-    //bloquea a un proceso
-    public void bloquearProceso(Proceso p){
-        p.setEstado(Proceso.ESTADO_BLOQUEADO);
-    }
+            
+            p = Simulador.procesos_listos.extraerPrimerProceso();
+            //Contador para el cuantum
+            contador_progreso = 0;
+            
+            if(p!=null){
+                //Checamos y hacemos cambios de estado
+                p.setEstado(Proceso.ESTADO_EN_EJECUCION);
+                
+                try {                    
+                    InterfazG.actualizarAmbienteGrafico();
+                    Thread.sleep(velocidad);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                 
+                //Si el progreso es igual a cero entonces el proceso acaba de llegar
+                if(p.getProgreso()==0){
+                    //Asignamos el instante de llegada al proceso
+                    p.setInstanteDeLlegada(tiempo_cpu);
+                    System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo te espera de "+tiempo_cpu);
+                }
+                
+                //Si requiere de algun recurso E/S
+                if(p.requiereEntradaSalida()){
+                    //Se solicita el recurso
+                    solicitarRecurso(p);
+                }
+                
+                while(contador_progreso<Simulador.quantum){
+                    
+                    
+                    contador_progreso++;
+                    
+                    //Se aumenta una unidad de tiempo a el procesador
+                    tiempo_cpu++;
+                    p.actualizarProgreso();
+                    Simulador.actualizarDatos();
+                    
+                    System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
+                    System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
+                    
+                    if (p.getProgreso()>=100){
+                        p.setEstado(Proceso.ESTADO_TERMINADO);
+                        procesos_atendidos++;
 
-    public boolean terminoRR(){
-        boolean terminado = true;
-        for(int i=0;i<procesos_listos.length;i++){
-            if(procesos_listos[i]!=null){
-                //Si el proceso tiene estado de listo aun no ha terminado
-                if(procesos_listos[i].getEstado()!=Proceso.ESTADO_TERMINADO){
-                    terminado = false;
+                        //se asigna el instante de fin
+                        p.setInstante_de_fin(tiempo_cpu);
+                        System.out.println("El proceso "+p.getNombre()+" - termino el en el momento "+tiempo_cpu);
+                        //se calcula el tiempo de servicio del proceso
+                        p.calcularTiempoDeServicio();
+                        System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
+                        break;
+                    }else{
+                        if(contador_progreso>=Simulador.quantum){
+                            if(!p.requiereEntradaSalida()){
+                                p.setEstado(Proceso.ESTADO_LISTO);
+                            }
+                        }
+                    }
+                    
+                    try {                    
+                        InterfazG.actualizarAmbienteGrafico();
+                        Thread.sleep(velocidad);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                if(p.getProgreso()<100&&(p.requiereEntradaSalida() || p.entraraASuspencion())){
+                    actualizarInterface(p,true);
+                }
+                
+            }else{
+                try {
+                    tiempo_cpu++;
+                    Simulador.actualizarDatos();
+                    Thread.sleep(velocidad);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        return terminado;
-    }
-    
-    public void verificarProcesosBloqueados(){
-        for(int i=0;i<procesos_listos.length;i++){
-            if(procesos_listos[i]!=null){
-                //Si el proceso tiene estado de listo aun no ha terminado
-                if(procesos_listos[i].getEstado()==Proceso.ESTADO_BLOQUEADO){
-                    procesos_listos[i].setEstado(Proceso.ESTADO_LISTO);
-                }
-            }
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
+        try {
+            Thread.sleep(500);
+            InterfazG.actualizarAmbienteGrafico();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        InterfazG.algoritmoTerminado();
     }
     
 }

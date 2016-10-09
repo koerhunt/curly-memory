@@ -20,6 +20,7 @@ public class ListaProcesos {
         data = new Proceso[t];
     }
     
+    //Agrega un proceso en la siguiente posicion disponible
     public void agregarProceso(Proceso p){
         try{
             for(int i =0; i<data.length;i++){
@@ -33,6 +34,7 @@ public class ListaProcesos {
         }
     }
     
+    //Extrae un proceso con un id especifico
     public Proceso extraerProceso(int pid){
         Proceso p = null;
         for(int i =0; i<data.length;i++){
@@ -47,6 +49,7 @@ public class ListaProcesos {
         return p;
     }
     
+    //Devuelve el primer proceso sin sacarlo
     public Proceso verPrimerProceso(){
         Proceso p = null;
         for(int i =0; i<data.length;i++){
@@ -57,6 +60,7 @@ public class ListaProcesos {
         return p;
     }
     
+    //Saca el primer proceso de la lista
     public Proceso extraerPrimerProceso(){
         Proceso p = null;
         for(int i =0; i<data.length;i++){
@@ -70,7 +74,8 @@ public class ListaProcesos {
         return p;
     }
     
-     public Proceso extraerUltimoProceso(){
+    //Saca el ultimo proceso 
+    public Proceso extraerUltimoProceso(){
         Proceso p = null;
         for(int i = data.length; i>=0; i--){
             if(data[i]!=null){
@@ -81,7 +86,8 @@ public class ListaProcesos {
         }
         return p;
     }
- 
+    
+    //Reordena la lista compactando los espacios nulos
     public void reordenarLista(){
         for(int i=0; i<data.length;i++){
             if(data[i]==null&&i+1<data.length){
@@ -127,10 +133,11 @@ public class ListaProcesos {
         }
     }
 
-    public void imprimirEnJlist(JList jlist_listos) {
+    //metodo para imprimir la lista en en jlist indicado
+    public void imprimirEnJlist(JList jlist) {
         DefaultListModel tmp;
         
-        tmp = (DefaultListModel)jlist_listos.getModel();
+        tmp = (DefaultListModel)jlist.getModel();
         tmp.clear();
         
         try{
@@ -145,14 +152,16 @@ public class ListaProcesos {
         
     }
     
-    public void limpiarJlist(JList jlist_listos) {
+    //metodo para limpiar la jlist dada
+    public void limpiarJlist(JList jlist) {
         DefaultListModel tmp;
         
-        tmp = (DefaultListModel)jlist_listos.getModel();
+        tmp = (DefaultListModel)jlist.getModel();
         tmp.clear();
         
     }
     
+    //metodo devuelve si la lista esta vacia o no
     public boolean estaVacia(){
         boolean vacia = true;
         for(int i = 0; i < data.length; i++){
@@ -164,6 +173,7 @@ public class ListaProcesos {
     }
     
     //Metodo para obtener el proceso con menor tiempo requerido
+    //para algoritmo SJN
     public Proceso extraerProcesoConMenorTiempoRequerido(){
         //variable auxiliar para almacenar el tiempo a mejorar
         int menor_tiempo = 0;
@@ -202,6 +212,7 @@ public class ListaProcesos {
     }  
     
     //Metodo para obtener el proceso con mayor prioridad
+    //para algoritmo HRN
     public Proceso extraerProcesoConMayorPrioridad(){
         //variable auxiliar para almacenar el tiempo a mejorar
         double prioridad = 0;

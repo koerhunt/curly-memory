@@ -116,7 +116,7 @@ public class AlgoritmoHRN extends Simulador implements Runnable{
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina HRN *-*-*-*-*-*-*-*-*-*-*-*");
         try {
-            Thread.sleep(500);
+            Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);

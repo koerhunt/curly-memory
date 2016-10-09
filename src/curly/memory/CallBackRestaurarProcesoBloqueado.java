@@ -17,7 +17,7 @@ public class CallBackRestaurarProcesoBloqueado extends Simulador implements Runn
     @Override
     public void run() {
         try {
-            java.lang.Thread.sleep(4000);
+            java.lang.Thread.sleep(Simulador.velocidad*4);
             if(!suspendidos_bloqueados.estaVacia()){
             suspendidos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_BLOQUEADO);
         }   

@@ -118,7 +118,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
         try {
-            Thread.sleep(500);
+            Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);

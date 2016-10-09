@@ -127,7 +127,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
         }
         System.out.println("*-*-*-*-*-*-*-*-*-  Termina Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
         try {
-            Thread.sleep(500);
+            Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);

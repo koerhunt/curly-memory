@@ -17,7 +17,7 @@ public class CallBackRestaurarProcesoListo extends Simulador implements Runnable
     @Override
     public void run() {
         try {
-            java.lang.Thread.sleep(4000);
+            java.lang.Thread.sleep(Simulador.velocidad*4);
             if(!suspendidos_listos.estaVacia()){
                 suspendidos_listos.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
             }

@@ -65,7 +65,7 @@ public class InterfazG extends javax.swing.JFrame {
         jlist_ejecucion = g_lista_ejecucion;
         
         //Metodo que actualiza las columnas y filas de la tabla
-            actualizarTablaRes();
+        actualizarTablaRes();
         
     }
     

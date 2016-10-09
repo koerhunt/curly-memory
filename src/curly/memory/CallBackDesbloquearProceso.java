@@ -17,7 +17,7 @@ public class CallBackDesbloquearProceso extends Simulador implements Runnable{
     @Override
     public void run() {
         try {
-            java.lang.Thread.sleep(4000);
+            java.lang.Thread.sleep(Simulador.velocidad*4);
             if(!procesos_bloqueados.estaVacia()){
             procesos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
         }   

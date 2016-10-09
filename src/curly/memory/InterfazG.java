@@ -10,6 +10,11 @@
 //interfaz
 package curly.memory;
 
+import curly.memory.administrador.estados.AlgoritmoFIFO;
+import curly.memory.administrador.estados.AlgoritmoHRN;
+import curly.memory.administrador.estados.AlgoritmoRR;
+import curly.memory.administrador.estados.Proceso;
+import curly.memory.administrador.estados.AlgoritmoSJN;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.table.TableModel;

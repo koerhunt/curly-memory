@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package curly.memory;
+package curly.memory.administrador.estados;
 
+import curly.memory.InterfazG;
+import curly.memory.Simulador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;

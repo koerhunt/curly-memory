@@ -450,6 +450,7 @@ public class InterfazG extends javax.swing.JFrame {
             if(hilo_ejecutando.isAlive()){
                 hilo_ejecutando.resume();
                 Simulador.t.resume();
+                Simulador.resumirCallbacks();
                 boton_iniciar.setEnabled(false);
                 boton_parar.setEnabled(true);
                 boton_reiniciar.setEnabled(false);
@@ -581,6 +582,7 @@ public class InterfazG extends javax.swing.JFrame {
         if(hilo_ejecutando.isAlive()){
             //se suspende la ejecucion
             hilo_ejecutando.suspend();
+            Simulador.suspenderCallbacks();
             //se cambian los estados de la interfaz grafica
             boton_iniciar.setText("reanudar"); //se cambia el texto del boton iniciar
             boton_iniciar.setEnabled(true); // se habilita el boton iniciar

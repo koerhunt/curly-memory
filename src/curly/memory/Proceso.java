@@ -70,6 +70,8 @@ public class Proceso implements java.io.Serializable {
 
     public void setEstado(int e){
         int estado_anterior = this.estado;
+        //declaramos el callback
+        Thread callback;
          switch(this.estado){
             case ESTADO_LISTO:
                 Simulador.procesos_listos.extraerProceso(this.pid);
@@ -96,15 +98,22 @@ public class Proceso implements java.io.Serializable {
                 break;
             case ESTADO_BLOQUEADO:
                 Simulador.procesos_bloqueados.agregarProceso(this);
-                new Thread(new CallBackDesbloquearProceso()).start();
+                callback = new Thread(new CallBackDesbloquearProceso());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
                 break;
             case ESTADO_SUSPENDIDO_LISTO:
                 Simulador.suspendidos_listos.agregarProceso(this);
-                new Thread(new CallBackRestaurarProcesoListo()).start();
+                callback = new Thread(new CallBackRestaurarProcesoListo());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
                 break;
             case ESTADO_SUSPENDIDO_BLOQUEADO:
                 Simulador.suspendidos_bloqueados.agregarProceso(this);
-                new Thread(new CallBackRestaurarProcesoBloqueado()).start();
+                callback = new Thread(new CallBackRestaurarProcesoBloqueado());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
+                
                 break;
             case ESTADO_TERMINADO:
                 Simulador.procesos_terminados.agregarProceso(this);

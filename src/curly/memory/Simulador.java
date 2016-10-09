@@ -35,6 +35,9 @@ public class Simulador {
     //Todos los procesos
     public static Proceso todos_los_procesos[];
     
+    //lista de Callbacks
+    public static Thread callbacks[];
+    
     //Hilo creador de procesos
     public static Thread t;
     
@@ -69,6 +72,9 @@ public class Simulador {
         
         proceso_en_ejecucion = new ListaProcesos(1);
         procesos_terminados = new ListaProcesos(60);
+        
+        //Preparamos la lista de callbacks
+        callbacks = new Thread[200];
         
         //Inicializando secuencia del ID
         secuencia_id = 1;
@@ -107,6 +113,20 @@ public class Simulador {
         }
     }
     
+    //Metodo para meter un callback a la lista de callbacks
+    public static void introducirCallbackALista(Thread callback){
+        //Recorremos la lista
+        for(int i =0; i<callbacks.length;i++){
+            //Si encontramos una posicion vacia
+            if(callbacks[i]==null){
+                //guardamos el callback en esa posicion
+                callbacks[i] = callback;
+                //rompemos el ciclo
+                break;
+            }
+        }
+    }
+    
     public static void actualizarDatos(){
         
         procesos_listos.actualizarTiempoDeEspera();
@@ -117,6 +137,22 @@ public class Simulador {
         procesos_bloqueados.ActualizarTiempoDeServicioDeLosProcesos();
         procesos_bloqueados.CalcularPrioridadDeLosProcesos();
         
+    }
+
+    static void suspenderCallbacks() {
+        for(int i =0; i<callbacks.length;i++){
+            if(callbacks[i]!=null){
+                callbacks[i].suspend();
+            }
+        }
+    }
+
+    static void resumirCallbacks() {
+        for(int i =0; i<callbacks.length;i++){
+            if(callbacks[i]!=null){
+                callbacks[i].resume();
+            }
+        }
     }
     
     public void actualizarInterface(Proceso p,boolean bloquear_o_suspender){

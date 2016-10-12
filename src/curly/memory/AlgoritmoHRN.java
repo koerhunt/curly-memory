@@ -7,25 +7,20 @@ package curly.memory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+
 
 /**
  *
- * @author elias
+ * @author Rodarte Fernández
  */
-public class AlgoritmoRR extends Simulador implements Runnable {
-
-    //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
-    @Override
+public class AlgoritmoHRN extends Simulador implements Runnable{
+    
     public void run() {
-        //Comienza fifo
-        ComenzarRR();
+        ComenzarHRN();
     }
     
-    
-     //Metodo para iniciar planificacion RR
-    public  void ComenzarRR(){
-        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
+    public void ComenzarHRN(){
+         System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA HRN *-*-*-*-*-*-*-*-*-*-*-*");
         
         int procesos_atendidos = 0;
         int contador_progreso = 0;
@@ -42,9 +37,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            p = Simulador.procesos_listos.extraerPrimerProceso();
-            //Contador para el cuantum
-            contador_progreso = 0;
+            p = Simulador.procesos_listos.extraerProcesoConMayorPrioridad();
             
             if(p!=null){
                 //Checamos y hacemos cambios de estado
@@ -69,12 +62,14 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 if(p.requiereEntradaSalida()){
                     //Se solicita el recurso
                     solicitarRecurso(p);
+                    contador_progreso = 0;
                 }
                 
-                while(contador_progreso<Simulador.quantum){
+                while(!p.requiereEntradaSalida()||contador_progreso<1){
                     
-                    
-                    contador_progreso++;
+                    if(p.requiereEntradaSalida()){
+                        contador_progreso++;
+                    }
                     
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
@@ -95,12 +90,6 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                         p.calcularTiempoDeServicio();
                         System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
                         break;
-                    }else{
-                        if(contador_progreso>=Simulador.quantum){
-                            if(!p.requiereEntradaSalida()){
-                                p.setEstado(Proceso.ESTADO_LISTO);
-                            }
-                        }
                     }
                     
                     try {                    
@@ -125,7 +114,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 }
             }
         }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina HRN *-*-*-*-*-*-*-*-*-*-*-*");
         try {
             Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();

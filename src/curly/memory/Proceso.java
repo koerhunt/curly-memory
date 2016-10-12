@@ -13,6 +13,7 @@ public class Proceso implements java.io.Serializable {
     public static final int ESTADO_LISTO = 0;
     public static final int ESTADO_EN_EJECUCION = 1;
     public static final int ESTADO_BLOQUEADO = 2;
+
     public static final int ESTADO_SUSPENDIDO = 3;
     public static final int ESTADO_SUSPENDIDO_LISTO = 4;
     public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 5;
@@ -21,7 +22,6 @@ public class Proceso implements java.io.Serializable {
     
     //Identificador del proceso
     private int pid;
-    
     //nombre del proceso
     private String nombre;
     //Estado del proceso
@@ -29,7 +29,9 @@ public class Proceso implements java.io.Serializable {
     //Progreso (del 1 al 100)
     private int progreso;
     //Prioridad del proceso
-    private int prioridad;
+    private double prioridad;
+    //Variable para determinar si el proceso entrara a algun estado suspendido
+    private boolean suspender;
     
     //Tiempos para estadistica
     private int instante_de_llegada;
@@ -40,25 +42,21 @@ public class Proceso implements java.io.Serializable {
     
     //Requerimientos del proceso (tiempo y recurso(s))
     private int tiempo_requerido;    
-    private int recurso;
-    //Si ponemos el arreglo de recursos tendria que implementarse una
-    //tecnica de resolucion de interbloqueos
-    //private int recursos_nececitados[];
-    
-    private boolean recurso_asignado;
+    private boolean recurso;
 
     public Proceso() {
     }
 
-    public Proceso(int pid, String nombre, int prioridad, int tiempo_requerido, int recurso) {
+    public Proceso(int pid, String nombre, int tiempo_requerido, boolean recurso,boolean suspender) {
         this.pid = pid;
         this.nombre = nombre;
-        this.prioridad = prioridad;
         this.tiempo_requerido = tiempo_requerido;
         this.recurso = recurso;
         this.tiempo_de_ejecucion = 0;
+        this.tiempo_de_espera = 0;
+        this.suspender = suspender;
         estado = ESTADO_LISTO;
-        recurso_asignado = false;
+        Simulador.introducirProcesoALista(this);
     }
     
     //Grupos de Metodos Get y Set
@@ -74,8 +72,60 @@ public class Proceso implements java.io.Serializable {
         return estado;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
+    public void setEstado(int e){
+        int estado_anterior = this.estado;
+        //declaramos el callback
+        Thread callback;
+         switch(this.estado){
+            case ESTADO_LISTO:
+                Simulador.procesos_listos.extraerProceso(this.pid);
+                break;
+            case ESTADO_EN_EJECUCION:
+                Simulador.proceso_en_ejecucion.extraerProceso(this.pid);
+                break;
+            case ESTADO_BLOQUEADO:
+                Simulador.procesos_bloqueados.extraerProceso(this.pid);
+                break;
+            case ESTADO_SUSPENDIDO_LISTO:
+                Simulador.suspendidos_listos.extraerProceso(this.pid);
+                break;
+            case ESTADO_SUSPENDIDO_BLOQUEADO:
+                Simulador.suspendidos_bloqueados.extraerProceso(this.pid);
+                break;
+        }
+        switch(e){
+            case ESTADO_LISTO:
+                Simulador.procesos_listos.agregarProceso(this);
+                break;
+            case ESTADO_EN_EJECUCION:
+                Simulador.proceso_en_ejecucion.agregarProceso(this);
+                break;
+            case ESTADO_BLOQUEADO:
+                Simulador.procesos_bloqueados.agregarProceso(this);
+                callback = new Thread(new CallBackDesbloquearProceso());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
+                break;
+            case ESTADO_SUSPENDIDO_LISTO:
+                Simulador.suspendidos_listos.agregarProceso(this);
+                callback = new Thread(new CallBackRestaurarProcesoListo());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
+                break;
+            case ESTADO_SUSPENDIDO_BLOQUEADO:
+                Simulador.suspendidos_bloqueados.agregarProceso(this);
+                callback = new Thread(new CallBackRestaurarProcesoBloqueado());
+                Simulador.introducirCallbackALista(callback);
+                callback.start();
+                
+                break;
+            case ESTADO_TERMINADO:
+                Simulador.procesos_terminados.agregarProceso(this);
+                break;
+        }
+        this.estado = e;
+        InterfazG.actualizarAmbienteGrafico();
+        System.out.println("El proceso "+this.nombre+" - Cambio de estado "+NombreDeEstado(estado_anterior)+" a -> "+NombreDeEstado(e));
     }
 
     public int getProgreso() {
@@ -126,14 +176,6 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_requerido = tiempo_requerido;
     }
 
-    public int getRecurso() {
-        return recurso;
-    }
-
-    public void setRecurso(int recurso) {
-        this.recurso = recurso;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -142,7 +184,7 @@ public class Proceso implements java.io.Serializable {
         this.nombre = nombre;
     }
 
-    public int getPrioridad() {
+    public double getPrioridad() {
         return prioridad;
     }
 
@@ -166,16 +208,13 @@ public class Proceso implements java.io.Serializable {
         this.tiempo_de_espera = tiempo_de_espera;
     }
 
-    public boolean isRecurso_asignado() {
-        return recurso_asignado;
+    public boolean entraraASuspencion() {
+        return suspender;
     }
 
-    public void setRecurso_asignado(boolean recurso_asignado) {
-        this.recurso_asignado = recurso_asignado;
+    public void setSuspender(boolean suspender) {
+        this.suspender = suspender;
     }
-    
-    
-    
     
     //Metodo para actualizar progreso del proceso
     public void actualizarProgreso(){
@@ -188,12 +227,41 @@ public class Proceso implements java.io.Serializable {
         tiempo_de_servicio = tiempo_de_ejecucion + tiempo_de_espera;
     }
     
-    //Metodo para saber si al proceso tiene asignado el recurso
-    public boolean tieneSuRecursoAsignado(){
-        return recurso_asignado;
+    //Metodo para calcular el indice de respuesta
+    public double calcularPrioridad() {
+        //P=(w+t)/t
+        //Donde: P=prioridad, w=tiempo de espera en listos, t=tiempo de ejecución.
+        try{
+            // P=(w+t)/t
+            //Donde: P=prioridad, w=tiempo de espera en listos, t=tiempo de ejecución.
+            this.prioridad = (tiempo_de_espera+tiempo_de_servicio)/(tiempo_de_servicio);
+        }catch(Exception e){
+            this.prioridad =0;
+        }
+        
+        return prioridad;
+    }
+    
+    //Metodo aumenta en uno el tiempo de espera
+    public void aumentarTiempoDeEspera(){
+        tiempo_de_espera++;
+    }
+    
+    public boolean requiereEntradaSalida() {
+        return recurso;
+    }
+
+    public boolean requiereRecurso() {
+        return recurso;
+    }
+
+    public void setRecurso(boolean recurso) {
+        this.recurso = recurso;
     }
     
     
+    
+    //Este metodo devuelve el nombre del estado correspondiente a un numero entero
     public static String NombreDeEstado(int e){
         switch(e){
             case ESTADO_LISTO:
@@ -202,8 +270,6 @@ public class Proceso implements java.io.Serializable {
                 return "Ejecucion";
             case ESTADO_BLOQUEADO:
                 return "Bloqueado";
-            case ESTADO_SUSPENDIDO:
-                return "Suspendido";
             case ESTADO_SUSPENDIDO_LISTO:
                 return "Suspendido Listo";
             case ESTADO_SUSPENDIDO_BLOQUEADO:

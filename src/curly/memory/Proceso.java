@@ -5,6 +5,8 @@
  */
 package curly.memory;
 
+import java.util.Random;
+
 public class Proceso implements java.io.Serializable {
     
     //Atributos del proceso
@@ -15,6 +17,7 @@ public class Proceso implements java.io.Serializable {
     public static final int ESTADO_SUSPENDIDO_LISTO = 4;
     public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 5;
     public static final int ESTADO_TERMINADO = 6;
+    public static final int MEMORIA = 0;
     
     //Identificador del proceso
     private int pid;
@@ -212,6 +215,119 @@ public class Proceso implements java.io.Serializable {
         }
      
     }
+    
+//--------------------------Metodos de Administrador de Memoria-----------------------------------------
+    
+    //MÉTODO MEMORIA
+    public static int memoria() {
+        Random rd = new Random();
+        //Generar Aleatoriamente num del 1 al 7:
+        int a = rd.nextInt(7-1)+1;
+        //Generar Aleatoriamente num del 0 al 1:
+        int b = rd.nextInt(3-1)+1;
+        //Generar Aleatoriamente num del 1 al 9:
+        int c = rd.nextInt(9-1)+1;
+        
+        //Variable que contendrá la memoria a emplear:
+        int memoria = 0;
+        
+        //se crean 2 switch para operación.
+        switch (c) {
+          case 1:
+                c = 0;
+                break;
+            case 2:
+                c = 4;
+                break;
+            case 3:
+                c = 0;
+                break;
+            case 4:
+                c = 8;
+                break;
+            case 5:
+                c = 0;
+                break;
+            case 6:
+                c = 16;
+                break;
+            case 7:
+                c = 0;
+                break;
+            case 8:
+                c = 32;
+                break;
+            case 9:
+                c = 0;
+                break; 
+        }
+        switch (a) {
+            case 1:
+                a = 16;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 2:
+                a = 32;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 3:
+                a = 64;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 4:
+                a = 128;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 5:
+                a = 256;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 6:
+                a = 512;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;
+            case 7:
+                a = 1024;
+                if (b==1) {
+                    memoria = a+c;
+                }
+                else {
+                    memoria = a-c;
+                }
+                break;                                           
+        }
+        return memoria;
+    } 
     
     
     

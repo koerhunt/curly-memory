@@ -5,6 +5,9 @@
  */
 package curly.memory;
 
+import curly.memory.administrador.estados.ListaProcesos;
+import curly.memory.administrador.estados.CrearProcesos;
+import curly.memory.administrador.estados.Proceso;
 import java.util.Random;
 
 /**
@@ -40,15 +43,16 @@ public class Simulador {
     //Hilo creador de procesos
     public static Thread t;
     
-    static int secuencia_id = 5;
+    public static int secuencia_id = 5;
+    
     //tiempo transcurrido en el cpu
-    static int tiempo_cpu=0;
+    public static int tiempo_cpu=0;
 
     //cuantum para RR
-    static int quantum;
+    public static int quantum;
     
     //Velocidad del simulador en ms
-    static int velocidad = 1000;
+    public static int velocidad = 1000;
     
     //creamos un objeto random para obtener numeros aleatorios
     static Random rd;

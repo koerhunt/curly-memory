@@ -11,12 +11,13 @@ package administrador.memoria;
  */
 public class Particion {
     
-    public int tamanio;
+    int tamanio;
+    boolean estado=true;
     Solt s;
-    Pagina paginas[];
+    public Pagina paginas[];
     
     int ocupado;
-    int disponible;
+    int disponible=tamanio-ocupado;
     
     int TAMANIO_DE_PAGINA = 64;
     
@@ -28,5 +29,64 @@ public class Particion {
         this.tamanio = tamanio;
         paginas = new Pagina[this.tamanio/TAMANIO_DE_PAGINA];
     }
+    public int getTamanio(){
+    return tamanio;
+    }
+    public int getOcupado() {
+        return ocupado;
+    }
+
+    public void setOcupado(int ocupado) {
+        this.ocupado = ocupado;
+    }
+
+    public int getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(int disponible) {
+        this.disponible = disponible;
+    }
+    
+    
+    
+    public int calcularPaginasOcupadas(){
+        int pagOcupadas=0;
+        for(int i=0;i<paginas.length;i++){
+            if(!paginas[i].estaDisponible())
+                pagOcupadas=pagOcupadas+1;
+        }
+        return pagOcupadas;
+    }
+    
+    public int calcularEspacioOcupado(){
+        int espacio_ocupado = 0;
+        for(int i=0;i<paginas.length;i++){
+            if(!paginas[i].estaDisponible())
+                espacio_ocupado+=paginas[i].getEspacio_ocupado();
+        }
+        this.ocupado = espacio_ocupado;
+        return espacio_ocupado;
+    }
+    
+    public int calcularEspacioDisponible(){
+        this.disponible = this.tamanio - calcularEspacioOcupado();
+        return this.disponible;
+    }
+    
+    public boolean estaDisponible(){
+        boolean es = false;
+        
+        for(int i=0;i<paginas.length;i++){
+           if(paginas[i].estaDisponible()){
+                es = true;
+                break;
+           }
+        }
+        
+        
+        return es;
+    }
+    
     
 }

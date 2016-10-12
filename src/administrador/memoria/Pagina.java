@@ -11,8 +11,9 @@ package administrador.memoria;
  */
 public class Pagina {
     int tamanio;
-    int ocupado;
-    int disponible;
+    int espacio_ocupado;
+    int espacio_disponible;
+    boolean estado=true;
     
     Particion particion;
     
@@ -24,5 +25,37 @@ public class Pagina {
         this.tamanio = t;
         this.particion = p;
     }
+    
+    
+    public boolean estaDisponible(){
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public void setEspacio_ocupado(int espacio_ocupado) {
+        this.espacio_ocupado = espacio_ocupado;
+    }
+
+    public void setEspacio_disponible(int espacio_disponible) {
+        this.espacio_disponible = espacio_disponible;
+    }
+
+    public int getEspacio_ocupado() {
+        return espacio_ocupado;
+    }
+
+    public int getEspacio_disponible() {
+        return espacio_disponible;
+    }
+    
+    
+
+    
+    
+    
+    
     
 }

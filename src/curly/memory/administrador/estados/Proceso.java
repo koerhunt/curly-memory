@@ -284,6 +284,24 @@ public class Proceso implements java.io.Serializable {
         }
      
     }
+
+    public int getTiempo_de_espera() {
+        return tiempo_de_espera;
+    }
+
+    public void setTiempo_de_espera(int tiempo_de_espera) {
+        this.tiempo_de_espera = tiempo_de_espera;
+    }
+
+    public int getTiempo_requerido() {
+        return tiempo_requerido;
+    }
+
+    public void setTiempo_requerido(int tiempo_requerido) {
+        this.tiempo_requerido = tiempo_requerido;
+    }
+    
+    
     
 //--------------------------Metodos de Administrador de Memoria-----------------------------------------
     
@@ -397,6 +415,10 @@ public class Proceso implements java.io.Serializable {
         }
         return memoria;
     } 
+
+    public int getMemoria() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
     

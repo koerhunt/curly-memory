@@ -86,6 +86,7 @@ public class InterfazG extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -188,6 +189,11 @@ public class InterfazG extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable3);
         if (jTable3.getColumnModel().getColumnCount() > 0) {
             jTable3.getColumnModel().getColumn(0).setMinWidth(50);
@@ -223,6 +229,14 @@ public class InterfazG extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Eliminar Proceso");
+        jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -253,6 +267,8 @@ public class InterfazG extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(81, 81, 81)
                 .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -263,7 +279,9 @@ public class InterfazG extends javax.swing.JFrame {
                     .addComponent(jScrollPane4)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
@@ -298,7 +316,7 @@ public class InterfazG extends javax.swing.JFrame {
         
         secuencia_id++; //se incrementa el contador de id
         
-        ColocarProcesoEnMemoriaFisica(nuevo_proceso);
+        ColocarProcesoEnMemoria(nuevo_proceso);
         
         actualizarTablaRes();
             
@@ -308,6 +326,36 @@ public class InterfazG extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        
+        int r = jTable3.getSelectedRow();        
+        
+        if(procesos[r]!=null){
+            liberarProcesoDeMemoria(memoria_fisica,procesos[r]);
+            liberarProcesoDeMemoria(memoria_virtual,procesos[r]);
+            procesos[r] = null;
+            for(int i=0; i<procesos.length;i++){
+                if(procesos[i]==null&&i+1<procesos.length){
+                    if(procesos[i+1]!=null){
+                        procesos[i] = procesos[i+1];
+                        procesos[i+1] = null;   
+                    }
+                }
+            }
+        }        
+        
+        actualizarTablaRes();
+            
+        actualizarTablaMemoria(memoria_fisica, model_jtable_memreal);
+        
+        actualizarTablaMemoria(memoria_virtual, model_jtable_memvirt);
+        
+    }//GEN-LAST:event_jTable3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -351,7 +399,7 @@ public class InterfazG extends javax.swing.JFrame {
             //i hasta 30 por los renglones que son
             for(int i=0; i<30;i++){
                 //menor que 9 porque son 8 columnas
-                for(int j=0; j<=3;j++){
+                for(int j=0; j<3;j++){
                     //se rellena la celda con un espacio en blanco
                     model.setValueAt("", i, j);
                 }
@@ -362,8 +410,8 @@ public class InterfazG extends javax.swing.JFrame {
     }
     
     public void actualizarTablaRes() {
-    
-    //Se recorre la lista de procesos
+     limpiarTabla(model_jtable);
+     //Se recorre la lista de procesos
      for (int x=0; x<procesos.length; x++) {
          //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
          //model es un auxiliar para meter la informacion a la tabla
@@ -432,6 +480,23 @@ public class InterfazG extends javax.swing.JFrame {
         }
     }
     
+    public void liberarProcesoDeMemoria(Solt memoria, Proceso p) {
+        
+        for(int i = 0; i<memoria.particiones.length;i++){
+            for(int j = 0; j<memoria.particiones[i].paginas.length;j++){
+                Proceso pg = memoria.particiones[i].paginas[j].getProceso();
+                if(pg!=null){
+                    if(pg.getPid()==p.getPid()){
+                        memoria.particiones[i].paginas[j].setProceso(null);
+                        memoria.particiones[i].paginas[j].setEspacio_disponible(64);
+                        memoria.particiones[i].paginas[j].setEspacio_ocupado(0);
+                        memoria.particiones[i].paginas[j].setEstado(true);
+                    }
+                }
+            }
+        }     
+    }
+    
     public static int mejorAjuste(Solt memoria,int cantidadSolicitada){
         int mejor=0,desperdicio=0,menor=-1;
         
@@ -452,7 +517,7 @@ public class InterfazG extends javax.swing.JFrame {
         return mejor;
     }
     
-    public void ColocarProcesoEnMemoriaFisica(Proceso p){
+    public void ColocarProcesoEnMemoria(Proceso p){
         
         int paginas_asignadas=0;
         System.out.println("* = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
@@ -531,6 +596,7 @@ public class InterfazG extends javax.swing.JFrame {
                                      particion_usar.paginas[j].setEspacio_ocupado(64);
                                      particion_usar.paginas[j].setEspacio_disponible(0);
                                  }
+                                 particion_usar.paginas[j].setProceso(p);
                                  particion_usar.paginas[j].setEstado(false);
                                  paginas_asignadas++;
                                  System.out.println(" <-- (asignada) " );
@@ -555,6 +621,7 @@ public class InterfazG extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -568,4 +635,5 @@ public class InterfazG extends javax.swing.JFrame {
     private javax.swing.JTable jTable3;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package curly.memory.administrador.estados;
+package curly.memory;
 
-import curly.memory.InterfazG;
-import curly.memory.Simulador;
+import curly.memory.administrador.estados.InterfazG;
+import curly.memory.administrador.estados.CallBackDesbloquearProceso;
+import curly.memory.administrador.estados.CallBackRestaurarProcesoBloqueado;
+import curly.memory.administrador.estados.CallBackRestaurarProcesoListo;
 
 import java.util.Random;
 
@@ -21,7 +23,8 @@ public class Proceso implements java.io.Serializable {
     public static final int ESTADO_SUSPENDIDO_LISTO = 4;
     public static final int ESTADO_SUSPENDIDO_BLOQUEADO = 5;
     public static final int ESTADO_TERMINADO = 6;
-    public static final int MEMORIA = 0;
+    
+    public int memoria = 0;
     
     //Identificador del proceso
     private int pid;
@@ -48,6 +51,18 @@ public class Proceso implements java.io.Serializable {
     private boolean recurso;
 
     public Proceso() {
+    }
+    
+    public Proceso(int pid, String nombre) {
+        this.pid = pid;
+        this.nombre = nombre;
+        this.tiempo_requerido = 10;
+        this.recurso = false;
+        this.tiempo_de_ejecucion = 0;
+        this.tiempo_de_espera = 0;
+        this.suspender = false;
+        this.memoria = memoria();
+        estado = ESTADO_EN_EJECUCION;
     }
 
     public Proceso(int pid, String nombre, int tiempo_requerido, boolean recurso,boolean suspender) {
@@ -307,6 +322,7 @@ public class Proceso implements java.io.Serializable {
     
     //MÉTODO MEMORIA
     public static int memoria() {
+        int mem = 0;
         Random rd = new Random();
         //Generar Aleatoriamente num del 1 al 7:
         int a = rd.nextInt(7-1)+1;
@@ -314,9 +330,6 @@ public class Proceso implements java.io.Serializable {
         int b = rd.nextInt(3-1)+1;
         //Generar Aleatoriamente num del 1 al 9:
         int c = rd.nextInt(9-1)+1;
-        
-        //Variable que contendrá la memoria a emplear:
-        int memoria = 0;
         
         //se crean 2 switch para operación.
         switch (c) {
@@ -352,72 +365,75 @@ public class Proceso implements java.io.Serializable {
             case 1:
                 a = 16;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 2:
                 a = 32;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 3:
                 a = 64;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 4:
                 a = 128;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 5:
                 a = 256;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 6:
                 a = 512;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;
             case 7:
                 a = 1024;
                 if (b==1) {
-                    memoria = a+c;
+                    mem = a+c;
                 }
                 else {
-                    memoria = a-c;
+                    mem = a-c;
                 }
                 break;                                           
         }
-        return memoria;
+        if(mem==0||mem<0){
+            mem = 128;
+        }
+        return mem;
     } 
 
     public int getMemoria() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.memoria;
     }
     
     

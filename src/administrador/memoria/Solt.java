@@ -12,7 +12,7 @@ package administrador.memoria;
 public class Solt {
     
     int tamanio;
-    static Particion particiones[];
+    public Particion particiones[];
     
     int ocupado;
     int disponible;

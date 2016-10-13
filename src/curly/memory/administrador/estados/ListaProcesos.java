@@ -5,6 +5,7 @@
  */
 package curly.memory.administrador.estados;
 
+import curly.memory.Proceso;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 

@@ -5,17 +5,20 @@
  */
 package administrador.memoria;
 
+import curly.memory.Proceso;
+
 /**
  *
  * @author elias
  */
 public class Pagina {
     int tamanio;
-    int espacio_ocupado;
-    int espacio_disponible;
+    int espacio_ocupado=0;
+    int espacio_disponible=64;
     boolean estado=true;
     
     Particion particion;
+    Proceso proceso;
     
     public Pagina(){
         
@@ -50,12 +53,13 @@ public class Pagina {
     public int getEspacio_disponible() {
         return espacio_disponible;
     }
-    
-    
 
-    
-    
-    
-    
+    public Proceso getProceso() {
+        return proceso;
+    }
+
+    public void setProceso(Proceso proceso) {
+        this.proceso = proceso;
+    }
     
 }

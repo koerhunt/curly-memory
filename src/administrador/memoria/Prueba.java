@@ -6,7 +6,7 @@
 package administrador.memoria;
 
 import static administrador.memoria.Solt.particiones;
-import curly.memory.administrador.estados.Proceso;
+import curly.memory.Proceso;
 
 /**
  *

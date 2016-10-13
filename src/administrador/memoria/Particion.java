@@ -27,7 +27,10 @@ public class Particion {
     
     public Particion(int tamanio){
         this.tamanio = tamanio;
-        paginas = new Pagina[this.tamanio/TAMANIO_DE_PAGINA];
+        paginas = new Pagina[this.tamanio/64];
+        for(int i = 0; i< this.tamanio/64;i++){
+            paginas[i] = new Pagina();
+        }
     }
     public int getTamanio(){
     return tamanio;

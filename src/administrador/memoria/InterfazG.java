@@ -5,9 +5,8 @@
  */
 package administrador.memoria;
 
-import static curly.memory.InterfazG.actualizarAmbienteGrafico;
-import curly.memory.Simulador;
-import curly.memory.administrador.estados.Proceso;
+import curly.memory.Proceso;
+
 import java.util.Enumeration;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -19,44 +18,50 @@ import javax.swing.table.TableModel;
  * @author HDEZ. OCHOA D. SEBASTIAN
  */
 public class InterfazG extends javax.swing.JFrame {
-    
-
     /**
      * Creates new form InterfazG
      */
     //Variables que permiten a las clases de Simulador, FIFO, SJN, etc.. puedan acceder y modificar
     //la interfaz grafica
-    static TableModel model_jtable;
-    public static Proceso procesos[];
-    //Se declara una variable que contendra al algoritmo (FIFO, SJN) que se esta ejecutando
-    static Thread hilo_ejecutando;
+    TableModel model_jtable;
+    TableModel model_jtable_memreal;
+    TableModel model_jtable_memvirt;
     
+    public static Proceso procesos[];
+    
+    //Se declara una variable que contendra al algoritmo (FIFO, SJN) que se esta ejecutando
+    static int secuencia_id=1;
+    
+    //Objetos para representar la memoria
+    Solt memoria_fisica;
+    Solt memoria_virtual;
     
     public InterfazG() {
       initComponents();
-      procesos= new Proceso[10];
+      procesos= new Proceso[15];
+       
+      memoria_fisica = new Solt(1024);
+      memoria_virtual= new Solt(1024);
+    
       setCellRender(jTable1);
       setCellRender(jTable2);
+      
+      model_jtable = jTable3.getModel();
+      
+      model_jtable_memreal = jTable1.getModel();
+      model_jtable_memvirt = jTable2.getModel();
+      
+      
     }
     
-       public void setCellRender(JTable table) {
+    //Metodo para pintar las celdas
+    public void setCellRender(JTable table) {
         Enumeration<TableColumn> en = table.getColumnModel().getColumns();
         while (en.hasMoreElements()) {
             TableColumn tc = en.nextElement();
             tc.setCellRenderer(new CellRenderer());
         }
-    }
-    
-    
-    
-    /*
-       public void setCellRender(JTable table) {
-        Enumeration<TableColumn> en = table.getColumnModel().getColumns();
-        while (en.hasMoreElements()) {
-            TableColumn tc = en.nextElement();
-            tc.setCellRenderer(new CellRenderer());
-        }*/
-    
+    }  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,62 +91,70 @@ public class InterfazG extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Frame", "P"
+                "MB Ocupados", "Proceso", "P"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(1).setMinWidth(20);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(20);
-            jTable1.getColumnModel().getColumn(1).setMaxWidth(20);
+            jTable1.getColumnModel().getColumn(2).setMinWidth(20);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(20);
+            jTable1.getColumnModel().getColumn(2).setMaxWidth(20);
         }
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Página", "P"
+                "MB Ocupados", "Proceso", "P"
             }
         ));
         jScrollPane2.setViewportView(jTable2);
         if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(1).setMinWidth(20);
-            jTable2.getColumnModel().getColumn(1).setPreferredWidth(20);
-            jTable2.getColumnModel().getColumn(1).setMaxWidth(20);
+            jTable2.getColumnModel().getColumn(2).setMinWidth(20);
+            jTable2.getColumnModel().getColumn(2).setPreferredWidth(20);
+            jTable2.getColumnModel().getColumn(2).setMaxWidth(20);
         }
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
@@ -164,7 +177,7 @@ public class InterfazG extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Proceso", "Memoria", "Estado"
+                "PID", "Memoria", "Nombre"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -177,11 +190,14 @@ public class InterfazG extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jTable3);
         if (jTable3.getColumnModel().getColumnCount() > 0) {
-            jTable3.getColumnModel().getColumn(0).setResizable(false);
+            jTable3.getColumnModel().getColumn(0).setMinWidth(50);
+            jTable3.getColumnModel().getColumn(0).setPreferredWidth(50);
+            jTable3.getColumnModel().getColumn(0).setMaxWidth(50);
             jTable3.getColumnModel().getColumn(1).setResizable(false);
             jTable3.getColumnModel().getColumn(2).setResizable(false);
         }
 
+        jTextPane1.setEditable(false);
         jTextPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTextPane1.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jTextPane1.setText("ADMINISTRADOR DE MEMORIA");
@@ -273,39 +289,24 @@ public class InterfazG extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // BOTON AGREGAR PROCESO
-        //Cuando se da clic al boton de crear proceso
-        //Si es manual
-        //Variables booleanas para supencion y recursos
-            boolean recurso, suspencion;
-            int prioridad =0 ,tiempo_requerido=1;
-            Object[] si_no = {"SI", "NO"};
-        String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n");
-        tiempo_requerido = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea el Tiempo Requerido del Proceso\n"));
-        //Requiere E/S ?
-        int r = JOptionPane.showOptionDialog(null,"El proceso utilizara algun recurso?",
-            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,si_no,"NO");
-        recurso = (r==JOptionPane.YES_OPTION);
-                 
-        //Se suspendera el proceso??
-        r = JOptionPane.showOptionDialog(null,"El proceso se suspendera en la ejecucion?",
-            " - CREAR PROCESO -",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,si_no,"NO");
-        suspencion = (r==JOptionPane.YES_OPTION);
-                
-        //La prioridad del proceso
-        prioridad = Integer.parseInt(JOptionPane.showInputDialog(null,"Teclea la prioridad del Proceso\n"));                 
-                
-        Proceso p = new Proceso(Simulador.secuencia_id, nombre, tiempo_requerido,recurso,suspencion);
-        p.setPrioridad(prioridad);
-                
-        Simulador.secuencia_id++; //se incrementa el contador de id
-                
-        //Se introduce el proceso a la lista de procesos creados/listos
-        Simulador.procesos_listos.agregarProceso(p);
+        Object[] si_no = {"SI", "NO"};
         
-        if(hilo_ejecutando==null){
-            limpiarTabla();
-        }
-        actualizarAmbienteGrafico();
+        //String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n");
+        
+        Proceso nuevo_proceso = new Proceso(secuencia_id, "Proceso "+secuencia_id);
+        introducirProcesoALista(nuevo_proceso);
+        
+        secuencia_id++; //se incrementa el contador de id
+        
+        ColocarProcesoEnMemoriaFisica(nuevo_proceso);
+        
+        actualizarTablaRes();
+            
+        actualizarTablaMemoria(memoria_fisica, model_jtable_memreal);
+        
+        actualizarTablaMemoria(memoria_virtual, model_jtable_memvirt);
+        
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -341,23 +342,213 @@ public class InterfazG extends javax.swing.JFrame {
                 new InterfazG().setVisible(true);
             }
         });
-//--------------------------------desde aquí empezó el sebas-----------------------------------------------
-            Proceso vectorsillo [] = new Proceso[10];
     }
     
     //Metodo para limpiar la tabla
-    public void limpiarTabla(){
+    public static void limpiarTabla(TableModel model){
         //se vacia cada renglon y columna de la tabla
         try {
             //i hasta 30 por los renglones que son
             for(int i=0; i<30;i++){
                 //menor que 9 porque son 8 columnas
-                for(int j=0; j<9;j++){
+                for(int j=0; j<=3;j++){
                     //se rellena la celda con un espacio en blanco
-                    model_jtable.setValueAt("", i, j);
+                    model.setValueAt("", i, j);
                 }
             }
         } catch (Exception e) {
+            
+        }
+    }
+    
+    public void actualizarTablaRes() {
+    
+    //Se recorre la lista de procesos
+     for (int x=0; x<procesos.length; x++) {
+         //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
+         //model es un auxiliar para meter la informacion a la tabla
+         if(procesos[x]!=null){
+            //x indica el renglon
+            //el numero que le sigue indica la columna
+            model_jtable.setValueAt(procesos[x].getPid(), x, 0);
+            model_jtable.setValueAt(procesos[x].getMemoria(), x, 1);
+            model_jtable.setValueAt(procesos[x].getNombre(), x, 2);
+         }
+      }
+     
+    }
+    
+    public void actualizarTablaMemoria(Solt memoria, TableModel modelo) {
+        limpiarTabla(modelo);
+        
+        for(int i = 0; i<memoria.particiones[0].paginas.length;i++){
+            modelo.setValueAt(memoria.particiones[0].paginas[i].getEspacio_ocupado(), i, 0);
+            
+            Proceso proceso_en_pagina = memoria.particiones[0].paginas[i].getProceso();
+            
+            if(proceso_en_pagina!=null){
+                modelo.setValueAt(proceso_en_pagina.getNombre(), i, 1);
+            }else{
+                modelo.setValueAt(" disponible ", i, 1);
+            }
+        }
+        
+        for(int i = 0; i<memoria.particiones[1].paginas.length;i++){
+            modelo.setValueAt(memoria.particiones[1].paginas[i].espacio_ocupado, i+2, 0);
+            
+            Proceso proceso_en_pagina = memoria.particiones[1].paginas[i].getProceso();
+            if(proceso_en_pagina!=null){
+                modelo.setValueAt(proceso_en_pagina.getNombre(), i+2, 1);
+            }else{
+                modelo.setValueAt(" disponible ", i+2, 1);
+            }
+        }
+        
+        
+        for(int i = 0; i<memoria.particiones[2].paginas.length;i++){
+            modelo.setValueAt(memoria.particiones[2].paginas[i].espacio_ocupado, i+10, 0);
+            
+            Proceso proceso_en_pagina = memoria.particiones[2].paginas[i].getProceso();
+            if(proceso_en_pagina!=null){
+                modelo.setValueAt(proceso_en_pagina.getNombre(), i+10, 1);
+            }else{
+                modelo.setValueAt(" disponible ", i+10, 1);
+            }
+        }
+     
+    }
+    
+     //Metodo para meter un proceso a la lista de todos los procesos
+    public static void introducirProcesoALista(Proceso p){
+        //Recorremos la lista
+        for(int i =0; i<procesos.length;i++){
+            //Si encontramos una posicion vacia
+            if(procesos[i]==null){
+                //guardamos el proceso en esa posicion
+                procesos[i] = p;
+                //rompemos el ciclo
+                break;
+            }
+        }
+    }
+    
+    public static int mejorAjuste(Solt memoria,int cantidadSolicitada){
+        int mejor=0,desperdicio=0,menor=-1;
+        
+        for(int i=0;i<memoria.particiones.length;i++){
+            if(memoria.particiones[i].estaDisponible()){
+                desperdicio=(memoria.particiones[i].calcularEspacioDisponible())-cantidadSolicitada;
+                if(menor == -1){
+                    menor = desperdicio;
+                    mejor = i;
+                }else{
+                    if(desperdicio<menor){
+                        menor = desperdicio;
+                        mejor = i;
+                    }
+                }
+            }            
+        }
+        return mejor;
+    }
+    
+    public void ColocarProcesoEnMemoriaFisica(Proceso p){
+        
+        int paginas_asignadas=0;
+        System.out.println("* = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
+        System.out.println(p.getNombre()+" requiere "+p.getMemoria()+ "MB");
+        int numero_paginas = (int) Math.ceil( (float) p.getMemoria() / (float) 64 );
+        System.out.println(p.getNombre()+" requiere "+numero_paginas+ " frames");
+        int residuo;
+        if(p.getMemoria()>=64){
+            residuo = p.getMemoria()%64;
+        }else{
+            residuo = 64-p.getMemoria();
+        }
+        System.out.println("La ultima pagina de este proceso tendra una fragmentacion interna de "+residuo+ "MB");
+        
+        for(int i = 0; i <=2;i++){
+           if(paginas_asignadas<numero_paginas){
+                
+               int mejor_particion = mejorAjuste(memoria_fisica,( p.getMemoria() - ( paginas_asignadas * 64  )  ));
+
+               
+                Particion particion_usar = memoria_fisica.particiones[mejor_particion];
+                
+                if(particion_usar.estaDisponible()){
+                    
+                    System.out.println("Asignando en memoria real");
+                    System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
+                    
+                    for(int j=0; j<particion_usar.paginas.length;j++){
+                        if(paginas_asignadas < numero_paginas ){
+                            System.out.print("checando pagina "+j+" ");
+                            if(particion_usar.paginas[j].estaDisponible()){
+                                if(numero_paginas==1||numero_paginas==paginas_asignadas){
+                                    particion_usar.paginas[j].setEspacio_ocupado((64-residuo));
+                                    particion_usar.paginas[j].setEspacio_disponible(residuo);
+                                }else{
+                                    particion_usar.paginas[j].setEspacio_ocupado(64);
+                                    particion_usar.paginas[j].setEspacio_disponible(0);
+                                }
+                                particion_usar.paginas[j].setProceso(p);
+                                particion_usar.paginas[j].setEstado(false);
+                                paginas_asignadas++;
+                                System.out.println(" <-- (asignada) " );
+                            }else{
+                                System.out.println(" <-- (ya ocupada) " );
+                            }
+                        }
+                    }
+                    System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
+                }
+           }
+        }
+        
+        if(paginas_asignadas<numero_paginas){
+            System.out.println("Memoria real llena, utilizando memoria virtual");
+            for(int i = 0; i <=2;i++){
+            if(paginas_asignadas<numero_paginas){
+
+                int mejor_particion = mejorAjuste(memoria_virtual,( p.getMemoria() - ( paginas_asignadas * 64  )  ));
+
+
+                 Particion particion_usar = memoria_virtual.particiones[mejor_particion];
+
+                 if(particion_usar.estaDisponible()){
+
+                     System.out.println("Asignando en memoria real");
+                     System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
+
+                     for(int j=0; j<particion_usar.paginas.length;j++){
+                         if(paginas_asignadas < numero_paginas ){
+                             System.out.print("checando pagina "+j+" ");
+                             if(particion_usar.paginas[j].estaDisponible()){
+                                 if(numero_paginas==1||numero_paginas==paginas_asignadas){
+                                     particion_usar.paginas[j].setEspacio_ocupado((64-residuo));
+                                     particion_usar.paginas[j].setEspacio_disponible(residuo);
+                                 }else{
+                                     particion_usar.paginas[j].setEspacio_ocupado(64);
+                                     particion_usar.paginas[j].setEspacio_disponible(0);
+                                 }
+                                 particion_usar.paginas[j].setEstado(false);
+                                 paginas_asignadas++;
+                                 System.out.println(" <-- (asignada) " );
+                             }else{
+                                 System.out.println(" <-- (ya ocupada) " );
+                             }
+                         }
+                     }
+                     System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
+                 }
+            }
+         }
+        }
+        
+        if(paginas_asignadas<numero_paginas){
+            JOptionPane.showMessageDialog(null,"Ya no se pueden agregar mas procesos, ambos almacenamientos estan llenos");
+            p = null;
+            actualizarTablaRes();
         }
     }
 

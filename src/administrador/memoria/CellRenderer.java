@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -31,7 +32,7 @@ public class CellRenderer extends DefaultTableCellRenderer implements TableCellR
         Color c3 = new Color (255, 160, 122); //salmon
         
         //ASIGNACIÖN de colores
-        if (column==1) {
+        if (column==2) {
             switch (row) {
                 case 0: 
                     setBackground(c);

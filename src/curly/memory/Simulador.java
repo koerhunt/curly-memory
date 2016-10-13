@@ -5,9 +5,9 @@
  */
 package curly.memory;
 
+import curly.memory.administrador.estados.InterfazG;
 import curly.memory.administrador.estados.ListaProcesos;
 import curly.memory.administrador.estados.CrearProcesos;
-import curly.memory.administrador.estados.Proceso;
 import java.util.Random;
 
 /**
@@ -143,7 +143,7 @@ public class Simulador {
         
     }
 
-    static void suspenderCallbacks() {
+    public static void suspenderCallbacks() {
         for(int i =0; i<callbacks.length;i++){
             if(callbacks[i]!=null){
                 callbacks[i].suspend();
@@ -151,7 +151,7 @@ public class Simulador {
         }
     }
 
-    static void resumirCallbacks() {
+    public static void resumirCallbacks() {
         for(int i =0; i<callbacks.length;i++){
             if(callbacks[i]!=null){
                 callbacks[i].resume();

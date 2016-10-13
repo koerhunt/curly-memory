@@ -5,6 +5,7 @@
  */
 package curly.memory.administrador.estados;
 
+import curly.memory.Proceso;
 import curly.memory.Simulador;
 import java.util.logging.Level;
 import java.util.logging.Logger;

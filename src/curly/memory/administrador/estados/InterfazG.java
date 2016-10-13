@@ -8,12 +8,13 @@
 
 //*****************************************************************************************************************
 //interfaz
-package curly.memory;
+package curly.memory.administrador.estados;
 
+import curly.memory.Proceso;
+import curly.memory.Simulador;
 import curly.memory.administrador.estados.AlgoritmoFIFO;
 import curly.memory.administrador.estados.AlgoritmoHRN;
 import curly.memory.administrador.estados.AlgoritmoRR;
-import curly.memory.administrador.estados.Proceso;
 import curly.memory.administrador.estados.AlgoritmoSJN;
 import java.util.Random;
 import javax.swing.*;
@@ -146,14 +147,11 @@ public class InterfazG extends javax.swing.JFrame {
         });
 
         criterios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SJN", "RR", "HRN" }));
-
-	 criterios.addActionListener(new java.awt.event.ActionListener() {
-	     public void actionPerformed(java.awt.event.ActionEvent evt) {
-	        criteriosActionPerformed(evt);
-	     }
-	 });
-
-
+        criterios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                criteriosActionPerformed(evt);
+            }
+        });
 
         ejecutando_label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         ejecutando_label.setText("Esperando a iniciar planificacion");

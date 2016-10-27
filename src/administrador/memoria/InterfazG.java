@@ -227,7 +227,7 @@ public class InterfazG extends javax.swing.JFrame {
         jTextPane1.setText("ADMINISTRADOR DE MEMORIA");
         jScrollPane4.setViewportView(jTextPane1);
 
-        jButton1.setText("Salir compa ajua");
+        jButton1.setText("Salir");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -264,7 +264,7 @@ public class InterfazG extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
             .addGroup(layout.createSequentialGroup()
                 .addGap(89, 89, 89)
@@ -431,10 +431,10 @@ public class InterfazG extends javax.swing.JFrame {
     public void actualizarTablaMemoria(Solt memoria, TableModel modelo) {
         limpiarTabla(modelo);
         
-        for(int i = 0; i<memoria.particiones[0].paginas.length;i++){
-            modelo.setValueAt(memoria.particiones[0].paginas[i].getEspacio_ocupado(), i, 0);
+        for(int i = 0; i<memoria.paginas.length;i++){
+            modelo.setValueAt(memoria.paginas[i].getEspacio_ocupado(), i, 0);
             
-            Proceso proceso_en_pagina = memoria.particiones[0].paginas[i].getProceso();
+            Proceso proceso_en_pagina = memoria.paginas[i].getProceso();
             
             if(proceso_en_pagina!=null){
                 modelo.setValueAt(proceso_en_pagina.getNombre(), i, 1);
@@ -443,32 +443,9 @@ public class InterfazG extends javax.swing.JFrame {
             }
         }
         
-        for(int i = 0; i<memoria.particiones[1].paginas.length;i++){
-            modelo.setValueAt(memoria.particiones[1].paginas[i].espacio_ocupado, i+2, 0);
-            
-            Proceso proceso_en_pagina = memoria.particiones[1].paginas[i].getProceso();
-            if(proceso_en_pagina!=null){
-                modelo.setValueAt(proceso_en_pagina.getNombre(), i+2, 1);
-            }else{
-                modelo.setValueAt(" disponible ", i+2, 1);
-            }
-        }
-        
-        
-        for(int i = 0; i<memoria.particiones[2].paginas.length;i++){
-            modelo.setValueAt(memoria.particiones[2].paginas[i].espacio_ocupado, i+10, 0);
-            
-            Proceso proceso_en_pagina = memoria.particiones[2].paginas[i].getProceso();
-            if(proceso_en_pagina!=null){
-                modelo.setValueAt(proceso_en_pagina.getNombre(), i+10, 1);
-            }else{
-                modelo.setValueAt(" disponible ", i+10, 1);
-            }
-        }
-     
     }
     
-     //Metodo para meter un proceso a la lista de todos los procesos
+    //Metodo para meter un proceso a la lista de todos los procesos
     public static void introducirProcesoALista(Proceso p){
         //Recorremos la lista
         for(int i =0; i<procesos.length;i++){
@@ -482,43 +459,46 @@ public class InterfazG extends javax.swing.JFrame {
         }
     }
     
-    public void liberarProcesoDeMemoria(Solt memoria, Proceso p) {
-        
-        for(int i = 0; i<memoria.particiones.length;i++){
-            for(int j = 0; j<memoria.particiones[i].paginas.length;j++){
-                Proceso pg = memoria.particiones[i].paginas[j].getProceso();
-                if(pg!=null){
-                    if(pg.getPid()==p.getPid()){
-                        memoria.particiones[i].paginas[j].setProceso(null);
-                        memoria.particiones[i].paginas[j].setEspacio_disponible(64);
-                        memoria.particiones[i].paginas[j].setEspacio_ocupado(0);
-                        memoria.particiones[i].paginas[j].setEstado(true);
-                    }
+    
+    public void reordenarLista(Proceso lista[]){
+        for(int i=0; i<lista.length;i++){
+            if(lista[i]==null&&i+1<lista.length){
+                if(lista[i+1]!=null){
+                  lista[i] = lista[i+1];
+                  lista[i+1] = null;   
                 }
             }
-        }     
-    }
-    
-    public static int mejorAjuste(Solt memoria,int cantidadSolicitada){
-        int mejor=0,desperdicio=0,menor=-1;
-        
-        for(int i=0;i<memoria.particiones.length;i++){
-            if(memoria.particiones[i].estaDisponible()){
-                desperdicio=(memoria.particiones[i].calcularEspacioDisponible())-cantidadSolicitada;
-                if(menor == -1){
-                    menor = desperdicio;
-                    mejor = i;
-                }else{
-                    if(desperdicio<menor){
-                        menor = desperdicio;
-                        mejor = i;
-                    }
-                }
-            }            
         }
-        return mejor;
     }
     
+    //Metodo para meter un proceso a la lista de todos los procesos
+    public static void eliminarProcesoDeLista(Proceso p){
+        //Recorremos la lista
+        for(int i =0; i<procesos.length;i++){
+            //Si encontramos una posicion vacia
+            if(procesos[i]==p){
+                //guardamos el proceso en esa posicion
+                procesos[i] = null;
+                //rompemos el ciclo
+                break;
+            }
+        }
+    }
+    
+    public void liberarProcesoDeMemoria(Solt memoria, Proceso p) {
+        for(int j = 0; j<memoria.paginas.length;j++){
+            Proceso pg = memoria.paginas[j].getProceso();
+            if(pg!=null){
+                if(pg.getPid()==p.getPid()){
+                    memoria.paginas[j].setProceso(null);
+                    memoria.paginas[j].setEspacio_disponible(64);
+                    memoria.paginas[j].setEspacio_ocupado(0);
+                    memoria.paginas[j].setEstado(true);
+                }
+            }
+        }
+    }
+        
     public void ColocarProcesoEnMemoria(Proceso p){
         
         int paginas_asignadas=0;
@@ -534,92 +514,73 @@ public class InterfazG extends javax.swing.JFrame {
         }
         System.out.println("La ultima pagina de este proceso tendra una fragmentacion interna de "+residuo+ "MB");
         
-        for(int i = 0; i <=2;i++){
-           if(paginas_asignadas<numero_paginas){
-                
-               int mejor_particion = mejorAjuste(memoria_fisica,( p.getMemoria() - ( paginas_asignadas * 64  )  ));
-
-               
-                Particion particion_usar = memoria_fisica.particiones[mejor_particion];
-                
-                if(particion_usar.estaDisponible()){
-                    
-                    System.out.println("Asignando en memoria real");
-                    System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
-                    
-                    for(int j=0; j<particion_usar.paginas.length;j++){
-                        if(paginas_asignadas < numero_paginas ){
-                            System.out.print("checando pagina "+j+" ");
-                            if(particion_usar.paginas[j].estaDisponible()){
-                                if(numero_paginas==1||numero_paginas==paginas_asignadas){
-                                    particion_usar.paginas[j].setEspacio_ocupado((64-residuo));
-                                    particion_usar.paginas[j].setEspacio_disponible(residuo);
-                                }else{
-                                    particion_usar.paginas[j].setEspacio_ocupado(64);
-                                    particion_usar.paginas[j].setEspacio_disponible(0);
-                                }
-                                particion_usar.paginas[j].setProceso(p);
-                                particion_usar.paginas[j].setEstado(false);
-                                paginas_asignadas++;
-                                System.out.println(" <-- (asignada) " );
-                            }else{
-                                System.out.println(" <-- (ya ocupada) " );
-                            }
-                        }
-                    }
-                    System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
-                }
-           }
-        }
         
         if(paginas_asignadas<numero_paginas){
-            System.out.println("Memoria real llena, utilizando memoria virtual");
-            for(int i = 0; i <=2;i++){
-            if(paginas_asignadas<numero_paginas){
 
-                int mejor_particion = mejorAjuste(memoria_virtual,( p.getMemoria() - ( paginas_asignadas * 64  )  ));
+                 System.out.println("Asignando en memoria real");
+                 System.out.println("Espacio ocupado en memoria real"+ memoria_fisica.calcularEspacioOcupado()+"/"+memoria_fisica.getTamanio());
 
-
-                 Particion particion_usar = memoria_virtual.particiones[mejor_particion];
-
-                 if(particion_usar.estaDisponible()){
-
-                     System.out.println("Asignando en memoria real");
-                     System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
-
-                     for(int j=0; j<particion_usar.paginas.length;j++){
-                         if(paginas_asignadas < numero_paginas ){
-                             System.out.print("checando pagina "+j+" ");
-                             if(particion_usar.paginas[j].estaDisponible()){
-                                 if(numero_paginas==1||numero_paginas==paginas_asignadas){
-                                     particion_usar.paginas[j].setEspacio_ocupado((64-residuo));
-                                     particion_usar.paginas[j].setEspacio_disponible(residuo);
-                                 }else{
-                                     particion_usar.paginas[j].setEspacio_ocupado(64);
-                                     particion_usar.paginas[j].setEspacio_disponible(0);
-                                 }
-                                 particion_usar.paginas[j].setProceso(p);
-                                 particion_usar.paginas[j].setEstado(false);
-                                 paginas_asignadas++;
-                                 System.out.println(" <-- (asignada) " );
+                 for(int j=0; j<memoria_fisica.paginas.length;j++){
+                     if(paginas_asignadas < numero_paginas ){
+                         System.out.print("checando pagina "+j+" ");
+                         if(memoria_fisica.paginas[j].estaDisponible()){
+                             if(numero_paginas==1||numero_paginas==paginas_asignadas){
+                                 memoria_fisica.paginas[j].setEspacio_ocupado((64-residuo));
+                                 memoria_fisica.paginas[j].setEspacio_disponible(residuo);
                              }else{
-                                 System.out.println(" <-- (ya ocupada) " );
+                                 memoria_fisica.paginas[j].setEspacio_ocupado(64);
+                                 memoria_fisica.paginas[j].setEspacio_disponible(0);
                              }
+                             memoria_fisica.paginas[j].setProceso(p);
+                             memoria_fisica.paginas[j].setEstado(false);
+                             paginas_asignadas++;
+                             System.out.println(" <-- (asignada) " );
+                         }else{
+                             System.out.println(" <-- (ya ocupada) " );
                          }
                      }
-                     System.out.println("Espacio ocupado en particion "+(mejor_particion+1)+": "+ particion_usar.calcularEspacioOcupado()+"/"+particion_usar.getTamanio());
                  }
-            }
-         }
+                System.out.println("Espacio ocupado en memoria real"+ memoria_fisica.calcularEspacioOcupado()+"/"+memoria_fisica.getTamanio());
         }
         
         if(paginas_asignadas<numero_paginas){
+
+                System.out.println("Asignando en memoria real");
+                System.out.println("Espacio ocupado en memoria real"+ memoria_virtual.calcularEspacioOcupado()+"/"+memoria_virtual.getTamanio());
+
+                for(int j=0; j<memoria_virtual.paginas.length;j++){
+                    if(paginas_asignadas < numero_paginas ){
+                        System.out.print("checando pagina "+j+" ");
+                        if(memoria_virtual.paginas[j].estaDisponible()){
+                            if(numero_paginas==1||numero_paginas==paginas_asignadas){
+                                 memoria_virtual.paginas[j].setEspacio_ocupado((64-residuo));
+                                 memoria_virtual.paginas[j].setEspacio_disponible(residuo);
+                            }else{
+                                 memoria_virtual.paginas[j].setEspacio_ocupado(64);
+                                 memoria_virtual.paginas[j].setEspacio_disponible(0);
+                            }
+                             memoria_virtual.paginas[j].setProceso(p);
+                             memoria_virtual.paginas[j].setEstado(false);
+                             paginas_asignadas++;
+                             System.out.println(" <-- (asignada) " );
+                        }else{
+                             System.out.println(" <-- (ya ocupada) " );
+                        }
+                    }
+                }     
+            System.out.println("Espacio ocupado en memoria real"+ memoria_virtual.calcularEspacioOcupado()+"/"+memoria_virtual.getTamanio());
+        }
+        
+        if(paginas_asignadas<numero_paginas){
+            liberarProcesoDeMemoria(memoria_fisica,p);
+            liberarProcesoDeMemoria(memoria_virtual,p);
+            eliminarProcesoDeLista(p);
             actualizarTablaRes();
             JOptionPane.showMessageDialog(null,"Ya no hay espacio para alojar el siguiente proceso");
-            p = null;
         }
+        actualizarTablaRes();
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

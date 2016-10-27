@@ -12,7 +12,9 @@ package administrador.memoria;
 public class Solt {
     
     int tamanio;
+    
     public Particion particiones[];
+    public Pagina paginas[];
     
     int ocupado;
     int disponible;
@@ -28,6 +30,40 @@ public class Solt {
         particiones[1] = new Particion(512);
         particiones[2] = new Particion(384);
         
-    }    
+        paginas = new Pagina[this.tamanio/64];
+        for(int i = 0; i< this.tamanio/64;i++){
+            paginas[i] = new Pagina();
+        }
+        
+    }
+    
+    
+    public int calcularPaginasOcupadas(){
+        int pagOcupadas=0;
+        for(int i=0;i<paginas.length;i++){
+            if(!paginas[i].estaDisponible())
+                pagOcupadas=pagOcupadas+1;
+        }
+        return pagOcupadas;
+    }
+    
+    public int calcularEspacioOcupado(){
+        int espacio_ocupado = 0;
+        for(int i=0;i<paginas.length;i++){
+            if(!paginas[i].estaDisponible())
+                espacio_ocupado+=paginas[i].getEspacio_ocupado();
+        }
+        this.ocupado = espacio_ocupado;
+        return espacio_ocupado;
+    }
+    
+    public int calcularEspacioDisponible(){
+        this.disponible = this.tamanio - calcularEspacioOcupado();
+        return this.disponible;
+    }
+
+    public int getTamanio() {
+        return tamanio;
+    }
     
 }

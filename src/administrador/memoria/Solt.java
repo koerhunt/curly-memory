@@ -65,5 +65,19 @@ public class Solt {
     public int getTamanio() {
         return tamanio;
     }
+
+    public boolean estaDisponible(){
+        boolean es = false;
+        
+        for(int i=0;i<paginas.length;i++){
+           if(paginas[i].estaDisponible()){
+                es = true;
+                break;
+           }
+        }
+        
+        
+        return es;
+    }
     
 }

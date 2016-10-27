@@ -497,6 +497,7 @@ public class InterfazG extends javax.swing.JFrame {
                 }
             }
         }
+        traspasarProcesos();
     }
         
     public void ColocarProcesoEnMemoria(Proceso p){
@@ -581,6 +582,35 @@ public class InterfazG extends javax.swing.JFrame {
         actualizarTablaRes();
     }
     
+    
+    public void traspasarProcesos(){
+        Proceso p = null;
+        for(Pagina pagina_virtual : memoria_virtual.paginas){
+            
+            if(!pagina_virtual.estaDisponible()){
+                
+                p = pagina_virtual.getProceso();
+                
+                for(Pagina pagina_real : memoria_fisica.paginas){
+                    if(memoria_fisica.estaDisponible()){
+                        if(pagina_real.estaDisponible() && pagina_virtual.getProceso()==p){
+                            pagina_real.setEstado(false);
+                            pagina_real.setProceso(p);
+                            pagina_real.setEspacio_disponible(pagina_virtual.getEspacio_disponible());
+                            pagina_real.setEspacio_ocupado(pagina_virtual.getEspacio_ocupado());
+                            pagina_virtual.setEstado(true);
+                            pagina_virtual.setProceso(null);
+                            pagina_virtual.setEspacio_disponible(64);
+                            pagina_virtual.setEspacio_ocupado(0);                                
+                        } 
+                    }else{
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

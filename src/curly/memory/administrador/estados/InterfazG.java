@@ -12,10 +12,6 @@ package curly.memory.administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
-import curly.memory.administrador.estados.AlgoritmoFIFO;
-import curly.memory.administrador.estados.AlgoritmoHRN;
-import curly.memory.administrador.estados.AlgoritmoRR;
-import curly.memory.administrador.estados.AlgoritmoSJN;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.table.TableModel;

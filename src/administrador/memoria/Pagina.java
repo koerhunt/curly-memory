@@ -17,17 +17,12 @@ public class Pagina {
     int espacio_disponible=64;
     boolean estado=true;
     
-    Particion particion;
     Proceso proceso;
     
     public Pagina(){
         
     }
     
-    public Pagina(int t, Particion p){
-        this.tamanio = t;
-        this.particion = p;
-    }
     
     
     public boolean estaDisponible(){

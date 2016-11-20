@@ -7,8 +7,6 @@ package curly.memory.administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,33 +17,33 @@ public class CrearProcesos extends Simulador implements Runnable{
     //Este metodo crea 5 procesos por defectos conforme avanza el tiempo
     @Override
     public void run() {
-        try {
+     //   try {
             //Crea un proceso y lo agrega a la lista de listos
             Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Google chrome",10,true,false));
             //Incrementa la secuencia del identificador del proceso
             Simulador.secuencia_id++;
             //Espera 1000 milisegundos
-            java.lang.Thread.sleep(1000);
+            //java.lang.Thread.sleep(1000);
             
             //Para los demas procesos son iguales
             Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Microsoft Word",4,false,false));
             Simulador.secuencia_id++;
-            java.lang.Thread.sleep(4000);
+           //java.lang.Thread.sleep(4000);
             
             Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Paint",5, true,true));
             Simulador.secuencia_id++;
-            java.lang.Thread.sleep(7000);
+            //java.lang.Thread.sleep(7000);
             
             Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Spotify",6,false,true));
             Simulador.secuencia_id++;
-            java.lang.Thread.sleep(1500);
+            //java.lang.Thread.sleep(1500);
             
             Simulador.procesos_listos.agregarProceso(new Proceso(Simulador.secuencia_id, "Avast",9,true,false));
             Simulador.secuencia_id++;
             
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CrearProcesos.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       // } catch (InterruptedException ex) {
+         //   Logger.getLogger(CrearProcesos.class.getName()).log(Level.SEVERE, null, ex);
+     //   }
     }
     
 }

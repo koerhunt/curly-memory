@@ -13,7 +13,6 @@ public class Solt {
     
     int tamanio;
     
-    public Particion particiones[];
     public Pagina paginas[];
     
     int ocupado;
@@ -25,10 +24,6 @@ public class Solt {
     
     public Solt(int tamanio){
         this.tamanio = tamanio;
-        particiones = new Particion[3];
-        particiones[0] = new Particion(128);
-        particiones[1] = new Particion(512);
-        particiones[2] = new Particion(384);
         
         paginas = new Pagina[this.tamanio/64];
         for(int i = 0; i< this.tamanio/64;i++){

@@ -57,12 +57,6 @@ public class Simulador {
     //creamos un objeto random para obtener numeros aleatorios
     static Random rd;
     
-    //Metodo principal
-    public static void main(String[] args) {
-        //Se crean los recursos, se prepara la memoria para la lista de listos
-        inicializar();
-    }
-    
     public static void inicializar(){
         //Inicializando una lista para hacer referencia a todos los procesos
         todos_los_procesos = new Proceso[60];

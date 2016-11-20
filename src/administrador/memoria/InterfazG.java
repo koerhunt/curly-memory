@@ -6,11 +6,9 @@
 package administrador.memoria;
 
 import curly.memory.Proceso;
+import curly.memory.Simulador;
 
-import java.util.Enumeration;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
@@ -26,11 +24,7 @@ public class InterfazG extends javax.swing.JFrame {
     TableModel model_jtable;
     TableModel model_jtable_memreal;
     TableModel model_jtable_memvirt;
-    
-    public static Proceso procesos[];
-    
-    //Se declara una variable que contendra al algoritmo (FIFO, SJN) que se esta ejecutando
-    static int secuencia_id=1;
+       
     
     //Objetos para representar la memoria
     Solt memoria_fisica;
@@ -38,13 +32,11 @@ public class InterfazG extends javax.swing.JFrame {
     
     public InterfazG() {
       initComponents();
-      procesos= new Proceso[30];
+      Simulador.inicializar();
        
       memoria_fisica = new Solt(1024);
       memoria_virtual= new Solt(1024);
-    
-      setCellRender(jTable1);
-      setCellRender(jTable2);
+
       
       model_jtable = jTable3.getModel();
       
@@ -53,16 +45,7 @@ public class InterfazG extends javax.swing.JFrame {
       
       
     }
-    
-    //Metodo para pintar las celdas
-    public void setCellRender(JTable table) {
-        Enumeration<TableColumn> en = table.getColumnModel().getColumns();
-        while (en.hasMoreElements()) {
-            TableColumn tc = en.nextElement();
-            tc.setCellRenderer(new CellRenderer());
-        }
-    }  
-
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -317,10 +300,10 @@ public class InterfazG extends javax.swing.JFrame {
         
         //String nombre = JOptionPane.showInputDialog(null,"Teclea el Nombre del proceso\n");
         
-        Proceso nuevo_proceso = new Proceso(secuencia_id, "Proceso "+secuencia_id);
+        Proceso nuevo_proceso = new Proceso(Simulador.secuencia_id, "Proceso "+Simulador.secuencia_id);
         introducirProcesoALista(nuevo_proceso);
         
-        secuencia_id++; //se incrementa el contador de id
+        Simulador.secuencia_id++; //se incrementa el contador de id
         
         ColocarProcesoEnMemoria(nuevo_proceso);
         
@@ -337,15 +320,15 @@ public class InterfazG extends javax.swing.JFrame {
         
         int r = jTable3.getSelectedRow();        
         
-        if(procesos[r]!=null){
-            liberarProcesoDeMemoria(memoria_fisica,procesos[r]);
-            liberarProcesoDeMemoria(memoria_virtual,procesos[r]);
-            procesos[r] = null;
-            for(int i=0; i<procesos.length;i++){
-                if(procesos[i]==null&&i+1<procesos.length){
-                    if(procesos[i+1]!=null){
-                        procesos[i] = procesos[i+1];
-                        procesos[i+1] = null;   
+        if(Simulador.todos_los_procesos[r]!=null){
+            liberarProcesoDeMemoria(memoria_fisica,Simulador.todos_los_procesos[r]);
+            liberarProcesoDeMemoria(memoria_virtual,Simulador.todos_los_procesos[r]);
+            Simulador.todos_los_procesos[r] = null;
+            for(int i=0; i<Simulador.todos_los_procesos.length;i++){
+                if(Simulador.todos_los_procesos[i]==null&&i+1<Simulador.todos_los_procesos.length){
+                    if(Simulador.todos_los_procesos[i+1]!=null){
+                        Simulador.todos_los_procesos[i] = Simulador.todos_los_procesos[i+1];
+                        Simulador.todos_los_procesos[i+1] = null;   
                     }
                 }
             }
@@ -414,15 +397,15 @@ public class InterfazG extends javax.swing.JFrame {
     public void actualizarTablaRes() {
      limpiarTabla(model_jtable);
      //Se recorre la lista de procesos
-     for (int x=0; x<procesos.length; x++) {
+     for (int x=0; x<Simulador.todos_los_procesos.length; x++) {
          //Mientras se encuentre un proceso en la posicion x se rellenara un renglon con su informacion
          //model es un auxiliar para meter la informacion a la tabla
-         if(procesos[x]!=null){
+         if(Simulador.todos_los_procesos[x]!=null){
             //x indica el renglon
             //el numero que le sigue indica la columna
-            model_jtable.setValueAt(procesos[x].getPid(), x, 0);
-            model_jtable.setValueAt(procesos[x].getMemoria(), x, 1);
-            model_jtable.setValueAt(procesos[x].getNombre(), x, 2);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getPid(), x, 0);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getMemoria(), x, 1);
+            model_jtable.setValueAt(Simulador.todos_los_procesos[x].getNombre(), x, 2);
          }
       }
      
@@ -448,11 +431,11 @@ public class InterfazG extends javax.swing.JFrame {
     //Metodo para meter un proceso a la lista de todos los procesos
     public static void introducirProcesoALista(Proceso p){
         //Recorremos la lista
-        for(int i =0; i<procesos.length;i++){
+        for(int i =0; i<Simulador.todos_los_procesos.length;i++){
             //Si encontramos una posicion vacia
-            if(procesos[i]==null){
+            if(Simulador.todos_los_procesos[i]==null){
                 //guardamos el proceso en esa posicion
-                procesos[i] = p;
+                Simulador.todos_los_procesos[i] = p;
                 //rompemos el ciclo
                 break;
             }
@@ -474,11 +457,11 @@ public class InterfazG extends javax.swing.JFrame {
     //Metodo para meter un proceso a la lista de todos los procesos
     public static void eliminarProcesoDeLista(Proceso p){
         //Recorremos la lista
-        for(int i =0; i<procesos.length;i++){
+        for(int i =0; i<Simulador.todos_los_procesos.length;i++){
             //Si encontramos una posicion vacia
-            if(procesos[i]==p){
+            if(Simulador.todos_los_procesos[i]==p){
                 //guardamos el proceso en esa posicion
-                procesos[i] = null;
+                Simulador.todos_los_procesos[i] = null;
                 //rompemos el ciclo
                 break;
             }

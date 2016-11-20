@@ -1,34 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package curly.memory.administrador.estados;
+package administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import javax.swing.JOptionPane;
 
 /**
  *
- * @author HDEZ. OCHOA D. SEBASTIAN
+ * @author elias
  */
-public class AlgoritmoFIFO extends Simulador implements Runnable{
-    
-    
+public class AlgoritmoRR extends Simulador implements Runnable {
+
     //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
     @Override
     public void run() {
-        //Comienza a trabajar el algoritmo fifo
-        ComenzarFifo();
+        //Comienza fifo
+        ComenzarRR();
     }
     
-     //Metodo para iniciar planificacion FIFO
-    public  void ComenzarFifo(){
-        
-        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+    
+     //Metodo para iniciar planificacion RR
+    public  void ComenzarRR(){
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
         
         int procesos_atendidos = 0;
         int contador_progreso = 0;
@@ -46,6 +40,8 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
             }
             
             p = Simulador.procesos_listos.extraerPrimerProceso();
+            //Contador para el cuantum
+            contador_progreso = 0;
             
             if(p!=null){
                 //Checamos y hacemos cambios de estado
@@ -70,20 +66,17 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                 if(p.requiereEntradaSalida()){
                     //Se solicita el recurso
                     solicitarRecurso(p);
-                    contador_progreso = 0;
                 }
                 
-                while(!p.requiereEntradaSalida()||contador_progreso<1){
+                while(contador_progreso<Simulador.quantum){
                     
-                    if(p.requiereEntradaSalida()){
-                        contador_progreso++;
-                    }
+                    
+                    contador_progreso++;
                     
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
-                    Simulador.actualizarDatos();
-                    
                     p.actualizarProgreso();
+                    Simulador.actualizarDatos();
                     
                     System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
                     System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
@@ -99,6 +92,12 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                         p.calcularTiempoDeServicio();
                         System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
                         break;
+                    }else{
+                        if(contador_progreso>=Simulador.quantum){
+                            if(!p.requiereEntradaSalida()){
+                                p.setEstado(Proceso.ESTADO_LISTO);
+                            }
+                        }
                     }
                     
                     try {                    
@@ -123,7 +122,7 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
                 }
             }
         }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
         try {
             Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
@@ -131,6 +130,6 @@ public class AlgoritmoFIFO extends Simulador implements Runnable{
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
         }
         InterfazG.algoritmoTerminado();
-    }    
+    }
     
 }

@@ -3,28 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package curly.memory.administrador.estados;
+package administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlgoritmoSJN  extends Simulador implements Runnable {
+
+/**
+ *
+ * @author HDEZ. OCHOA D. SEBASTIAN
+ */
+public class AlgoritmoFIFO extends Simulador implements Runnable{
     
-    private static int procesos_atentidos = 0;
     
+    //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
     @Override
     public void run() {
-        //comienza a trabajar el algoritmo SJN
-        ComenzarSJN();
-    }    
+        //Comienza a trabajar el algoritmo fifo
+        ComenzarFifo();
+    }
     
-    //Metodo para iniciar planificacion SJN   
-    public void ComenzarSJN(){
-        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA SJN *-*-*-*-*-*-*-*-*-*-*-*");
-        //declaramos una variable para guradar el proceso mas corto
-        Proceso proceso_mas_corto;
+     //Metodo para iniciar planificacion FIFO
+    public  void ComenzarFifo(){
+        
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA FIFO *-*-*-*-*-*-*-*-*-*-*-*");
         
         int procesos_atendidos = 0;
         int contador_progreso = 0;
@@ -41,7 +45,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                 Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            p = Simulador.procesos_listos.extraerProcesoConMenorTiempoRequerido();
+            p = Simulador.procesos_listos.extraerPrimerProceso();
             
             if(p!=null){
                 //Checamos y hacemos cambios de estado
@@ -77,8 +81,9 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                     
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
-                    p.actualizarProgreso();
                     Simulador.actualizarDatos();
+                    
+                    p.actualizarProgreso();
                     
                     System.out.println("El proceso "+p.getNombre()+" - tiene un tiempo de ejecucion de "+p.getTiempo_de_ejecucion());
                     System.out.println("El proceso lleva un progreso de "+p.getProgreso()+"%");
@@ -118,7 +123,7 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
                 }
             }
         }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina FIFO *-*-*-*-*-*-*-*-*-*-*-*");
         try {
             Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
@@ -126,6 +131,6 @@ public class AlgoritmoSJN  extends Simulador implements Runnable {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
         }
         InterfazG.algoritmoTerminado();
-    }  
+    }    
     
 }

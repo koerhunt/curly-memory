@@ -5,10 +5,10 @@
  */
 package curly.memory;
 
-import curly.memory.administrador.estados.InterfazG;
-import curly.memory.administrador.estados.CallBackDesbloquearProceso;
-import curly.memory.administrador.estados.CallBackRestaurarProcesoBloqueado;
-import curly.memory.administrador.estados.CallBackRestaurarProcesoListo;
+import administrador.estados.InterfazG;
+import administrador.estados.CallBackDesbloquearProceso;
+import administrador.estados.CallBackRestaurarProcesoBloqueado;
+import administrador.estados.CallBackRestaurarProcesoListo;
 
 import java.util.Random;
 

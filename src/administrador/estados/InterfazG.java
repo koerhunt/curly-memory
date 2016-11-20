@@ -8,7 +8,7 @@
 
 //*****************************************************************************************************************
 //interfaz
-package curly.memory.administrador.estados;
+package administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
@@ -71,11 +71,11 @@ public class InterfazG extends javax.swing.JFrame {
         
     }
     
-    //Metodo principal
-    public static void main(String args[]) {
-        //Crea y muestra la interfaz grafica
-        new InterfazG().setVisible(true);
-    }
+//    //Metodo principal
+//    public static void main(String args[]) {
+//        //Crea y muestra la interfaz grafica
+//        new InterfazG().setVisible(true);
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.

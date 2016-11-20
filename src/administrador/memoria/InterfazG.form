@@ -96,10 +96,9 @@
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="3" rowCount="16">
+              <Table columnCount="2" rowCount="16">
                 <Column editable="true" title="MB Ocupados" type="java.lang.Object"/>
                 <Column editable="false" title="Proceso" type="java.lang.Object"/>
-                <Column editable="true" title="P" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -110,11 +109,6 @@
                   <Renderer/>
                 </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="20" minWidth="20" prefWidth="20" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
@@ -138,10 +132,9 @@
         <Component class="javax.swing.JTable" name="jTable2">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="3" rowCount="16">
+              <Table columnCount="2" rowCount="16">
                 <Column editable="true" title="MB Ocupados" type="java.lang.Object"/>
                 <Column editable="true" title="Proceso" type="java.lang.Object"/>
-                <Column editable="true" title="P" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -152,11 +145,6 @@
                   <Renderer/>
                 </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="20" minWidth="20" prefWidth="20" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>

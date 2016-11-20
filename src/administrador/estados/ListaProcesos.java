@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package curly.memory.administrador.estados;
+package administrador.estados;
 
 import curly.memory.Proceso;
 import javax.swing.DefaultListModel;

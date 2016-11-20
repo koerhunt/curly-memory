@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package curly.memory.administrador.estados;
+package administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
@@ -14,14 +14,14 @@ import java.util.logging.Logger;
  *
  * @author elias
  */
-public class CallBackRestaurarProcesoBloqueado extends Simulador implements Runnable{
+public class CallBackDesbloquearProceso extends Simulador implements Runnable{
 
     @Override
     public void run() {
         try {
             java.lang.Thread.sleep(Simulador.velocidad*4);
-            if(!suspendidos_bloqueados.estaVacia()){
-            suspendidos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_BLOQUEADO);
+            if(!procesos_bloqueados.estaVacia()){
+            procesos_bloqueados.extraerPrimerProceso().setEstado(Proceso.ESTADO_LISTO);
         }   
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);

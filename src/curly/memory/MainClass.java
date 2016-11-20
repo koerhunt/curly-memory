@@ -18,7 +18,7 @@ public class MainClass {
         Simulador s = new Simulador();
         
         //Correr interfaz del pcb
-        //new curly.memory.administrador.estados.InterfazG().setVisible(true);
+        new administrador.estados.InterfazG().setVisible(true);
         //correr interface de memoria
         new administrador.memoria.InterfazG().setVisible(true);
         

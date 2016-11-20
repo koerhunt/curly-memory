@@ -5,9 +5,9 @@
  */
 package curly.memory;
 
-import curly.memory.administrador.estados.InterfazG;
-import curly.memory.administrador.estados.ListaProcesos;
-import curly.memory.administrador.estados.CrearProcesos;
+import administrador.estados.InterfazG;
+import administrador.estados.ListaProcesos;
+import administrador.estados.CrearProcesos;
 import java.util.Random;
 
 /**

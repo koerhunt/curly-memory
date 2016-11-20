@@ -1,28 +1,30 @@
-package curly.memory.administrador.estados;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package administrador.estados;
 
 import curly.memory.Proceso;
 import curly.memory.Simulador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
-/**
- *
- * @author elias
- */
-public class AlgoritmoRR extends Simulador implements Runnable {
-
-    //Metodo que inicia el procedimiento de manera asincrona (paralela por medio de un hilo)
+public class AlgoritmoSJN  extends Simulador implements Runnable {
+    
+    private static int procesos_atentidos = 0;
+    
     @Override
     public void run() {
-        //Comienza fifo
-        ComenzarRR();
-    }
+        //comienza a trabajar el algoritmo SJN
+        ComenzarSJN();
+    }    
     
-    
-     //Metodo para iniciar planificacion RR
-    public  void ComenzarRR(){
-        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
+    //Metodo para iniciar planificacion SJN   
+    public void ComenzarSJN(){
+        System.out.println("*-*-*-*-*-*-*-*-*-  COMIENZA SJN *-*-*-*-*-*-*-*-*-*-*-*");
+        //declaramos una variable para guradar el proceso mas corto
+        Proceso proceso_mas_corto;
         
         int procesos_atendidos = 0;
         int contador_progreso = 0;
@@ -39,9 +41,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            p = Simulador.procesos_listos.extraerPrimerProceso();
-            //Contador para el cuantum
-            contador_progreso = 0;
+            p = Simulador.procesos_listos.extraerProcesoConMenorTiempoRequerido();
             
             if(p!=null){
                 //Checamos y hacemos cambios de estado
@@ -66,12 +66,14 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 if(p.requiereEntradaSalida()){
                     //Se solicita el recurso
                     solicitarRecurso(p);
+                    contador_progreso = 0;
                 }
                 
-                while(contador_progreso<Simulador.quantum){
+                while(!p.requiereEntradaSalida()||contador_progreso<1){
                     
-                    
-                    contador_progreso++;
+                    if(p.requiereEntradaSalida()){
+                        contador_progreso++;
+                    }
                     
                     //Se aumenta una unidad de tiempo a el procesador
                     tiempo_cpu++;
@@ -92,12 +94,6 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                         p.calcularTiempoDeServicio();
                         System.out.println("El proceso "+p.getNombre()+" - tuvo un tiempo de servicio de "+p.getTiempo_de_servicio());
                         break;
-                    }else{
-                        if(contador_progreso>=Simulador.quantum){
-                            if(!p.requiereEntradaSalida()){
-                                p.setEstado(Proceso.ESTADO_LISTO);
-                            }
-                        }
                     }
                     
                     try {                    
@@ -122,7 +118,7 @@ public class AlgoritmoRR extends Simulador implements Runnable {
                 }
             }
         }
-        System.out.println("*-*-*-*-*-*-*-*-*-  Termina Round Robin *-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("*-*-*-*-*-*-*-*-*-  Termina SJN *-*-*-*-*-*-*-*-*-*-*-*");
         try {
             Thread.sleep(velocidad/2);
             InterfazG.actualizarAmbienteGrafico();
@@ -130,6 +126,6 @@ public class AlgoritmoRR extends Simulador implements Runnable {
             Logger.getLogger(AlgoritmoFIFO.class.getName()).log(Level.SEVERE, null, ex);
         }
         InterfazG.algoritmoTerminado();
-    }
+    }  
     
 }
